@@ -9,9 +9,14 @@ use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\MapSettingsController;
+use App\Http\Controllers\Admin\DualModeController;
+
+require __DIR__ . '/inline-api.php';
 
 Route::get('/', [KioskController::class, 'idle'])->name('kiosk.idle');
 Route::get('/map', [KioskController::class, 'map'])->name('kiosk.map');
+Route::get('/dual-welcome', [DualModeController::class, 'welcome'])->name('dual.welcome');
+Route::get('/dual-map', [DualModeController::class, 'map'])->name('dual.map');
 Route::get('/building/{id}', [KioskController::class, 'building'])->name('kiosk.building');
 Route::get('/office/{id}', [KioskController::class, 'office'])->name('kiosk.office');
 Route::get('/navigate/{buildingId}', [KioskController::class, 'navigate'])->name('kiosk.navigate');
@@ -21,7 +26,7 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     
     Route::get('/map-config', [AdminController::class, 'showMapConfig'])->name('map-config');
     Route::post('/map-config', [AdminController::class, 'updateMapConfig'])->name('map-config.update');

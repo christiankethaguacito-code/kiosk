@@ -14,6 +14,12 @@ class KioskController extends Controller
         $announcements = Announcement::where('is_active', true)->get();
         return view('kiosk.idle', compact('announcements'));
     }
+    
+    public function dualWelcome()
+    {
+        $announcements = Announcement::where('is_active', true)->get();
+        return view('dual-welcome', compact('announcements'));
+    }
 
     public function map()
     {

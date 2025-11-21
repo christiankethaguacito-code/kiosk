@@ -195,17 +195,17 @@
         fill: none;
         stroke: #3b82f6;
         stroke-width: 2;
-        stroke-opacity: 0.4;
+        stroke-opacity: 0;
         stroke-dasharray: 5,3;
-        display: none; /* Hidden */
+        display: none;
     }
     
     .skeleton-node {
         fill: #3b82f6;
-        fill-opacity: 0.5;
+        fill-opacity: 0;
         stroke: #1e40af;
         stroke-width: 1;
-        display: none; /* Hidden */
+        display: none;
     }
     
     /* Endpoint edit mode */
@@ -789,10 +789,10 @@
         'MPC': {x: 253, y: 16, roadConnection: 'east_top'},
         'MPC-Dorm': {x: 262, y: 15, roadConnection: 'east_top'},
         'MPC Dorm': {x: 262, y: 15, roadConnection: 'east_top'},
-        'MD_1': {x: 20, y: 76, roadConnection: 'west_80'},
-        'MD 1': {x: 20, y: 76, roadConnection: 'west_80'},
-        'MD_2': {x: 20, y: 88, roadConnection: 'west_80'},
-        'MD 2': {x: 20, y: 88, roadConnection: 'west_80'},
+        'MD_1': {x: 20, y: 76, roadConnection: 'far_west_80'},
+        'MD 1': {x: 20, y: 76, roadConnection: 'far_west_80'},
+        'MD_2': {x: 20, y: 88, roadConnection: 'far_west_80'},
+        'MD 2': {x: 20, y: 88, roadConnection: 'far_west_80'},
         
         // Sports & Recreation
         'Field': {x: 69, y: 160, roadConnection: 'horiz_100'},
@@ -938,8 +938,20 @@
                     // Get display name for navigation
                     const displayName = svgToDisplayName[buildingId] || buildingId;
                     
-                    // Direct navigation - no modal
-                    navigateTo(displayName);
+                    // Check if it's in the database
+                    const mappedName = buildingNameMap[buildingId] || buildingId;
+                    const building = buildings.find(b => b.name === mappedName);
+                    
+                    if (building) {
+                        showBuildingModal(building.id);
+                    } else {
+                        // Show basic info for buildings not in database
+                        document.getElementById('modalTitle').textContent = displayName;
+                        document.getElementById('modalContent').innerHTML = `
+                            <p class="text-gray-600 mb-4">Building information coming soon.</p>
+                        `;
+                        document.getElementById('buildingModal').classList.add('active');
+                    }
                 });
                 
                 // Add hover tooltip functionality
@@ -1010,13 +1022,6 @@
                 `;
             });
         }
-        
-        content += `
-            <button onclick="navigateTo('${building.name}')" 
-                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg mt-6 text-xl">
-                Navigate Here
-            </button>
-        `;
         
         document.getElementById('modalContent').innerHTML = content;
         document.getElementById('buildingModal').classList.add('active');
@@ -1745,13 +1750,7 @@
         // Attach endpoint drag listeners (always available now)
         attachEndpointDragListeners();
         
-        // Auto-clear after 60 seconds
-        setTimeout(() => {
-            const path = document.getElementById('navPath');
-            const markers = document.getElementById('navMarkers');
-            if (path) path.remove();
-            if (markers) markers.remove();
-        }, 60000);
+        // Navigation path will stay visible until user navigates to another building
     }
     
     // Old building marker drag code removed - now using endpoint edit mode

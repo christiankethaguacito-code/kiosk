@@ -938,20 +938,8 @@
                     // Get display name for navigation
                     const displayName = svgToDisplayName[buildingId] || buildingId;
                     
-                    // Check if it's in the database
-                    const mappedName = buildingNameMap[buildingId] || buildingId;
-                    const building = buildings.find(b => b.name === mappedName);
-                    
-                    if (building) {
-                        showBuildingModal(building.id);
-                    } else {
-                        // Show basic info for buildings not in database
-                        document.getElementById('modalTitle').textContent = displayName;
-                        document.getElementById('modalContent').innerHTML = `
-                            <p class="text-gray-600 mb-4">Building information coming soon.</p>
-                        `;
-                        document.getElementById('buildingModal').classList.add('active');
-                    }
+                    // Navigate directly without modal
+                    navigateTo(displayName);
                 });
                 
                 // Add hover tooltip functionality

@@ -13,25 +13,24 @@ Route::get('/buildings', function() {
 });
 
 Route::get('/buildings/{id}', function($id) {
-    $building = Building::with(['offices.services'])->findOrFail($id);
+    $building = Building::with(['offices.services'])->find($id);
+    
+    if (!$building) {
+        return response()->json(['error' => 'Building not found'], 404);
+    }
+    
     return response()->json([
         'id' => $building->id,
         'name' => $building->name,
         'image_path' => $building->image_path,
-        'endpoint_x' => $building->endpoint_x,
-        'endpoint_y' => $building->endpoint_y,
         'offices' => $building->offices->map(function($office) {
             return [
                 'id' => $office->id,
                 'name' => $office->name,
+                'floor_number' => $office->floor_number,
                 'head_name' => $office->head_name,
                 'head_title' => $office->head_title,
-                'services' => $office->services->map(function($service) {
-                    return [
-                        'id' => $service->id,
-                        'description' => $service->description
-                    ];
-                })
+                'services' => $office->services
             ];
         })
     ]);

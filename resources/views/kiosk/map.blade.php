@@ -677,16 +677,20 @@
             </div>
         </div>
         
-        <!-- Legend Section (35%) -->
-        <div class="bg-white rounded-xl shadow-lg p-6 overflow-y-auto" style="flex: 0 0 35%; max-height: calc(100vh - 200px);">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 pb-3" style="border-color: #248823;">Map Legend</h2>
+        <!-- Sidebar Section (35%) - Toggles between Legend and Building Details -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden" style="flex: 0 0 35%; max-height: calc(100vh - 200px); display: flex; flex-direction: column;">
             
-            <!-- Campus Buildings Directory -->
-            <div class="mb-6">
-                <h3 class="text-xl font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <span class="text-2xl">🏛️</span> Campus Buildings
-                </h3>
-                <div class="space-y-1 text-base max-h-96 overflow-y-auto" style="scrollbar-width: thin;" id="buildingList">
+            <!-- Legend View -->
+            <div id="legendView" style="display: flex; flex-direction: column; height: 100%;">
+                <div class="p-6 border-b" style="border-color: #248823;">
+                    <h2 class="text-3xl font-bold text-gray-800">Map Legend</h2>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto p-6">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                        <span class="text-2xl">🏛️</span> Campus Buildings
+                    </h3>
+                    <div class="space-y-1 text-base" id="buildingList">
                     <!-- Academic Colleges -->
                     <div class="font-semibold text-gray-800 mt-2 mb-1 text-lg">Academic Colleges</div>
                     <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
@@ -753,6 +757,21 @@
                     <!-- Religious -->
                     <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Religious Facility</div>
                     <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Building Details View (replaces legend when building is clicked) -->
+            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%;">
+                <div class="p-4 border-b flex items-center gap-3" style="border-color: #248823;">
+                    <button onclick="closeBuildingDetails()" class="text-2xl text-gray-600 hover:text-gray-800 transition p-2 rounded-lg hover:bg-gray-100">
+                        ←
+                    </button>
+                    <h2 id="buildingDetailTitle" class="text-xl font-bold text-gray-800">Building Details</h2>
+                </div>
+                
+                <div id="buildingDetailContent" class="flex-1 overflow-y-auto p-4">
+                    <!-- Building details load here -->
                 </div>
             </div>
         </div>
@@ -1129,6 +1148,49 @@
         'UG': 'University Gym'
     };
     
+    // Map SVG IDs to exact database building names
+    const svgToDbName = {
+        'Administration': 'Administration Building',
+        'CTE': 'College of Teacher Education',
+        'CHS': 'College of Health and Sciences',
+        'CCJE': 'College of Criminal Justice Education',
+        'BCSF': 'Birthing Center / Infirmary Bldg.',
+        'UPP': 'UPP Building',
+        'AMTC': 'Ang Magsasaka Training Center',
+        'ULRC': 'University Learning Resource Center (Library)',
+        'TCL': 'Tissue Culture Laboratory',
+        'DOST': 'Philippine Textile Research Institute (DOST -PTRI)',
+        'Motorpool': 'Motorpool',
+        'FC': 'Food Center',
+        'mosque': 'Mosque',
+        'TIP_center': 'Technology and Innovation Building (TIP)',
+        'Climate': 'Climate',
+        'Agri_bldg_1': 'Agriculture Building 1',
+        'Agri_bldg_2': 'Agriculture Building 2',
+        'ROTC': 'ROTC Building',
+        'OSAS': 'Office of Student Affairs and Services Bldg.',
+        'UC': 'University Access Clinic',
+        'GS-SBO': 'GS-SBO',
+        'Alumni_Office': 'Alumni Relationship Office',
+        'Univesity_AVR': 'University Audio Visual Room',
+        'GS-ext': 'CGS Building',
+        'GS': 'Graduate School',
+        'CHS_Labs': 'Colleges of Health and Sciences Extension',
+        'Field': 'University Field',
+        'Bleacher': 'Bleacher',
+        'Parking_Space': 'Parking Space',
+        'LHS': 'Laboratory High School',
+        'CoM': 'College of Medicine',
+        'Restroom': 'Restroom',
+        'SKSU-MPC': 'SKSU MPC',
+        'MPC-Dorm': 'SKSU MPC Dormitory',
+        'ULD': 'University Ladies Dormitory',
+        'QMS': 'QMS Center Building',
+        'UG': 'University Gymnasium',
+        'MD_1': 'University Men\'s Dormitory',
+        'MD_2': 'University Men\'s Dormitory'
+    };
+    
     // Add click handlers to SVG buildings
     document.addEventListener('DOMContentLoaded', function() {
         const clickableBuildings = ['Administration', 'CTE', 'CHS', 'CCJE', 'BCSF', 'UPP', 'AMTC', 'ULRC', 'TCL', 'DOST', 
@@ -1159,9 +1221,24 @@
                     
                     // Get display name for navigation
                     const displayName = svgToDisplayName[buildingId] || buildingId;
-                    
-                    // Navigate directly without modal
                     navigateTo(displayName);
+                    
+                    // Show building details in sidebar
+                    const dbName = svgToDbName[buildingId];
+                    if (dbName) {
+                        const building = buildings.find(b => b.name === dbName);
+                        if (building) {
+                            showBuildingModal(building.id);
+                        } else {
+                            // Building exists in map but not in database yet
+                            console.warn('Building not found in database:', dbName);
+                            showBuildingNotAvailable(dbName);
+                        }
+                    } else {
+                        // SVG ID not mapped to database name
+                        console.warn('No database mapping for SVG ID:', buildingId);
+                        showBuildingNotAvailable(svgToDisplayName[buildingId] || buildingId);
+                    }
                 });
                 
                 // Add hover tooltip functionality
@@ -1194,11 +1271,31 @@
         });
     });
     
-    function showBuildingModal(buildingId) {
+    async function showBuildingModal(buildingId) {
         if (editMode) return;
         
-        const building = buildings.find(b => b.id === buildingId);
-        if (!building) return;
+        // Hide legend, show building details
+        document.getElementById('legendView').style.display = 'none';
+        document.getElementById('buildingDetailsView').style.display = 'flex';
+        
+        // Show loading
+        document.getElementById('buildingDetailTitle').textContent = 'Loading...';
+        document.getElementById('buildingDetailContent').innerHTML = `
+            <div class="flex items-center justify-center py-12">
+                <div class="loading-spinner"></div>
+                <p class="ml-4 text-gray-600">Loading...</p>
+            </div>
+        `;
+        
+        try {
+            // Fetch full building data with offices and services from API
+            const response = await fetch(`/api/buildings/${buildingId}`);
+            if (!response.ok) {
+                throw new Error('Building not found');
+            }
+            
+            const building = await response.json();
+            console.log('Building data loaded:', building);
         
         document.getElementById('modalTitle').textContent = building.name;
         
@@ -1216,14 +1313,15 @@
             allImages.push(...gallery);
         }
         
+        // Always show image section (with placeholder if no image)
         if (allImages.length > 0) {
             content += `
-                <div class="relative mb-6">
+                <div class="relative mb-4">
                     <div class="swiper buildingGallerySwiper">
                         <div class="swiper-wrapper">
                             ${allImages.map(img => `
                                 <div class="swiper-slide">
-                                    <img src="/storage/${img}" class="w-full h-80 object-cover rounded-lg">
+                                    <img src="/storage/${img}" class="w-full h-48 object-cover rounded-lg">
                                 </div>
                             `).join('')}
                         </div>
@@ -1240,6 +1338,19 @@
                     ` : ''}
                 </div>
             `;
+        } else {
+            // Placeholder for buildings without images
+            content += `
+                <div class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg h-48 flex items-center justify-center border-2 border-dashed" style="border-color: #248823;">
+                    <div class="text-center">
+                        <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <p class="text-gray-600 font-medium">${building.name}</p>
+                        <p class="text-gray-400 text-sm">Image not available</p>
+                    </div>
+                </div>
+            `;
         }
         
         // Building Description
@@ -1253,25 +1364,25 @@
         
         // Offices Section
         if (building.offices && building.offices.length > 0) {
-            content += '<h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span style="color: #248823;">🏛️</span> Offices in this Building</h3>';
+            content += `<h3 class="text-lg font-bold mb-3 flex items-center gap-2"><span style="color: #248823;">🏛️</span> Offices (${building.offices.length})</h3>`;
             building.offices.forEach(office => {
                 content += `
-                    <div class="bg-white border border-gray-200 hover:border-teal-300 p-4 rounded-lg mb-3 transition shadow-sm hover:shadow-md">
-                        <h4 class="text-xl font-semibold mb-2" style="color: #248823;">${office.name}</h4>
-                        ${office.floor_number ? `<p class="text-gray-600 text-sm mb-2">📍 Floor: ${office.floor_number}</p>` : ''}
+                    <div class="bg-white border border-gray-200 p-3 rounded-lg mb-2 hover:shadow-md transition">
+                        <h4 class="font-bold text-base mb-1" style="color: #248823;">${office.name}</h4>
+                        ${office.floor_number ? `<p class="text-gray-500 text-xs mb-1">📍 Floor ${office.floor_number}</p>` : ''}
                         ${office.head_name ? `
-                            <div class="mt-2 bg-gray-50 rounded p-3">
-                                <p class="font-medium text-gray-800">${office.head_name}</p>
-                                <p class="text-sm text-gray-600">${office.head_title || ''}</p>
+                            <div class="mt-2 bg-gray-50 rounded p-2">
+                                <p class="font-semibold text-sm text-gray-800">${office.head_name}</p>
+                                <p class="text-xs text-gray-600">${office.head_title || ''}</p>
                             </div>
                         ` : ''}
                         ${office.services && office.services.length > 0 ? `
-                            <div class="mt-3">
-                                <p class="font-semibold mb-2 text-gray-700">📋 Services:</p>
+                            <div class="mt-2">
+                                <p class="font-semibold text-xs text-gray-600 mb-1">Services:</p>
                                 <ul class="space-y-1">
                                     ${office.services.map(s => `
-                                        <li class="flex items-start gap-2 text-sm text-gray-700">
-                                            <span class="text-teal-500 mt-1">•</span>
+                                        <li class="flex items-start gap-1 text-xs text-gray-600">
+                                            <span class="mt-1">•</span>
                                             <span>${s.description}</span>
                                         </li>
                                     `).join('')}
@@ -1281,35 +1392,84 @@
                     </div>
                 `;
             });
+        } else {
+            // No offices found
+            content += `
+                <div class="text-center py-8 bg-gray-50 rounded-lg">
+                    <p class="text-gray-500 text-sm mb-2">No office information available</p>
+                    <p class="text-gray-400 text-xs">This building's details are being updated</p>
+                </div>
+            `;
         }
         
-        document.getElementById('modalContent').innerHTML = content;
-        document.getElementById('buildingModal').classList.add('active');
-        
-        // Initialize Swiper after content is loaded
-        if (allImages.length > 1) {
-            setTimeout(() => {
-                new Swiper('.buildingGallerySwiper', {
-                    loop: true,
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-                    pagination: {
-                        el: '.swiper-pagination',
-                        clickable: true,
-                    },
-                    on: {
-                        slideChange: function() {
-                            const current = document.querySelector('.swiper-current');
-                            if (current) {
-                                current.textContent = this.realIndex + 1;
+            document.getElementById('buildingDetailTitle').textContent = building.name;
+            document.getElementById('buildingDetailContent').innerHTML = content;
+            
+            // Initialize Swiper after content is loaded
+            if (allImages.length > 1) {
+                setTimeout(() => {
+                    new Swiper('.buildingGallerySwiper', {
+                        loop: true,
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                        on: {
+                            slideChange: function() {
+                                const current = document.querySelector('.swiper-current');
+                                if (current) {
+                                    current.textContent = this.realIndex + 1;
+                                }
                             }
                         }
-                    }
-                });
-            }, 100);
+                    });
+                }, 100);
+            }
+        } catch (error) {
+            console.error('Error loading building:', error);
+            document.getElementById('buildingDetailTitle').textContent = 'Error';
+            document.getElementById('buildingDetailContent').innerHTML = `
+                <div class="text-center py-12">
+                    <p class="text-red-500 text-lg font-semibold mb-2">⚠️ Failed to load building information</p>
+                    <p class="text-gray-600">${error.message}</p>
+                </div>
+            `;
         }
+    }
+    
+    function closeBuildingDetails() {
+        document.getElementById('buildingDetailsView').style.display = 'none';
+        document.getElementById('legendView').style.display = 'flex';
+    }
+    
+    // Show message for buildings not yet in database
+    function showBuildingNotAvailable(buildingName) {
+        // Hide legend, show details view
+        document.getElementById('legendView').style.display = 'none';
+        document.getElementById('buildingDetailsView').style.display = 'flex';
+        
+        document.getElementById('buildingDetailTitle').textContent = buildingName;
+        document.getElementById('buildingDetailContent').innerHTML = `
+            <div class="text-center py-12">
+                <div class="mb-6">
+                    <svg class="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold mb-2" style="color: #248823;">${buildingName}</h3>
+                <p class="text-gray-600 mb-4">Information for this building is not yet available</p>
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+                    <p class="text-sm text-gray-700">
+                        <span class="font-semibold" style="color: #248823;">📝 Coming Soon</span><br>
+                        Building details and office information will be added to the system shortly.
+                    </p>
+                </div>
+            </div>
+        `;
     }
     
     function closeModal() {

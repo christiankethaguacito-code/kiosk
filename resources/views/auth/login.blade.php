@@ -27,12 +27,13 @@
             @csrf
             
             <div class="mb-6">
-                <label for="email" class="block text-gray-700 text-lg font-medium mb-2">Email</label>
+                <label for="username" class="block text-gray-700 text-lg font-medium mb-2">Username</label>
                 <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    value="{{ old('email') }}"
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    value="{{ old('username') }}"
+                    placeholder="Enter your username"
                     class="w-full px-4 py-4 text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                     autofocus
@@ -64,6 +65,12 @@
                 Login
             </button>
         </form>
+
+        <div class="mt-6 text-center">
+            <a href="{{ route('kiosk.map') }}" class="text-green-600 hover:text-green-700 font-medium">
+                ← Back to Map
+            </a>
+        </div>
     </div>
 </body>
 </html>

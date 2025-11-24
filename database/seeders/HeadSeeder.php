@@ -35,6 +35,11 @@ class HeadSeeder extends Seeder
                 'title' => 'Director, University Library',
                 'credentials' => 'MS in Library Science'
             ],
+            [
+                'name' => 'Juls',
+                'title' => 'System Administrator',
+                'credentials' => 'BS in Information Technology'
+            ],
         ];
 
         foreach ($heads as $head) {

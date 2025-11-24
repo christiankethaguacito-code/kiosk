@@ -11,11 +11,16 @@ class Building extends Model
         'name',
         'description',
         'image_path',
+        'image_gallery',
         'map_x',
         'map_y',
         'endpoint_x',
         'endpoint_y',
         'road_connection'
+    ];
+
+    protected $casts = [
+        'image_gallery' => 'array',
     ];
 
     public function offices()

@@ -32,6 +32,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/map-config', [AdminController::class, 'updateMapConfig'])->name('map-config.update');
     
     Route::resource('buildings', BuildingController::class);
+    Route::delete('/buildings/{building}/gallery/{index}', [BuildingController::class, 'deleteGalleryImage'])->name('buildings.gallery.delete');
     Route::resource('offices', OfficeController::class);
     Route::post('/offices/{office}/services', [OfficeController::class, 'updateServices'])->name('offices.services.update');
     

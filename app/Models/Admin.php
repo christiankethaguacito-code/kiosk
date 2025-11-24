@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Admin extends Model
+class Admin extends Authenticatable
 {
+    use Notifiable;
 
     protected $fillable = [
         'username',
@@ -15,16 +17,32 @@ class Admin extends Model
     ];
 
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
-    /**
-     * Automatically hash password when setting
-     */
-    public function setPasswordAttribute($value)
+    protected function casts(): array
     {
-        if ($value) {
-            $this->attributes['password'] = bcrypt($value);
-        }
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    /**
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'id';
+    }
+
+    /**
+     * Override to allow login with username instead of email
+     */
+    public function username()
+    {
+        return 'username';
     }
 }

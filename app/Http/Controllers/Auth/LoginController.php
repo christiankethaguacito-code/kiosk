@@ -19,8 +19,17 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
+        // Check if username or email is provided
+        $loginField = $request->input('username') ?? $request->input('email');
+        $fieldType = $request->has('username') ? 'username' : 'email';
+        
+        $credentials = [
+            $fieldType => $loginField,
+            'password' => $request->input('password')
+        ];
+
+        $request->validate([
+            $fieldType => ['required'],
             'password' => ['required'],
         ]);
 
@@ -32,8 +41,8 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->withInput($request->only('email'));
+            $fieldType => 'The provided credentials do not match our records.',
+        ])->withInput($request->only($fieldType));
     }
 
     public function logout(Request $request)

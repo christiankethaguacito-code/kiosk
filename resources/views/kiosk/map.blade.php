@@ -4,13 +4,18 @@
 @section('body-class', 'bg-gray-900')
 
 @section('head')
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <style>
     .building-marker {
         display: none; /* Hide database-driven markers, use SVG buildings instead */
         position: absolute;
         width: 40px;
         height: 40px;
-        background: #10b981;
+        background: linear-gradient(135deg, #248823 0%, #1a6619 100%);
         border: 3px solid white;
         border-radius: 50%;
         transform: translate(-50%, -50%);
@@ -19,7 +24,7 @@
         z-index: 10;
     }
     .building-marker:hover {
-        background: #059669;
+        background: linear-gradient(135deg, #7CC4B5 0%, #4FB86A 100%);
         transform: translate(-50%, -50%) scale(1.2);
     }
     .building-marker.dragging {
@@ -93,8 +98,8 @@
         display: inline-block;
         width: 40px;
         height: 40px;
-        border: 4px solid rgba(16, 185, 129, 0.2);
-        border-top-color: #10b981;
+        border: 4px solid rgba(36, 136, 35, 0.2);
+        border-top-color: #248823;
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
     }
@@ -107,8 +112,14 @@
     
     /* Highlight effect for selected building */
     .building-selected {
-        filter: brightness(1.3) drop-shadow(0 0 16px rgba(16, 185, 129, 1)) !important;
+        filter: brightness(1.3) drop-shadow(0 0 16px rgba(36, 136, 35, 1)) !important;
         animation: buildingPulse 2s ease-in-out infinite;
+    }
+    
+    /* Green gradient hover for legend items */
+    .legend-item:hover {
+        color: #248823 !important;
+        background-color: rgba(36, 136, 35, 0.1) !important;
     }
     
     svg {
@@ -277,10 +288,12 @@
 
 @section('content')
 <div class="min-h-screen flex flex-col">
-    <header class="bg-green-600 text-white p-6 flex justify-between items-center">
+    <header class="text-white p-6 flex justify-between items-center" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
         <div class="flex items-center gap-4">
-            <a href="{{ route('kiosk.idle') }}" class="text-2xl">🏠</a>
-            <h1 class="text-3xl font-bold">Campus Directory Map</h1>
+            <a href="{{ route('kiosk.idle') }}" class="flex items-center">
+                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-16 w-16 object-contain">
+            </a>
+            <h1 class="text-3xl font-bold">Access Map</h1>
         </div>
         <div class="flex-1 max-w-md mx-8">
             <div class="relative">
@@ -288,7 +301,7 @@
                     type="text" 
                     id="searchInput" 
                     placeholder="Search buildings..." 
-                    class="w-full px-4 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-green-300"
+                    class="w-full px-4 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2" style="--tw-ring-color: #248823;"
                 />
                 <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -297,6 +310,65 @@
         </div>
         <div class="flex items-center gap-4">
             <div id="clock" class="text-xl"></div>
+            
+            <!-- Admin Menu Toggle -->
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open" 
+                        class="p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition duration-200"
+                        title="Menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div x-show="open" 
+                     @click.away="open = false"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden"
+                     style="display: none;">
+                    
+                    @auth
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100">
+                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="text-sm font-medium text-gray-700">Admin Dashboard</span>
+                        </a>
+                        
+                        <button onclick="toggleEditMode()" 
+                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            <span class="text-sm font-medium text-gray-700">Admin Inline Edit</span>
+                        </button>
+                    @else
+                        <button onclick="showAdminLogin()" 
+                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                            </svg>
+                            <span class="text-sm font-medium text-gray-700">Admin Login</span>
+                        </button>
+                    @endauth
+                    
+                    <button onclick="showAbout()" 
+                            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-left">
+                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-700">About</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -607,80 +679,80 @@
         
         <!-- Legend Section (35%) -->
         <div class="bg-white rounded-xl shadow-lg p-6 overflow-y-auto" style="flex: 0 0 35%; max-height: calc(100vh - 200px);">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b-2 border-green-600 pb-3">Map Legend</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b-2 pb-3" style="border-color: #248823;">Map Legend</h2>
             
             <!-- Campus Buildings Directory -->
             <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                    <span class="text-xl">🏛️</span> Campus Buildings
+                <h3 class="text-xl font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                    <span class="text-2xl">🏛️</span> Campus Buildings
                 </h3>
-                <div class="space-y-1 text-sm max-h-96 overflow-y-auto" style="scrollbar-width: thin;" id="buildingList">
+                <div class="space-y-1 text-base max-h-96 overflow-y-auto" style="scrollbar-width: thin;" id="buildingList">
                     <!-- Academic Colleges -->
-                    <div class="font-semibold text-gray-800 mt-2 mb-1 text-base">Academic Colleges</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('CTE')">• College of Education</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('CHS')">• College of Nursing</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('CHS_Labs')">• College of Health Sciences</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('CCJE')">• College of Criminal Justice</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('CCJE_ext')">• CCJE Extension</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('CoM')">• College of Medicine</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('GS')">• Graduate School</div>
+                    <div class="font-semibold text-gray-800 mt-2 mb-1 text-lg">Academic Colleges</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CTE')">• College of Education</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS')">• College of Nursing</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS_Labs')">• College of Health Sciences</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE')">• College of Criminal Justice</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE_ext')">• CCJE Extension</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CoM')">• College of Medicine</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS')">• Graduate School</div>
                     
                     <!-- Facilities & Services -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Facilities & Services</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('ULRC')">• University Library (ULRC)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('UG')">• University Gymnasium</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('UC')">• University Canteen (UC)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Function')">• Function Hall</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('UPP')">• UPP Building</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Motorpool')">• University Motorpool</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('FC')">• Food Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Parking_Space')">• Parking Area</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Restroom')">• Public Restroom</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Facilities & Services</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULRC')">• University Library (ULRC)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UG')">• University Gymnasium</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UC')">• University Canteen (UC)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Function')">• Function Hall</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UPP')">• UPP Building</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Motorpool')">• University Motorpool</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('FC')">• Food Center</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Parking_Space')">• Parking Area</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Restroom')">• Public Restroom</div>
                     
                     <!-- Medical & Training -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Medical & Training Centers</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('BCSF')">• Basic & Clinical Sciences (BCSF)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('AMTC')">• Ang Magsasaka Training Center</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Medical & Training Centers</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('BCSF')">• Basic & Clinical Sciences (BCSF)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('AMTC')">• Ang Magsasaka Training Center</div>
                     
                     <!-- Research & Development -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Research & Development</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('TIP_center')">• Technology Incubation Park (TIP)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('TCL')">• Technology & Computer Lab (TCL)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('DOST')">• DOST Innovation Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Climate')">• Climate Resillient and Adoptation Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Agri_bldg_1')">• Agriculture Building 1</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Agri_bldg_2')">• Agriculture Building 2</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Research & Development</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TIP_center')">• Technology Incubation Park (TIP)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TCL')">• Technology & Computer Lab (TCL)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('DOST')">• DOST Innovation Center</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Climate')">• Climate Resillient and Adoptation Center</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_1')">• Agriculture Building 1</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_2')">• Agriculture Building 2</div>
                     
                     <!-- Administrative Offices -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Administrative Offices</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Reg_Office')">• Registrar's Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Alumni_Office')">• Alumni Relations Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('GS-SBO')">• Graduate School - SBO Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('GS-ext')">• GS Extension Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('OSAS')">• Student Affairs (OSAS)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('QMS')">• Quality Management (QMS)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('ULD')">• Ladies Dormitory</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Univesity_AVR')">• Audio-Visual Room (AVR)</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Administrative Offices</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Reg_Office')">• Registrar's Office</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Alumni_Office')">• Alumni Relations Office</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-SBO')">• Graduate School - SBO Office</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-ext')">• GS Extension Office</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('OSAS')">• Student Affairs (OSAS)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('QMS')">• Quality Management (QMS)</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULD')">• Ladies Dormitory</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Univesity_AVR')">• Audio-Visual Room (AVR)</div>
                     
                     <!-- Student Services -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Student Services</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('LHS')">• Laboratory Highschool</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('LHS_ext')">• LHS Extension</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('ROTC')">• ROTC Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('SKSU-MPC')">• SKSU Multi-Purpose Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('MPC-Dorm')">• MPC Dormitory</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('MD_1')">• Men's Dormitory 1</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('MD_2')">• Men's Dormitory 2</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Student Services</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS')">• Laboratory Highschool</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS_ext')">• LHS Extension</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ROTC')">• ROTC Office</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('SKSU-MPC')">• SKSU Multi-Purpose Center</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MPC-Dorm')">• MPC Dormitory</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_1')">• Men's Dormitory 1</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_2')">• Men's Dormitory 2</div>
                     
                     <!-- Sports & Recreation -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Sports & Recreation</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Field')">• University Athletic Field</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('Bleacher')">• Field Bleachers</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Sports & Recreation</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Field')">• University Athletic Field</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Bleacher')">• Field Bleachers</div>
                     
                     <!-- Religious -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-base">Religious Facility</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer hover:text-green-600 hover:bg-green-50 rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
+                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Religious Facility</div>
+                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
                 </div>
             </div>
         </div>
@@ -699,6 +771,156 @@
         <div id="modalContent"></div>
     </div>
 </div>
+
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="adminLoginModal" style="backdrop-filter: blur(8px);">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center gap-3">
+                <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Admin Login</h2>
+                    <p class="text-sm text-gray-500">Access admin panel</p>
+                </div>
+            </div>
+            <button onclick="closeAdminLogin()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
+        </div>
+        
+        <form action="{{ route('login') }}" method="POST" id="adminLoginForm">
+            @csrf
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <input type="text" 
+                       name="username" 
+                       required
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition"
+                       placeholder="admin">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                <input type="password" 
+                       name="password" 
+                       required
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition"
+                       placeholder="admin123">
+            </div>
+
+            <div id="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg hidden">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span id="loginErrorText"></span>
+                </div>
+            </div>
+            
+            <button type="submit" 
+                    class="w-full text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-lg"
+                    style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(152, 216, 200, 0.5)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(152, 216, 200, 0.4)';">
+                Login to Admin Panel
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- About Modal -->
+<div class="modal-overlay" id="aboutModal" style="backdrop-filter: blur(8px);">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
+        <div class="flex justify-between items-start mb-6">
+            <div class="flex items-center gap-3">
+                <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">About</h2>
+                    <p class="text-sm text-gray-500">SKSU Access Campus Map</p>
+                </div>
+            </div>
+            <button onclick="closeAbout()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
+        </div>
+        
+        <div class="space-y-4">
+            <div>
+                <h3 class="font-semibold text-gray-800 mb-2">Campus Navigation System</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">
+                    An interactive campus map designed to help students, faculty, and visitors navigate the 
+                    Sultan Kudarat State University campus with ease.
+                </p>
+            </div>
+            
+            <div class="border-t pt-4">
+                <h3 class="font-semibold text-gray-800 mb-2">Features</h3>
+                <ul class="text-sm text-gray-600 space-y-2">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Interactive building selection</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Office directory & services</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Real-time announcements</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Building image galleries</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="border-t pt-4">
+                <p class="text-xs text-gray-500 text-center">
+                    © 2025 Sultan Kudarat State University<br>
+                    Version 1.0.0
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if($errors->any())
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        showAdminLogin();
+        const errorDiv = document.getElementById('loginError');
+        const errorText = document.getElementById('loginErrorText');
+        errorDiv.classList.remove('hidden');
+        errorText.textContent = "{{ $errors->first() }}";
+    });
+</script>
+@endif
+
+<style>
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>
 @endsection
 
 @section('scripts')
@@ -707,9 +929,9 @@
     const isAdmin = @json($isAdmin);
     const dbEndpoints = @json($navigationEndpoints ?? []);
     
-    // Main gate starting point
-    const kioskX = 195;
-    const kioskY = 260;
+    // Main gate starting point (aligned with path start)
+    const kioskX = 188.32;
+    const kioskY = 267.166;
     let editMode = false;
     let draggedElement = null;
     let offsetX = 0;
@@ -981,28 +1203,78 @@
         document.getElementById('modalTitle').textContent = building.name;
         
         let content = '';
-        if (building.image_path) {
-            content += `<img src="/storage/${building.image_path}" class="w-full h-64 object-cover rounded-lg mb-6">`;
+        
+        // Image Gallery with Swiper
+        const gallery = building.image_gallery || [];
+        const hasMainImage = building.image_path;
+        const allImages = [];
+        
+        if (hasMainImage) {
+            allImages.push(building.image_path);
+        }
+        if (gallery.length > 0) {
+            allImages.push(...gallery);
         }
         
+        if (allImages.length > 0) {
+            content += `
+                <div class="relative mb-6">
+                    <div class="swiper buildingGallerySwiper">
+                        <div class="swiper-wrapper">
+                            ${allImages.map(img => `
+                                <div class="swiper-slide">
+                                    <img src="/storage/${img}" class="w-full h-80 object-cover rounded-lg">
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${allImages.length > 1 ? `
+                            <div class="swiper-button-next" style="color: #248823;"></div>
+                            <div class="swiper-button-prev" style="color: #248823;"></div>
+                            <div class="swiper-pagination"></div>
+                        ` : ''}
+                    </div>
+                    ${allImages.length > 1 ? `
+                        <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                            <span class="swiper-current">1</span> / ${allImages.length}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // Building Description
+        if (building.description) {
+            content += `
+                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-6 border-l-4" style="border-color: #248823;">
+                    <p class="text-gray-700">${building.description}</p>
+                </div>
+            `;
+        }
+        
+        // Offices Section
         if (building.offices && building.offices.length > 0) {
-            content += '<h3 class="text-2xl font-bold mb-4">Offices</h3>';
+            content += '<h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span style="color: #248823;">🏛️</span> Offices in this Building</h3>';
             building.offices.forEach(office => {
                 content += `
-                    <div class="bg-gray-50 p-4 rounded-lg mb-3">
-                        <h4 class="text-xl font-semibold text-green-600">${office.name}</h4>
-                        ${office.floor_number ? `<p class="text-gray-600">Floor: ${office.floor_number}</p>` : ''}
+                    <div class="bg-white border border-gray-200 hover:border-teal-300 p-4 rounded-lg mb-3 transition shadow-sm hover:shadow-md">
+                        <h4 class="text-xl font-semibold mb-2" style="color: #248823;">${office.name}</h4>
+                        ${office.floor_number ? `<p class="text-gray-600 text-sm mb-2">📍 Floor: ${office.floor_number}</p>` : ''}
                         ${office.head_name ? `
-                            <div class="mt-2">
-                                <p class="font-medium">${office.head_name}</p>
+                            <div class="mt-2 bg-gray-50 rounded p-3">
+                                <p class="font-medium text-gray-800">${office.head_name}</p>
                                 <p class="text-sm text-gray-600">${office.head_title || ''}</p>
                             </div>
                         ` : ''}
                         ${office.services && office.services.length > 0 ? `
                             <div class="mt-3">
-                                <p class="font-medium mb-2">Services:</p>
-                                <ul class="list-disc list-inside text-sm text-gray-700">
-                                    ${office.services.map(s => `<li>${s.description}</li>`).join('')}
+                                <p class="font-semibold mb-2 text-gray-700">📋 Services:</p>
+                                <ul class="space-y-1">
+                                    ${office.services.map(s => `
+                                        <li class="flex items-start gap-2 text-sm text-gray-700">
+                                            <span class="text-teal-500 mt-1">•</span>
+                                            <span>${s.description}</span>
+                                        </li>
+                                    `).join('')}
                                 </ul>
                             </div>
                         ` : ''}
@@ -1013,11 +1285,79 @@
         
         document.getElementById('modalContent').innerHTML = content;
         document.getElementById('buildingModal').classList.add('active');
+        
+        // Initialize Swiper after content is loaded
+        if (allImages.length > 1) {
+            setTimeout(() => {
+                new Swiper('.buildingGallerySwiper', {
+                    loop: true,
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                    },
+                    on: {
+                        slideChange: function() {
+                            const current = document.querySelector('.swiper-current');
+                            if (current) {
+                                current.textContent = this.realIndex + 1;
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        }
     }
     
     function closeModal() {
         document.getElementById('buildingModal').classList.remove('active');
     }
+
+    function showAdminLogin() {
+        document.getElementById('adminLoginModal').classList.add('active');
+    }
+
+    function closeAdminLogin() {
+        document.getElementById('adminLoginModal').classList.remove('active');
+        // Clear error messages
+        const errorDiv = document.getElementById('loginError');
+        if (errorDiv) {
+            errorDiv.classList.add('hidden');
+        }
+    }
+
+    function showAbout() {
+        document.getElementById('aboutModal').classList.add('active');
+    }
+
+    function closeAbout() {
+        document.getElementById('aboutModal').classList.remove('active');
+    }
+
+    function toggleEditMode() {
+        editMode = !editMode;
+        if (editMode) {
+            alert('Edit Mode Activated!\n\nYou can now:\n• Drag building markers to reposition them\n• Click buildings to edit their information\n\nClick "Admin Inline Edit" again to deactivate.');
+        } else {
+            alert('Edit Mode Deactivated');
+        }
+    }
+
+    // Close modals when clicking outside
+    document.getElementById('adminLoginModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAdminLogin();
+        }
+    });
+
+    document.getElementById('aboutModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAbout();
+        }
+    });
     
     function navigateTo(buildingName) {
         closeModal();
@@ -2072,3 +2412,5 @@
     }
 </script>
 @endsection
+
+

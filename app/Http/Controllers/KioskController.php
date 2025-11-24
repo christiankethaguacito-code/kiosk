@@ -11,8 +11,10 @@ class KioskController extends Controller
 {
     public function idle()
     {
-        $announcements = Announcement::where('is_active', true)->get();
-        return view('kiosk.idle', compact('announcements'));
+        $announcements = Announcement::where('is_active', true)
+            ->orderBy('display_order', 'asc')
+            ->get();
+        return view('kiosk.welcome', compact('announcements'));
     }
     
     public function dualWelcome()

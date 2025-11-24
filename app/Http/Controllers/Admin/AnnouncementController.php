@@ -23,9 +23,13 @@ class AnnouncementController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
             'image_path' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
+            'display_order' => 'nullable|integer|min:0',
+            'starts_at' => 'nullable|date',
+            'ends_at' => 'nullable|date|after_or_equal:starts_at',
         ]);
 
         if ($request->hasFile('image_path')) {
@@ -34,6 +38,7 @@ class AnnouncementController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['display_order'] = $validated['display_order'] ?? 0;
 
         Announcement::create($validated);
         return redirect()->route('admin.announcements.index')->with('success', 'Announcement created successfully.');
@@ -47,9 +52,13 @@ class AnnouncementController extends Controller
     public function update(Request $request, Announcement $announcement)
     {
         $validated = $request->validate([
-            'title' => 'required',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
             'image_path' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
+            'display_order' => 'nullable|integer|min:0',
+            'starts_at' => 'nullable|date',
+            'ends_at' => 'nullable|date|after_or_equal:starts_at',
         ]);
 
         if ($request->hasFile('image_path')) {
@@ -61,6 +70,7 @@ class AnnouncementController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+        $validated['display_order'] = $validated['display_order'] ?? 0;
 
         $announcement->update($validated);
         return redirect()->route('admin.announcements.index')->with('success', 'Announcement updated successfully.');

@@ -59,3 +59,4 @@
     {{ $buildings->links() }}
 </div>
 @endsection
+

@@ -18,6 +18,10 @@ class DashboardController extends Controller
             'announcements' => Announcement::count()
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        $recentAnnouncements = Announcement::latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact('stats', 'recentAnnouncements'));
     }
 }

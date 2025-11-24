@@ -81,41 +81,53 @@
                         </div>
                     </div>
                     
-                    <a href="{{ route('kiosk.idle') }}" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg">
+                    <a href="{{ route('kiosk.idle') }}" class="text-white px-6 py-3 rounded-lg font-semibold shadow-lg transition" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);" onmouseover="this.style.background='linear-gradient(135deg, #1f7320 0%, #165014 100%)'" onmouseout="this.style.background='linear-gradient(135deg, #248823 0%, #1a6619 100%)'">
                         🏠 Back to Kiosk
                     </a>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
-                    <div class="text-5xl font-bold mb-2">{{ $stats['buildings'] }}</div>
-                    <div class="text-xl">Buildings</div>
-                    <a href="{{ route('admin.buildings.index') }}" class="inline-block mt-4 text-sm underline hover:text-blue-200">
+                <div class="rounded-xl p-6 text-white shadow-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-5xl font-bold">{{ $stats['buildings'] }}</div>
+                        <div class="text-5xl">🏢</div>
+                    </div>
+                    <div class="text-xl mb-1">Buildings</div>
+                    <a href="{{ route('admin.buildings.index') }}" class="inline-block mt-2 text-sm underline hover:opacity-80">
                         Manage →
                     </a>
                 </div>
 
-                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
-                    <div class="text-5xl font-bold mb-2">{{ $stats['offices'] }}</div>
-                    <div class="text-xl">Offices</div>
-                    <a href="{{ route('admin.offices.index') }}" class="inline-block mt-4 text-sm underline hover:text-green-200">
+                <div class="rounded-xl p-6 text-white shadow-lg" style="background: linear-gradient(135deg, #1a6619 0%, #165014 100%);">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-5xl font-bold">{{ $stats['offices'] }}</div>
+                        <div class="text-5xl">🏛️</div>
+                    </div>
+                    <div class="text-xl mb-1">Offices</div>
+                    <a href="{{ route('admin.offices.index') }}" class="inline-block mt-2 text-sm underline hover:opacity-80">
                         Manage →
                     </a>
                 </div>
 
-                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
-                    <div class="text-5xl font-bold mb-2">{{ $stats['services'] }}</div>
-                    <div class="text-xl">Services</div>
-                    <a href="{{ route('admin.services.index') }}" class="inline-block mt-4 text-sm underline hover:text-purple-200">
+                <div class="rounded-xl p-6 text-white shadow-lg" style="background: linear-gradient(135deg, #5AB89D 0%, #3FA07D 100%);">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-5xl font-bold">{{ $stats['services'] }}</div>
+                        <div class="text-5xl">📋</div>
+                    </div>
+                    <div class="text-xl mb-1">Services</div>
+                    <a href="{{ route('admin.services.index') }}" class="inline-block mt-2 text-sm underline hover:opacity-80">
                         Manage →
                     </a>
                 </div>
 
-                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
-                    <div class="text-5xl font-bold mb-2">{{ $stats['announcements'] }}</div>
-                    <div class="text-xl">Announcements</div>
-                    <a href="{{ route('admin.announcements.index') }}" class="inline-block mt-4 text-sm underline hover:text-orange-200">
+                <div class="rounded-xl p-6 text-white shadow-lg" style="background: linear-gradient(135deg, #1f7320 0%, #5AB89D 100%);">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-5xl font-bold">{{ $stats['announcements'] }}</div>
+                        <div class="text-5xl">📢</div>
+                    </div>
+                    <div class="text-xl mb-1">Announcements</div>
+                    <a href="{{ route('admin.announcements.index') }}" class="inline-block mt-2 text-sm underline hover:opacity-80">
                         Manage →
                     </a>
                 </div>
@@ -141,9 +153,85 @@
                 </div>
             </div>
 
-            <div class="bg-blue-50 border-l-4 border-blue-500 rounded p-4">
-                <h3 class="font-bold text-blue-800 mb-2">💡 Inline Editing Mode</h3>
-                <p class="text-blue-700">
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-gray-800">📢 Recent Announcements</h2>
+                    <a href="{{ route('admin.announcements.create') }}" class="text-white px-4 py-2 rounded-lg text-sm font-semibold transition" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                        + Add New
+                    </a>
+                </div>
+                
+                @if($recentAnnouncements->count() > 0)
+                    <div class="space-y-3">
+                        @foreach($recentAnnouncements as $announcement)
+                            <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                                <div class="flex items-start gap-4">
+                                    @if($announcement->image_path)
+                                        <img src="{{ asset('storage/' . $announcement->image_path) }}" alt="{{ $announcement->title }}" class="w-20 h-20 object-cover rounded-lg">
+                                    @else
+                                        <div class="w-20 h-20 bg-gradient-to-br from-teal-100 to-green-100 rounded-lg flex items-center justify-center text-3xl">
+                                            📢
+                                        </div>
+                                    @endif
+                                    
+                                    <div class="flex-1">
+                                        <div class="flex items-start justify-between">
+                                            <div>
+                                                <h3 class="font-semibold text-lg text-gray-800">{{ $announcement->title }}</h3>
+                                                <p class="text-gray-600 text-sm mt-1 line-clamp-2">{{ Str::limit($announcement->content, 120) }}</p>
+                                                <div class="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                                                    @if($announcement->display_order)
+                                                        <span>Order: {{ $announcement->display_order }}</span>
+                                                    @endif
+                                                    @if($announcement->starts_at)
+                                                        <span>{{ $announcement->display_order ? '•' : '' }} From: {{ $announcement->starts_at->format('M d, Y') }}</span>
+                                                    @endif
+                                                    @if($announcement->ends_at)
+                                                        <span>• To: {{ $announcement->ends_at->format('M d, Y') }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="flex flex-col items-end gap-2">
+                                                @if($announcement->is_active)
+                                                    <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background-color: rgba(36, 136, 35, 0.2); color: #1a6619;">Active</span>
+                                                @else
+                                                    <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-semibold">Inactive</span>
+                                                @endif
+                                                <div class="flex gap-2">
+                                                    <a href="{{ route('admin.announcements.edit', $announcement) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Edit</a>
+                                                    <form action="{{ route('admin.announcements.destroy', $announcement) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium" onclick="return confirm('Delete this announcement?')">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <a href="{{ route('admin.announcements.index') }}" class="text-gray-600 hover:text-gray-800 text-sm font-medium">
+                            View All Announcements →
+                        </a>
+                    </div>
+                @else
+                    <div class="text-center py-8 text-gray-500">
+                        <div class="text-5xl mb-3">📢</div>
+                        <p>No announcements yet</p>
+                        <a href="{{ route('admin.announcements.create') }}" class="inline-block mt-3 text-sm underline" style="color: #248823;">
+                            Create your first announcement
+                        </a>
+                    </div>
+                @endif
+            </div>
+
+            <div class="border-l-4 rounded p-4" style="background-color: rgba(36, 136, 35, 0.1); border-color: #248823;">
+                <h3 class="font-bold mb-2" style="color: #1a6619;">💡 Inline Editing Mode</h3>
+                <p style="color: #3d7a6f;">
                     Click the <strong>"Enable Edit Mode"</strong> button at the bottom-right of any public page to activate inline editing.
                     Drag buildings, click to edit text, and manage content visually without leaving the kiosk interface.
                 </p>
@@ -152,3 +240,5 @@
     </div>
 </div>
 @endsection
+
+

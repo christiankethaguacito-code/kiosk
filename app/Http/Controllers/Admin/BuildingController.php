@@ -27,14 +27,25 @@ class BuildingController extends Controller
                 'code' => 'required|string|max:100|unique:buildings,code',
                 'name' => 'required|string|max:150',
                 'description' => 'nullable|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'gallery_images' => 'nullable|array|max:10',
+                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'map_x' => 'required|integer|min:0',
                 'map_y' => 'required|integer|min:0',
             ]);
 
             $imagePath = null;
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('buildings', 'public');
+            if ($request->hasFile('image_path')) {
+                $imagePath = $request->file('image_path')->store('buildings', 'public');
+            }
+
+            // Handle gallery images
+            $galleryPaths = [];
+            if ($request->hasFile('gallery_images')) {
+                foreach ($request->file('gallery_images') as $image) {
+                    $path = $image->store('buildings/gallery', 'public');
+                    $galleryPaths[] = $path;
+                }
             }
 
             Building::create([
@@ -42,6 +53,7 @@ class BuildingController extends Controller
                 'name' => $validated['name'],
                 'description' => $validated['description'] ?? null,
                 'image_path' => $imagePath,
+                'image_gallery' => $galleryPaths,
                 'map_x' => $validated['map_x'],
                 'map_y' => $validated['map_y'],
             ]);
@@ -68,17 +80,28 @@ class BuildingController extends Controller
                 'code' => 'required|string|max:100|unique:buildings,code,' . $building->id,
                 'name' => 'required|string|max:150',
                 'description' => 'nullable|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'gallery_images' => 'nullable|array|max:10',
+                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'map_x' => 'required|integer|min:0',
                 'map_y' => 'required|integer|min:0',
             ]);
 
             $imagePath = $building->image_path;
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('image_path')) {
                 if ($imagePath && Storage::disk('public')->exists($imagePath)) {
                     Storage::disk('public')->delete($imagePath);
                 }
-                $imagePath = $request->file('image')->store('buildings', 'public');
+                $imagePath = $request->file('image_path')->store('buildings', 'public');
+            }
+
+            // Handle gallery images - add to existing gallery
+            $existingGallery = $building->image_gallery ?? [];
+            if ($request->hasFile('gallery_images')) {
+                foreach ($request->file('gallery_images') as $image) {
+                    $path = $image->store('buildings/gallery', 'public');
+                    $existingGallery[] = $path;
+                }
             }
 
             $building->update([
@@ -86,6 +109,7 @@ class BuildingController extends Controller
                 'name' => $validated['name'],
                 'description' => $validated['description'] ?? null,
                 'image_path' => $imagePath,
+                'image_gallery' => $existingGallery,
                 'map_x' => $validated['map_x'],
                 'map_y' => $validated['map_y'],
             ]);
@@ -107,6 +131,15 @@ class BuildingController extends Controller
                 Storage::disk('public')->delete($building->image_path);
             }
 
+            // Delete all gallery images
+            if ($building->image_gallery) {
+                foreach ($building->image_gallery as $imagePath) {
+                    if (Storage::disk('public')->exists($imagePath)) {
+                        Storage::disk('public')->delete($imagePath);
+                    }
+                }
+            }
+
             $building->delete();
 
             return redirect()->route('admin.buildings.index')
@@ -115,6 +148,43 @@ class BuildingController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Failed to delete building: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteGalleryImage(Building $building, $index)
+    {
+        try {
+            $gallery = $building->image_gallery ?? [];
+            
+            if (!isset($gallery[$index])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Image not found'
+                ], 404);
+            }
+
+            $imagePath = $gallery[$index];
+            
+            // Delete file from storage
+            if (Storage::disk('public')->exists($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            // Remove from array and reindex
+            array_splice($gallery, $index, 1);
+            $building->image_gallery = array_values($gallery);
+            $building->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Image deleted successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

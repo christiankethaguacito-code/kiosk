@@ -7,116 +7,140 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gray-100">
-    <div class="flex h-screen">
-        <aside class="w-64 bg-green-600 text-white">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold">Campus Kiosk</h2>
-                <p class="text-green-200 text-sm">Admin Panel</p>
+<body class="bg-gray-100" x-data="{ drawerOpen: false }">
+    <!-- Hamburger Drawer -->
+    <div>
+        <!-- Overlay -->
+        <div x-show="drawerOpen" 
+             @click="drawerOpen = false"
+             x-transition:enter="transition-opacity ease-linear duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-linear duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black bg-opacity-50 z-40"
+             style="display: none;">
+        </div>
+
+        <!-- Drawer -->
+        <aside x-show="drawerOpen"
+               @click.away="drawerOpen = false"
+               x-transition:enter="transition ease-out duration-300 transform"
+               x-transition:enter-start="-translate-x-full"
+               x-transition:enter-end="translate-x-0"
+               x-transition:leave="transition ease-in duration-300 transform"
+               x-transition:leave-start="translate-x-0"
+               x-transition:leave-end="-translate-x-full"
+               class="fixed left-0 top-0 h-full w-80 text-white z-50 shadow-2xl"
+               style="background: linear-gradient(180deg, #248823 0%, #1a6619 100%); display: none;">
+            
+            <div class="flex items-center justify-between p-6 border-b border-white border-opacity-20">
+                <div>
+                    <h2 class="text-2xl font-bold">Campus Kiosk</h2>
+                    <p class="text-white text-sm opacity-80">Admin Panel</p>
+                </div>
+                <button @click="drawerOpen = false" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
             </div>
             
-            <nav class="mt-6">
-                <a href="{{ route('admin.dashboard') }}" class="block py-3 px-6 hover:bg-green-700 {{ request()->routeIs('admin.dashboard') ? 'bg-green-700' : '' }}">
-                    <span class="text-lg">📊 Dashboard</span>
+            <nav class="mt-6 px-3">
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="flex items-center gap-3 py-3 px-4 mb-2 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-white bg-opacity-20' : '' }} hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-2xl">📊</span>
+                    <span class="text-lg font-medium">Dashboard</span>
                 </a>
-                <a href="{{ route('buildings.index') }}" class="block py-3 px-6 hover:bg-green-700 {{ request()->routeIs('buildings.*') ? 'bg-green-700' : '' }}">
-                    <span class="text-lg">🏢 Buildings</span>
+                <a href="{{ route('admin.buildings.index') }}" 
+                   class="flex items-center gap-3 py-3 px-4 mb-2 rounded-lg {{ request()->routeIs('admin.buildings.*') ? 'bg-white bg-opacity-20' : '' }} hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-2xl">🏢</span>
+                    <span class="text-lg font-medium">Buildings</span>
                 </a>
-                <a href="{{ route('offices.index') }}" class="block py-3 px-6 hover:bg-green-700 {{ request()->routeIs('offices.*') ? 'bg-green-700' : '' }}">
-                    <span class="text-lg">🏛️ Offices</span>
+                <a href="{{ route('admin.offices.index') }}" 
+                   class="flex items-center gap-3 py-3 px-4 mb-2 rounded-lg {{ request()->routeIs('admin.offices.*') ? 'bg-white bg-opacity-20' : '' }} hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-2xl">🏛️</span>
+                    <span class="text-lg font-medium">Offices</span>
+                </a>
+                <a href="{{ route('admin.services.index') }}" 
+                   class="flex items-center gap-3 py-3 px-4 mb-2 rounded-lg {{ request()->routeIs('admin.services.*') ? 'bg-white bg-opacity-20' : '' }} hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-2xl">📋</span>
+                    <span class="text-lg font-medium">Services</span>
+                </a>
+                <a href="{{ route('admin.announcements.index') }}" 
+                   class="flex items-center gap-3 py-3 px-4 mb-2 rounded-lg {{ request()->routeIs('admin.announcements.*') ? 'bg-white bg-opacity-20' : '' }} hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-2xl">📢</span>
+                    <span class="text-lg font-medium">Announcements</span>
+                </a>
+                <a href="{{ route('admin.map-config') }}" 
+                   class="flex items-center gap-3 py-3 px-4 mb-2 rounded-lg {{ request()->routeIs('admin.map-config') ? 'bg-white bg-opacity-20' : '' }} hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-2xl">⚙️</span>
+                    <span class="text-lg font-medium">Map Settings</span>
                 </a>
             </nav>
-        </aside>
 
-        <div class="flex-1 flex flex-col">
-            <header class="bg-white shadow-sm" x-data="{ menuOpen: false, currentTime: '' }" 
-                    x-init="setInterval(() => { 
-                        const now = new Date(); 
-                        currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); 
-                    }, 1000)">
-                <div class="flex justify-between items-center px-8 py-4">
-                    <h1 class="text-2xl font-semibold text-gray-800">@yield('header', 'Dashboard')</h1>
-                    <div class="flex items-center gap-4">
-                        <span class="text-gray-600 font-mono text-lg" x-text="currentTime"></span>
-                        
-                        <div class="relative">
-                            <button @click="menuOpen = !menuOpen" 
-                                    class="p-2 hover:bg-gray-100 rounded-lg transition">
-                                <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                                </svg>
-                            </button>
-                            
-                            <div x-show="menuOpen" 
-                                 @click.away="menuOpen = false"
-                                 x-transition:enter="transition ease-out duration-200"
-                                 x-transition:enter-start="opacity-0 scale-95"
-                                 x-transition:enter-end="opacity-100 scale-100"
-                                 x-transition:leave="transition ease-in duration-150"
-                                 x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 scale-95"
-                                 class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50"
-                                 style="display: none;">
-                                
-                                <div class="p-3 border-b border-gray-200">
-                                    <p class="text-sm text-gray-500">Signed in as</p>
-                                    <p class="font-semibold text-gray-800">{{ auth()->user()->email }}</p>
-                                </div>
-                                
-                                <div class="py-2">
-                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        📊 Dashboard
-                                    </a>
-                                    <a href="{{ route('admin.buildings.index') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        🏢 Manage Buildings
-                                    </a>
-                                    <a href="{{ route('admin.offices.index') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        🏛️ Manage Offices
-                                    </a>
-                                    <a href="{{ route('admin.services.index') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        📋 Manage Services
-                                    </a>
-                                    <a href="{{ route('admin.announcements.index') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        📢 Manage Announcements
-                                    </a>
-                                    <a href="{{ route('admin.map-config') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        ⚙️ Map Settings
-                                    </a>
-                                    <a href="{{ route('dual.map') }}" class="block px-4 py-2 hover:bg-gray-100 transition">
-                                        🗺️ View Campus Map
-                                    </a>
-                                </div>
-                                
-                                <div class="border-t border-gray-200 py-2">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition">
-                                            🚪 Logout
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-white border-opacity-20">
+                <div class="mb-4 pb-4 border-b border-white border-opacity-20">
+                    <p class="text-sm opacity-80 mb-1">Signed in as</p>
+                    <p class="font-semibold truncate">{{ auth()->user()->email }}</p>
                 </div>
-            </header>
+                <a href="{{ route('kiosk.map') }}" 
+                   class="flex items-center gap-3 py-2 px-4 mb-2 rounded-lg hover:bg-white hover:bg-opacity-10 transition duration-200">
+                    <span class="text-xl">🗺️</span>
+                    <span class="font-medium">View Campus Map</span>
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full flex items-center gap-3 py-2 px-4 rounded-lg text-red-100 hover:bg-red-500 hover:bg-opacity-30 transition duration-200">
+                        <span class="text-xl">🚪</span>
+                        <span class="font-medium">Logout</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+    </div>
 
-            <main class="flex-1 overflow-y-auto p-8">
-                @if(session('success'))
-                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                        {{ session('success') }}
-                    </div>
-                @endif
+    <div class="flex flex-col h-screen">
+        <header class="bg-white shadow-sm" x-data="{ currentTime: '' }" 
+                x-init="setInterval(() => { 
+                    const now = new Date(); 
+                    currentTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); 
+                }, 1000)">
+            <div class="flex justify-between items-center px-8 py-4">
+                <div class="flex items-center gap-4">
+                    <button @click="drawerOpen = true" 
+                            class="p-2 rounded-lg transition duration-200"
+                            style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);"
+                            onmouseover="this.style.opacity='0.9'"
+                            onmouseout="this.style.opacity='1'">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <h1 class="text-2xl font-semibold text-gray-800">@yield('header', 'Dashboard')</h1>
+                </div>
+                <span class="text-gray-600 font-mono text-lg" x-text="currentTime"></span>
+            </div>
+        </header>
 
-                @if(session('error'))
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                        {{ session('error') }}
-                    </div>
-                @endif
+        <main class="flex-1 overflow-y-auto p-8">
+            @if(session('success'))
+                <div class="px-4 py-3 rounded mb-4" style="background-color: rgba(36, 136, 35, 0.15); border: 1px solid #248823; color: #1a6619;">
+                    {{ session('success') }}
+                </div>
+            @endif
 
-                @yield('content')
-            </main>
-        </div>
+            @if(session('error'))
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @yield('content')
+        </main>
     </div>
 </body>
 </html>
+

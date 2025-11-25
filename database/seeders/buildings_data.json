@@ -1,13 +1,13 @@
 [
   {
     "building_name": "ADMINISTRATION BUILDING",
-    "image": "administration-building.jpg",
+    "image": "administration.jpg",
     "offices": [
       {
-        "name": "ICT (INFORMATION AND COMMUNICATION TECHNOLOGY)",
+        "name": "Information and Communication Technology",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Nasser D. Kalilangan",
+        "head_title": "Infromatin Technology Officer",
         "services": [
           "Request for the Correction of Institutional GMAIL Account",
           "Request for Technical Assistance in the Information System",
@@ -16,10 +16,10 @@
         ]
       },
       {
-        "name": "OFFICE OF THE DIRECTOR FOR RECORDS AND ADMISSION",
+        "name": "Office of the Director for Records and Admission",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Hassanal P. Abusama, PhD",
+        "head_title": "Director for Records and Admission",
         "services": [
           "Enrolment for Incoming Freshmen",
           "Enrolment for Transferees",
@@ -41,10 +41,10 @@
         ]
       },
       {
-        "name": "REGISTRAR'S OFFICE",
+        "name": "Registrar's Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Hassanal P. Abusama, PhD",
+        "head_title": "Director for Records and Admission",
         "services": [
           "Enrolment for Incoming Freshmen",
           "Enrolment for Transferees",
@@ -58,10 +58,10 @@
         ]
       },
       {
-        "name": "OFFICE OF THE VICE PRESIDENT FOR FINANCE ADMINISTRATION AND RESOURCE GENERATION (VP-FARG)",
+        "name": "Office of the Vice Presidents for Finanance Administration and Resource Generation (VP-FARG)",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Reynaldo H. Dalayap Jr., PhD",
+        "head_title": "(VP-FARG)",
         "services": [
           "Certifying the Appropriation/Budget Charging",
           "Approval of Travel Order Within and Outside the Region",
@@ -70,10 +70,10 @@
         ]
       },
       {
-        "name": "ACCOUNTING OFFICE",
+        "name": "Accounting Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Efdel John P. Canlas, CPA",
+        "head_title": "Accountant III",
         "services": [
           "Issuance of Statement of Account for Freshmen Enrollees",
           "Issuance of Statement of Account for Existing Students",
@@ -83,10 +83,17 @@
         ]
       },
       {
-        "name": "UNIVERSITY CASHIER",
+        "name": "Office of the Director for Finance",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Jesher Y. Palomaria, CPA",
+        "head_title": "Director, Finance",
+        "services": []
+      },
+      {
+        "name": "University Cashier",
+        "floor": "",
+        "head_name": "Tarhata K. Usman",
+        "head_title": "Administrative Officer V",
         "services": [
           "Collection of Fees for Certification",
           "Collection of Fees for Undergraduate Thesis",
@@ -99,10 +106,10 @@
         ]
       },
       {
-        "name": "RECORD'S OFFICE",
+        "name": "Record's Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Sahrea A. Tudon",
+        "head_title": "Director, Records",
         "services": [
           "Endorsement of External Communications (Hand-Carried)",
           "Endorsement of External Communications (Online)",
@@ -111,20 +118,20 @@
         ]
       },
       {
-        "name": "QUALITY ASSURANCE (QA) OFFICE",
+        "name": "Quality Assurance Office (QA)",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Rodelyn M. Dalayap, PhD",
+        "head_title": "Director, QA",
         "services": [
           "Booking of the Conference Room",
           "Request for a Copy of Official Documents"
         ]
       },
       {
-        "name": "HUMAN RESOURCE AND MANAGEMENT DEVELOPMENT OFFICE (HRMDO)",
+        "name": "Human Resource and Management Development Office (HRMDO)",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Judith A. Asturias, MPA, JD",
+        "head_title": "Director, HRMDO",
         "services": [
           "Request for the Issuance of Certificate of Employment and Service Record (For Separation Purposes)",
           "Request or the Issuance of Certificate of Employment and Service Record (Active)",
@@ -143,20 +150,27 @@
         ]
       },
       {
-        "name": "PLANNING AND DEVELOPMENT OFFICE",
+        "name": "Planning and Development Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Abdulmanap K. Tato",
+        "head_title": "Director, Planning and Development Office",
         "services": [
           "Procurement Request for Infrastructure Projects (On-site)",
           "Inspection Request for Infrastructure Projects (On-site)"
         ]
       },
       {
-        "name": "OFFICE OF THE UNIVERSITY LEGAL OFFICER",
+        "name": "Commission on Audit (COA)",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Arriane Joy A. Purazo-Duque, CPA, CICA",
+        "head_title": "State Auditor IV (Resident Auditor)",
+        "services": []
+      },
+      {
+        "name": "Office of the University Legal Officer",
+        "floor": "",
+        "head_name": "Atty. Sultan G. Sinegganyan, Jr.",
+        "head_title": "University Legal Officer",
         "services": [
           "Issuance of Certificate on No Pending Case",
           "Advisory to President/Vice Presidents/Directors/Deans and other Unit Heads",
@@ -166,26 +180,68 @@
         ]
       },
       {
-        "name": "OFFICE OF THE VICE PRESIDENT FOR ACADEMIC AFFAIRS (VP AA)",
+        "name": "Office of the Administrative Officer for Administration",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Lani B. Alcon, MPA",
+        "head_title": "Chief CAD Administration",
+        "services": []
+      },
+      {
+        "name": "Office of the Vice Presidents for Academic Affairs (VP-AA)",
+        "floor": "",
+        "head_name": "Marites B. Java, EhD",
+        "head_title": "VP for Academic Affairs",
         "services": [
           "Endorsement of Campus Request of Permanent Faculty or Contract of Service",
           "Request for Comment to Proposed Academic-related MOA/MOU"
         ]
+      },
+      {
+        "name": "Office for the Director for Instruction",
+        "floor": "",
+        "head_name": "Michael Kennedy G. Camarao, PhD",
+        "head_title": "Director, Instruction",
+        "services": []
+      },
+      {
+        "name": "Stock Room",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Holding Area/Lounge",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "University Multi-Purpose Hall",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "University Physical Fitness Gym",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
       }
     ]
   },
   {
     "building_name": "QMS CENTER BUILDING",
-    "image": "qms-center-building.jpg",
+    "image": "qms.jpg",
     "offices": [
       {
-        "name": "OFFICES OF THE UNIVERSITY PRESIDENT",
+        "name": "President's Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Samson L. Molao, Ed.D.",
+        "head_title": "University President",
         "services": [
           "Approval of Travel Orders",
           "Approval of Procurement Documents",
@@ -196,24 +252,24 @@
           "Approval of Request to Use University Facilities",
           "Signing of Disbursement Voucher (DV)",
           "Approval of Documents from Planning and Development Office",
-          "Approval of Documents from the Registrar's Office"
+          "Approval of Documents from the Registrar’s Office"
         ]
       },
       {
-        "name": "SUPPLY AND PROPERTY MANAGEMENT OFFICE",
+        "name": "General Supply and Property Management Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Wilbert A. Cabanban",
+        "head_title": "Director for General and Supply Services",
         "services": [
           "Issuance of Common Use Supplies and Materials",
           "Request for Property Transfer"
         ]
       },
       {
-        "name": "BIDS AND AWARD COMMITTEE (BAC) AND PROCUREMENT OFFICE",
+        "name": "Bids and Award Committee (BAC) and Procurement Office",
         "floor": "",
-        "head_name": "",
-        "head_title": "",
+        "head_name": "Yvonne Charles D. Decolongon",
+        "head_title": "Head, Procurement Unit",
         "services": [
           "Procurement of Infrastructure, Goods, and Services through Competitive Bidding",
           "Alternative Mode of Procurement for All Infrastructure and Goods and Services with an Approved Budget for the Contract of P500,000.00 and above but less than P1,000,000.00 (Capital Outlay)",
@@ -228,26 +284,177 @@
     ]
   },
   {
-    "building_name": "COLLEGE OF TEACHER EDUCATION BUILDING",
-    "image": "college-of-teacher-education-building.jpg",
+    "building_name": "LABORATORY HIGH SCHOOL",
+    "image": "lhs.jpg",
     "offices": [
       {
-        "name": "COLLEGE OF TEACHER EDUCATION (ADMIN)",
+        "name": "Publication Office",
+        "floor": "",
+        "head_name": "Roselyn M. Calixtro",
+        "head_title": "Principal",
+        "services": []
+      },
+      {
+        "name": "Student Body Organization ",
+        "floor": "",
+        "head_name": "LABHIGH Principal",
+        "head_title": "",
+        "services": []
+      }
+    ]
+  },
+  {
+    "building_name": "COLLEGE OF TEACHER EDUCATION",
+    "image": "cte.jpg",
+    "offices": [
+      {
+        "name": "Guidance Office",
+        "floor": "",
+        "head_name": "Joselyn H. Bacera, RGC",
+        "head_title": "Guidance Head",
+        "services": []
+      },
+      {
+        "name": "CTE Faculty 1",
         "floor": "",
         "head_name": "",
         "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Chairperson's Office",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "CTE Faculty 2",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Dean's Office",
+        "floor": "",
+        "head_name": "Annessa P. Magindra, PhD",
+        "head_title": "Dean & Head CTE",
         "services": [
           "Request for Supplies"
+        ]
+      },
+      {
+        "name": "CTE Accreditation Office",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Production Office",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Research and extension Office",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": []
+      }
+    ]
+  },
+  {
+    "building_name": "COLLEGE OF HEALTH AND SCIENCES",
+    "image": "chs.jpg",
+    "offices": [
+      {
+        "name": "Dean's of Faculty Office",
+        "floor": "",
+        "head_name": "Cesar J. Nallos 11, RN,MAN",
+        "head_title": "Dean's of Faculty Office",
+        "services": [
+          "Request for Documents Required for Licensure Examination"
         ]
       }
     ]
   },
   {
-    "building_name": "GS-SBO BUILDING",
-    "image": "gs-sbo-building.jpg",
+    "building_name": "COLLEGES OF HEALTH AND SCIENCES EXTENSION",
+    "image": "chs_labs.jpg",
     "offices": [
       {
-        "name": "GS-SBO",
+        "name": "Faculty Room",
+        "floor": "",
+        "head_name": "Cesar J. Nallos 11, RN,MAN",
+        "head_title": "",
+        "services": [
+          "Request for Documents Required for Licensure Examination"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "GRADUATE SCHOOL",
+    "image": "gs.jpg",
+    "offices": [
+      {
+        "name": "Graduate School Library",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": [
+          "Circulation – Borrowing of Learning Materials",
+          "Circulation – Renewal of Borrowed Learning Materials",
+          "Circulation - Returning of Learning Materials",
+          "Issuance Of ULRC ID (UNIFAST Students)",
+          "Issuance of ULRC ID (Non-UNIFAST Students)",
+          "Re-Issuance of ULRC ID",
+          "Reference and Information Services (SKSU Affiliates)",
+          "Reference and Information Services (SKLiNet Members and Other Researchers from Other Institution)",
+          "Signing of Clearance"
+        ]
+      },
+      {
+        "name": "Coference Room",
+        "floor": "",
+        "head_name": "Cesar J. Nallos lll, RN,MAN",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Research Room",
+        "floor": "",
+        "head_name": "GS head",
+        "head_title": "",
+        "services": []
+      }
+    ]
+  },
+  {
+    "building_name": "ALUMNI RELATIONSHIP OFFICE",
+    "image": "alumni_office.jpg",
+    "offices": [
+      {
+        "name": "Director for Alumi relations",
+        "floor": "",
+        "head_name": "Mary Jean S. Falsario",
+        "head_title": "Director for Alumi relations",
+        "services": [
+          "Issuance of Yearbook"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "GS-SBO",
+    "image": "gs-sbo.jpg",
+    "offices": [
+      {
+        "name": "General Office",
         "floor": "",
         "head_name": "",
         "head_title": "",
@@ -258,41 +465,11 @@
     ]
   },
   {
-    "building_name": "ALUMNI RELATIONSHIP OFFICE",
-    "image": "alumni-relationship-office.jpg",
+    "building_name": "UNIVERSITY ACCESS CLINIC",
+    "image": "uc.jpg",
     "offices": [
       {
-        "name": "ALUMNI RELATIONSHIP OFFICE",
-        "floor": "",
-        "head_name": "",
-        "head_title": "",
-        "services": [
-          "Issuance of Yearbook"
-        ]
-      }
-    ]
-  },
-  {
-    "building_name": "COLLEGE OF HEALTH SCIENCES",
-    "image": "college-of-health-sciences.jpg",
-    "offices": [
-      {
-        "name": "COLLEGE OF HEALTH SCIENCES",
-        "floor": "",
-        "head_name": "",
-        "head_title": "",
-        "services": [
-          "Request for Documents Required for Licensure Examination"
-        ]
-      }
-    ]
-  },
-  {
-    "building_name": "ACCESS CLINIC",
-    "image": "access-clinic.jpg",
-    "offices": [
-      {
-        "name": "ACCESS CLINIC",
+        "name": "General Office",
         "floor": "",
         "head_name": "",
         "head_title": "",
@@ -305,11 +482,41 @@
     ]
   },
   {
-    "building_name": "TECHNOLOGY AND INNOVATION BUILDING (TIP)",
-    "image": "technology-and-innovation-building-(tip).jpg",
+    "building_name": "OFFICE OF STUDENT AFFAIRS AND SERVICES BLDG.",
+    "image": "osas.jpg",
     "offices": [
       {
-        "name": "OFFICE OF STUDENT AFFAIRS AND SERVICES",
+        "name": "Scholarship Division Office",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": [
+          "Approval of Student Travel Order",
+          "Accreditation of Student Organization",
+          "Scholarship TES Application",
+          "Releasing of CHED Funds",
+          "Approval of Student Activity and Project Design",
+          "Request for Certificate of No Scholarship",
+          "Approval of Student Assistantship Contract"
+        ]
+      },
+      {
+        "name": "Office of the OSAS Director",
+        "floor": "",
+        "head_name": "Dennis M. Abantes, CPA",
+        "head_title": "OSAS DIRECTOR",
+        "services": [
+          "Approval of Student Travel Order",
+          "Accreditation of Student Organization",
+          "Scholarship TES Application",
+          "Releasing of CHED Funds",
+          "Approval of Student Activity and Project Design",
+          "Request for Certificate of No Scholarship",
+          "Approval of Student Assistantship Contract"
+        ]
+      },
+      {
+        "name": "University Student Government Office",
         "floor": "",
         "head_name": "",
         "head_title": "",
@@ -326,13 +533,48 @@
     ]
   },
   {
-    "building_name": "ULRC",
+    "building_name": "CLIMATE",
+    "image": "climate.jpg",
+    "offices": [
+      {
+        "name": "Office of the Director For Halal",
+        "floor": "",
+        "head_name": "Badu M. Panimbang, PhD",
+        "head_title": "VP for REI",
+        "services": [
+          "Request for Climate Change Resilient Adaptation – CCA DRRMC (Laboratory Facility And Equipment Use)"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "TECHNOLOGY AND INNOVATION BUILDING (TIP)",
+    "image": "tip_center.jpg",
+    "offices": [
+      {
+        "name": "Office of the Vice President for Research, Extension, and Innovation",
+        "floor": "",
+        "head_name": "Director for Research and innovation",
+        "head_title": "",
+        "services": []
+      },
+      {
+        "name": "Office for Research Director",
+        "floor": "",
+        "head_name": "Gemma A. Constatino",
+        "head_title": "",
+        "services": []
+      }
+    ]
+  },
+  {
+    "building_name": "UNIVERSITY LEARNING RESOURCE CENTER (LIBRARY)",
     "image": "ulrc.jpg",
     "offices": [
       {
-        "name": "ULRC",
+        "name": "Office of Alne D. Quinoveba, PhD",
         "floor": "",
-        "head_name": "",
+        "head_name": "Alne D. Quinoveba, PhD",
         "head_title": "",
         "services": [
           "Circulation – Borrowing of Learning Materials",
@@ -349,17 +591,15 @@
     ]
   },
   {
-    "building_name": "CLIMATE CHANGE RESILIENT ADAPTATION AND DISASTER RISK REDUCTION AND MANAGEMENT CENTER",
-    "image": "climate-change-resilient-adaptation-and-disaster-risk-reduction-and-management-center.jpg",
+    "building_name": "MAIN ENTRANCE ",
+    "image": "default.jpg",
     "offices": [
       {
-        "name": "CCA DRRMC",
+        "name": "Commercial Building 1&2",
         "floor": "",
         "head_name": "",
         "head_title": "",
-        "services": [
-          "Request for Climate Change Resilient Adaptation – CCA DRRMC (Laboratory Facility And Equipment Use)"
-        ]
+        "services": []
       }
     ]
   }

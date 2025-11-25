@@ -30,8 +30,9 @@ class KioskController extends Controller
         
         $navigationEndpoints = [];
         foreach ($buildings as $building) {
-            if ($building->endpoint_x && $building->endpoint_y) {
-                $navigationEndpoints[$building->name] = [
+            // Use building code to match SVG IDs and JavaScript navigationPoints keys
+            if ($building->code && $building->endpoint_x && $building->endpoint_y) {
+                $navigationEndpoints[$building->code] = [
                     'x' => $building->endpoint_x,
                     'y' => $building->endpoint_y,
                     'roadConnection' => $building->road_connection

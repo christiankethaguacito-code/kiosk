@@ -602,5 +602,101 @@
         "services": []
       }
     ]
+  },
+  {
+    "building_name": "FUNCTION HALL",
+    "building_code": "Function",
+    "image": "default.jpg",
+    "offices": [
+      {
+        "name": "University Function Hall",
+        "floor": "Ground Floor",
+        "head_name": "",
+        "head_title": "",
+        "services": [
+          "Venue for university events and ceremonies",
+          "Hosting of conferences and seminars",
+          "Cultural and social gatherings"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "REGISTRAR'S OFFICE",
+    "building_code": "Reg_Office",
+    "image": "default.jpg",
+    "offices": [
+      {
+        "name": "Registrar's Office",
+        "floor": "Ground Floor",
+        "head_name": "Hassanal P. Abusama, PhD",
+        "head_title": "Director for Records and Admission",
+        "services": [
+          "Enrolment for Incoming Freshmen",
+          "Enrolment for Transferees",
+          "Enrolment for Continuing Students (Online)",
+          "Enrolment for Continuing Students (Face to Face)",
+          "Processing and Issuance of Certification",
+          "Processing and Releasing of Transfer Credential",
+          "Processing and Releasing of Transcript of Records",
+          "Adding / Changing / Dropping of Subjects",
+          "Issuance of Completion Form"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "LABORATORY HIGH SCHOOL EXTENSION",
+    "building_code": "LHS_ext",
+    "image": "default.jpg",
+    "offices": [
+      {
+        "name": "Laboratory High School Extension",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": [
+          "Additional classrooms for Laboratory High School",
+          "Student activities and programs",
+          "Faculty offices"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "MINI DORMITORY 2",
+    "building_code": "MD_2",
+    "image": "default.jpg",
+    "offices": [
+      {
+        "name": "Dormitory Services",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": [
+          "Student accommodation",
+          "Dormitory management",
+          "Resident support services"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "CCJE EXTENSION BUILDING",
+    "building_code": "CCJE_ext",
+    "image": "default.jpg",
+    "offices": [
+      {
+        "name": "CCJE Extension Offices",
+        "floor": "",
+        "head_name": "",
+        "head_title": "",
+        "services": [
+          "Additional classrooms for CCJE",
+          "Faculty offices",
+          "Student consultation services"
+        ]
+      }
+    ]
   }
 ]

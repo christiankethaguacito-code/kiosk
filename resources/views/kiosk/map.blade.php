@@ -157,6 +157,26 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
+    /* Building hover tooltip */
+    .building-tooltip {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .building-tooltip.show {
+        opacity: 1;
+    }
 
     #navPath {
         pointer-events: none;
@@ -626,20 +646,6 @@
                     <rect x="5" y="83" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
                     <text x="19" y="87" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Men's Dorm 2</text>
                 </g>
-                <g id="NavigationPoints">
-                    <circle cx="195" cy="50" r="2" fill="#f44336" data-building="Administration"/>
-                    <circle cx="252" cy="111" r="2" fill="#f44336" data-building="CTE"/>
-                    <circle cx="162" cy="111" r="2" fill="#f44336" data-building="CHS"/>
-                    <circle cx="202" cy="203" r="2" fill="#f44336" data-building="CCJE"/>
-                    <circle cx="134" cy="171" r="2" fill="#f44336" data-building="ULRC"/>
-                    <circle cx="120" cy="203" r="2" fill="#f44336" data-building="TCL"/>
-                    <circle cx="70" cy="203" r="2" fill="#f44336" data-building="DOST"/>
-                    <circle cx="260" cy="168" r="2" fill="#f44336" data-building="FC"/>
-                    <circle cx="223" cy="168" r="2" fill="#f44336" data-building="GS"/>
-                    <circle cx="162" cy="111" r="2" fill="#f44336" data-building="CHS_Labs"/>
-                    <circle cx="162" cy="111" r="2" fill="#f44336" data-building="UG"/>
-                    <circle cx="30" cy="167" r="2" fill="#f44336" data-building="Field"/>
-                </g>
             </svg>
         </div>
             
@@ -894,6 +900,10 @@
         }
     }
 </style>
+
+<!-- Building Hover Tooltip -->
+<div id="buildingTooltip" class="building-tooltip"></div>
+
 @endsection
 
 @section('scripts')
@@ -920,7 +930,7 @@
     // Navigation endpoints - UPDATED to use precise skeleton network
     let navigationPoints = {
         // Academic Buildings
-        'Administration': {x: 193, y: 50, roadConnection: 'spine_roundabout'},
+        'Administration': {x: 193, y: 50, roadConnection: 'r_north'},
         'CTE': {x: 257, y: 108, roadConnection: 'east_north'},
         'CTE Building': {x: 257, y: 108, roadConnection: 'east_north'},
         'CHS': {x: 157, y: 110, roadConnection: 'west_north'},
@@ -929,16 +939,16 @@
         'CCJE': {x: 261, y: 240, roadConnection: 'spine_south'},
         'CCJE Building': {x: 261, y: 240, roadConnection: 'spine_south'},
         'CCJE_ext': {x: 261, y: 256, roadConnection: 'spine_south_lower'},
-        'CoM': {x: 282, y: 43, roadConnection: 'east_top'},
-        'GS': {x: 207, y: 142, roadConnection: 'spine_north_130'},
+        'CoM': {x: 282, y: 43, roadConnection: 'east_50'},
+        'GS': {x: 207, y: 142, roadConnection: 'horiz_202'},
         
         // Facilities & Services
         'ULRC': {x: 168, y: 209, roadConnection: 'spine_south_210'},
         'ULRC Library': {x: 168, y: 209, roadConnection: 'spine_south_210'},
         'UG': {x: 158, y: 41, roadConnection: 'west_north'},
         'UC': {x: 148, y: 163, roadConnection: 'horiz_134'},
-        'Function': {x: 135, y: 61, roadConnection: 'west_top'},
-        'Function Hall': {x: 135, y: 61, roadConnection: 'west_top'},
+        'Function': {x: 135, y: 61, roadConnection: 'r_west'},
+        'Function Hall': {x: 135, y: 61, roadConnection: 'r_west'},
         'UPP': {x: 278, y: 223, roadConnection: 'spine_south'},
         'Motorpool': {x: 46, y: 220, roadConnection: 'south_46'},
         'FC': {x: 259, y: 224, roadConnection: 'spine_south'},
@@ -977,11 +987,11 @@
         
         // Student Services
         'LHS': {x: 257, y: 47, roadConnection: 'east_50'},
-        'LHS_ext': {x: 271, y: 23, roadConnection: 'east_top'},
+        'LHS_ext': {x: 271, y: 23, roadConnection: 'east_50'},
         'LHS Ext': {x: 271, y: 23, roadConnection: 'east_top'},
         'ROTC': {x: 25, y: 152, roadConnection: 'horiz_30'},
-        'SKSU-MPC': {x: 253, y: 16, roadConnection: 'east_top'},
-        'MPC': {x: 253, y: 16, roadConnection: 'east_top'},
+        'SKSU-MPC': {x: 253, y: 16, roadConnection: 'east_50'},
+        'MPC': {x: 253, y: 16, roadConnection: 'east_50'},
         'MPC-Dorm': {x: 262, y: 15, roadConnection: 'east_top'},
         'MPC Dorm': {x: 262, y: 15, roadConnection: 'east_top'},
         'MD_1': {x: 20, y: 76, roadConnection: 'far_west_80'},
@@ -991,7 +1001,7 @@
         
         // Sports & Recreation
         'Field': {x: 69, y: 160, roadConnection: 'horiz_100'},
-        'Bleacher': {x: 115, y: 72, roadConnection: 'horiz_134'},
+        'Bleacher': {x: 115, y: 72, roadConnection: 'west_80'},
         
         // Religious
         'mosque': {x: 149, y: 184, roadConnection: 'conn_134_185'},
@@ -1000,16 +1010,23 @@
     
     // Merge database endpoints with defaults (database values take priority)
     if (dbEndpoints && Object.keys(dbEndpoints).length > 0) {
-        Object.keys(dbEndpoints).forEach(buildingName => {
-            if (dbEndpoints[buildingName].x && dbEndpoints[buildingName].y) {
-                navigationPoints[buildingName] = {
-                    x: parseFloat(dbEndpoints[buildingName].x),
-                    y: parseFloat(dbEndpoints[buildingName].y),
-                    roadConnection: dbEndpoints[buildingName].roadConnection || navigationPoints[buildingName]?.roadConnection || 'gate'
+        let loadedCount = 0;
+        Object.keys(dbEndpoints).forEach(buildingCode => {
+            const endpoint = dbEndpoints[buildingCode];
+            const x = parseFloat(endpoint.x);
+            const y = parseFloat(endpoint.y);
+            
+            // Only use database values if they are valid non-zero coordinates
+            if (!isNaN(x) && !isNaN(y) && x > 0 && y > 0) {
+                navigationPoints[buildingCode] = {
+                    x: x,
+                    y: y,
+                    roadConnection: endpoint.roadConnection || navigationPoints[buildingCode]?.roadConnection || 'gate'
                 };
+                loadedCount++;
             }
         });
-        console.log('Loaded', Object.keys(dbEndpoints).length, 'endpoint(s) from database');
+        console.log('Loaded', loadedCount, 'valid endpoint(s) from database');
     }
     
     function updateClock() {
@@ -1099,51 +1116,17 @@
         'Restroom': 'Public Restroom Facility',
         'ULD': 'University Language Development Center',
         'QMS': 'Quality Management Services',
-        'UG': 'University Gym'
+        'UG': 'University Gym',
+        'Administration': 'Administration Building',
+        'CTE': 'College of Teacher Education',
+        'CHS': 'College of Health Sciences',
+        'CCJE': 'College of Criminal Justice Education',
+        'CCJE_ext': 'CCJE Extension Building',
+        'ULRC': 'University Library Resource Center'
     };
     
-    // Map SVG IDs to exact database building names
-    const svgToDbName = {
-        'Administration': 'ADMINISTRATION BUILDING',
-        'CTE': 'COLLEGE OF TEACHER EDUCATION',
-        'CHS': 'COLLEGE OF HEALTH AND SCIENCES',
-        'CCJE': 'College of Criminal Justice Education',
-        'BCSF': 'Birthing Center / Infirmary Bldg.',
-        'UPP': 'UPP Building',
-        'AMTC': 'Ang Magsasaka Training Center',
-        'ULRC': 'UNIVERSITY LEARNING RESOURCE CENTER (LIBRARY)',
-        'TCL': 'Tissue Culture Laboratory',
-        'DOST': 'Philippine Textile Research Institute (DOST -PTRI)',
-        'Motorpool': 'Motorpool',
-        'FC': 'Food Center',
-        'mosque': 'Mosque',
-        'TIP_center': 'TECHNOLOGY AND INNOVATION BUILDING (TIP)',
-        'Climate': 'CLIMATE',
-        'Agri_bldg_1': 'Agriculture Building 1',
-        'Agri_bldg_2': 'Agriculture Building 2',
-        'ROTC': 'ROTC Building',
-        'OSAS': 'OFFICE OF STUDENT AFFAIRS AND SERVICES BLDG.',
-        'UC': 'UNIVERSITY ACCESS CLINIC',
-        'GS-SBO': 'GS-SBO',
-        'Alumni_Office': 'ALUMNI RELATIONSHIP OFFICE',
-        'Univesity_AVR': 'University Audio Visual Room',
-        'GS-ext': 'CGS Building',
-        'GS': 'GRADUATE SCHOOL',
-        'CHS_Labs': 'COLLEGES OF HEALTH AND SCIENCES EXTENSION',
-        'Field': 'University Field',
-        'Bleacher': 'Bleacher',
-        'Parking_Space': 'Parking Space',
-        'LHS': 'LABORATORY HIGH SCHOOL',
-        'CoM': 'College of Medicine',
-        'Restroom': 'Restroom',
-        'SKSU-MPC': 'SKSU MPC',
-        'MPC-Dorm': 'SKSU MPC Dormitory',
-        'ULD': 'University Ladies Dormitory',
-        'QMS': 'QMS CENTER BUILDING',
-        'UG': 'University Gymnasium',
-        'MD_1': 'University Men\'s Dormitory',
-        'MD_2': 'University Men\'s Dormitory'
-    };
+    // Note: Building matching now uses the 'code' field from database
+    // which matches the SVG ID (building_id from fullinfo.json)
     
     // Add click handlers to SVG buildings
     document.addEventListener('DOMContentLoaded', function() {
@@ -1178,19 +1161,13 @@
                     navigateTo(displayName);
                     
                     // Show building details in sidebar
-                    const dbName = svgToDbName[buildingId];
-                    if (dbName) {
-                        const building = buildings.find(b => b.name === dbName);
-                        if (building) {
-                            showBuildingModal(building.id);
-                        } else {
-                            // Building exists in map but not in database yet
-                            console.warn('Building not found in database:', dbName);
-                            showBuildingNotAvailable(dbName);
-                        }
+                    // Use building code (from fullinfo.json building_id) to match
+                    const building = buildings.find(b => b.code === buildingId);
+                    if (building) {
+                        showBuildingModal(building.id);
                     } else {
-                        // SVG ID not mapped to database name
-                        console.warn('No database mapping for SVG ID:', buildingId);
+                        // Building exists in map but not in database yet
+                        console.warn('Building not found in database with code:', buildingId);
                         showBuildingNotAvailable(svgToDisplayName[buildingId] || buildingId);
                     }
                 });
@@ -1201,25 +1178,31 @@
                     
                     const displayName = svgToDisplayName[buildingId] || buildingId;
                     const tooltip = document.getElementById('buildingTooltip');
-                    tooltip.textContent = displayName;
-                    tooltip.classList.add('show');
+                    if (tooltip) {
+                        tooltip.textContent = displayName;
+                        tooltip.classList.add('show');
+                    }
                 });
                 
                 element.addEventListener('mousemove', function(e) {
                     if (editMode) return;
                     
                     const tooltip = document.getElementById('buildingTooltip');
-                    const offsetX = 15;
-                    const offsetY = -30;
-                    
-                    // Position tooltip above and slightly to the right of cursor
-                    tooltip.style.left = (e.clientX + offsetX) + 'px';
-                    tooltip.style.top = (e.clientY + offsetY) + 'px';
+                    if (tooltip) {
+                        const offsetX = 15;
+                        const offsetY = -30;
+                        
+                        // Position tooltip above and slightly to the right of cursor
+                        tooltip.style.left = (e.clientX + offsetX) + 'px';
+                        tooltip.style.top = (e.clientY + offsetY) + 'px';
+                    }
                 });
                 
                 element.addEventListener('mouseleave', function(e) {
                     const tooltip = document.getElementById('buildingTooltip');
-                    tooltip.classList.remove('show');
+                    if (tooltip) {
+                        tooltip.classList.remove('show');
+                    }
                 });
             }
         });
@@ -1557,14 +1540,10 @@
         );
         
         if (svgId) {
-            const dbName = svgToDbName[svgId];
-            if (dbName) {
-                const building = buildings.find(b => b.name === dbName);
-                if (building) {
-                    showBuildingModal(building.id);
-                } else {
-                    showBuildingNotAvailable(dbName);
-                }
+            // Use building code (from fullinfo.json building_id) to match
+            const building = buildings.find(b => b.code === svgId);
+            if (building) {
+                showBuildingModal(building.id);
             } else {
                 showBuildingNotAvailable(svgToDisplayName[svgId] || buildingName);
             }
@@ -1646,8 +1625,8 @@
     
     // Interactive enhancements initialization
     document.addEventListener('DOMContentLoaded', function() {
-        // Draw the road skeleton overlay
-        drawRoadSkeleton();
+        // Draw the road skeleton overlay (disabled - only for debugging)
+        // drawRoadSkeleton();
         
         // Auto-dismiss hint after 4 seconds
         const hint = document.getElementById('interactiveHint');
@@ -1678,7 +1657,15 @@
                 }
             }, { once: true });
         }
+        
+        // Show debug points on page load if enabled
+        if (showNavigationPoints) {
+            showDebugPoints();
+        }
     });
+    
+    // DEBUG MODE: Show all navigation points and road intersections
+    const showNavigationPoints = false;
     
     // EXACT ROAD SKELETON - Coordinates extracted directly from mapresource.json SVG paths
     // All coordinates match the actual white road centerlines precisely
@@ -1693,12 +1680,12 @@
             // Transform applied: translate(0 -.094) so subtract 0.094 from y values
             'spine_gate': {x: 195, y: 260},
             'spine_south_lower': {x: 202, y: 240},
+            'spine_south_left': {x: 188, y: 240},
             'spine_south': {x: 202.28, y: 226},
             'spine_south_210': {x: 188, y: 210},
             'spine_center': {x: 188.32, y: 167.47},
             'spine_north_130': {x: 188.32, y: 130},
             'spine_north': {x: 188.32, y: 111},
-            'spine_roundabout': {x: 203.295, y: 53.462},
             
             // === CENTER HORIZONTAL ROAD (y≈167.47-167.95) - MAIN EAST-WEST ARTERY ===
             // path-4: M15.007 167.47 → 184.517 (15.007 + 169.51 = 184.517)
@@ -1708,10 +1695,9 @@
             'horiz_100': {x: 100, y: 167.47},
             'horiz_134': {x: 134.048, y: 167.47},
             'horiz_162': {x: 162.074, y: 167.47},
-            'horiz_center': {x: 184.517, y: 167.478},
             // path-5: M200.776 168.003 → 286.339 (200.776 + 85.563 = 286.339)
             // path-6: M252.48 167.945 (eastern vertical intersects here)
-            'horiz_202': {x: 200.776, y: 168.003},
+            'horiz_202': {x: 202.28, y: 168.003},
             'horiz_220': {x: 220, y: 168.003},
             'horiz_252': {x: 252.48, y: 167.945},
             'horiz_east_end': {x: 286.339, y: 168.02},
@@ -1724,7 +1710,6 @@
             'south_46': {x: 46, y: 202.996},
             'south_70': {x: 70, y: 202.996},
             'south_100': {x: 100, y: 202.996},
-            'south_124': {x: 124.306, y: 203.002},
             'south_134': {x: 134.048, y: 202.24},
             
             // === WESTERN VERTICAL ROAD (x≈161.956) ===
@@ -1758,16 +1743,14 @@
             // path-4-1: M134.048 202.24 → 168.355 (202.24 - 33.885 = 168.355)
             'conn_134_south': {x: 134.048, y: 202.24},
             'conn_134_185': {x: 134.048, y: 185},
-            'conn_134_center': {x: 134.048, y: 168.355},
             
             // === NORTHERN HORIZONTAL CONNECTORS (y≈110.939-111.071) ===
             // path-1-3: M159.412 51.001 with transform(43.417, 59.938) → (202.829, 110.939)
             // path-101-5-2-3-6-8-7-6-2: M161.494 110.994 → 184.906
             // path-101-5-2-3-6-8-7-2: M203.193 111.071 → 246.811
             'north_162': {x: 161.494, y: 110.994},
-            'north_180': {x: 180, y: 110.994},
-            'north_188': {x: 184.906, y: 110.994},
-            'north_203': {x: 203.193, y: 111.071},
+            'north_180': {x: 188.32, y: 110.994},
+            'north_203': {x: 202.28, y: 111.071},
             'north_220': {x: 220, y: 111.071},
             'north_246': {x: 246.811, y: 111.116},
             
@@ -1786,31 +1769,43 @@
             // Dirt-Path-2: M164.583 -4.938 with transform(43.417, 60.031)
             // Start: (164.583 + 43.417, -4.938 + 60.031) = (208, 55.093)
             // 30 right: (238, 55.093), then 34 up: (238, 21.093), left 18: (220, 21.093)
-            'dirt_north_208': {x: 208, y: 55.093},
+            'dirt_north_208': {x: 220, y: 55.093},
             'dirt_north_corner': {x: 238, y: 55.093},
             'dirt_north_top': {x: 238, y: 21.093},
             'dirt_north_end': {x: 220, y: 21.093},
             
-            // === ROUNDABOUT / CIRCLE (center point) ===
-            // path-3: Circular path around x≈203, y≈53
-            'roundabout_center': {x: 203, y: 53},
+            // === ROUNDABOUT / CIRCLE ===
+            // Points matching exact SVG circular path coordinates
+            'r_entry': {x: 206, y: 55},              // Entry from spine
+            'r_north': {x: 184.243, y: 55},          // North point
+            'r_west': {x: 178, y: 67},               // West point
+            'r_sw': {x: 180, y: 77},                 // Southwest point
+            'r_exit': {x: 188.32, y: 84.558},        // Exit point
+            'r_se': {x: 209.55, y: 77},              // Southeast point
+            'r_east': {x: 212, y: 67},               // East point
+            'r_entry_right': {x: 202.28, y: 84.558}, // Right entry point
             
             // === SMALL CONNECTORS ===
             // path-1-2: M200.864 225.943 → 220.232 (200.864 + 19.368 = 220.232)
-            'conn_201_226': {x: 200.864, y: 225.943},
+            // Using spine_south (202.28, 226) instead of redundant conn_201_226
             'conn_220_226': {x: 220.232, y: 225.763}
         },
         
         roads: [
             // === MAIN VERTICAL SPINE (Complete north-south) ===
             ['gate', 'spine_gate'],
+            // Right spine road
             ['spine_gate', 'spine_south_lower'],
             ['spine_south_lower', 'spine_south'],
+            // Left spine road
+            ['spine_gate', 'spine_south_left'],
+            ['spine_south_left', 'spine_south_210'],
+            // Both merge to center
             ['spine_south', 'spine_south_210'],
             ['spine_south_210', 'spine_center'],
             ['spine_center', 'spine_north_130'],
             ['spine_north_130', 'spine_north'],
-            ['spine_north', 'spine_roundabout'],
+            ['spine_north', 'r_exit'],
             
             // === CENTER HORIZONTAL (Complete east-west at y≈167) ===
             ['horiz_west_end', 'horiz_30'],
@@ -1818,9 +1813,9 @@
             ['horiz_70', 'horiz_100'],
             ['horiz_100', 'horiz_134'],
             ['horiz_134', 'horiz_162'],
-            ['horiz_162', 'horiz_center'],
-            ['horiz_center', 'spine_center'],
+            ['horiz_162', 'spine_center'],
             ['spine_center', 'horiz_202'],
+            ['horiz_202', 'north_203'],
             ['horiz_202', 'horiz_220'],
             ['horiz_220', 'horiz_252'],
             ['horiz_252', 'horiz_east_end'],
@@ -1830,8 +1825,7 @@
             ['south_30', 'south_46'],
             ['south_46', 'south_70'],
             ['south_70', 'south_100'],
-            ['south_100', 'south_124'],
-            ['south_124', 'south_134'],
+            ['south_100', 'south_134'],
             
             // === WESTERN VERTICAL (x≈162) ===
             ['west_south', 'west_140'],
@@ -1855,12 +1849,11 @@
             // === VERTICAL CONNECTOR (x≈134) ===
             ['south_134', 'conn_134_south'],
             ['conn_134_south', 'conn_134_185'],
-            ['conn_134_185', 'conn_134_center'],
+            ['conn_134_185', 'horiz_134'],
             
             // === CROSS CONNECTIONS (Horizontal connectors) ===
             ['horiz_162', 'west_south'],
             ['horiz_30', 'far_west_south'],
-            ['horiz_134', 'conn_134_center'],
             ['horiz_252', 'east_south'],
             ['south_30', 'far_west_south'],
             ['spine_south_210', 'spine_center'],
@@ -1868,16 +1861,20 @@
             // === NORTHERN HORIZONTAL CONNECTORS (y≈111) ===
             ['west_north', 'north_162'],
             ['north_162', 'north_180'],
-            ['north_180', 'north_188'],
-            ['north_188', 'spine_north'],
+            ['north_180', 'spine_north'],
             ['spine_north', 'north_203'],
+            ['north_203', 'r_entry_right'],
             ['north_203', 'north_220'],
+            ['north_203', 'east_north'],
             ['north_220', 'north_246'],
+            ['north_220', 'east_north'], // Direct bypass to eastern route
             ['north_246', 'east_north'],
             
             // === SMALL CONNECTORS ===
-            ['spine_south', 'conn_201_226'],
-            ['conn_201_226', 'conn_220_226'],
+            ['spine_south', 'conn_220_226'],
+            
+            // === VERTICAL CONNECTOR for Graduate School ===
+            ['spine_south', 'horiz_202'],
             
             // === DIRT PATHS ===
             ['dirt_start', 'dirt_corner_1'],
@@ -1885,15 +1882,26 @@
             ['dirt_horiz_244', 'dirt_corner_2'],
             ['dirt_corner_2', 'dirt_vert'],
             ['dirt_vert', 'dirt_horiz_end'],
-            ['spine_roundabout', 'dirt_north_208'],
+            ['r_entry', 'dirt_north_208'],
             ['dirt_north_208', 'dirt_north_corner'],
             ['dirt_north_corner', 'dirt_north_top'],
             ['dirt_north_top', 'dirt_north_end'],
             
-            // === ROUNDABOUT CONNECTIONS ===
-            ['spine_roundabout', 'roundabout_center'],
-            ['roundabout_center', 'west_top'],
-            ['roundabout_center', 'east_top']
+            // === ROUNDABOUT CONNECTIONS - Following circular path ===
+            // Left side (from exit): r_exit → r_sw → r_west → r_north → r_entry
+            ['r_exit', 'r_sw'],
+            ['r_sw', 'r_west'],
+            ['r_west', 'r_north'],
+            ['r_north', 'r_entry'],
+            // Right side (from entry_right): r_entry_right → r_se → r_east → r_entry
+            ['r_entry_right', 'r_se'],
+            ['r_se', 'r_east'],
+            ['r_east', 'r_entry'],
+            // Connect exit to entry for full loop
+            ['r_exit', 'spine_north'],
+            
+            // Exits to destinations (connect to nearest points)
+            ['r_west', 'west_top']
         ]
     };
 
@@ -2010,6 +2018,11 @@
             const prev = orthoPoints[orthoPoints.length - 1];
             const curr = points[i];
             
+            // Skip invalid coordinates
+            if (curr.x === undefined || curr.y === undefined || prev.x === undefined || prev.y === undefined) {
+                continue;
+            }
+            
             // Skip if same point
             if (prev.x === curr.x && prev.y === curr.y) continue;
             
@@ -2036,6 +2049,75 @@
         return simplifyPath(orthoPoints);
     }
 
+    function showDebugPoints() {
+        const svg = document.getElementById('campusMap');
+        if (!svg) return;
+        
+        // Remove existing debug points if any
+        const existingDebug = document.getElementById('debugNavigationPoints');
+        if (existingDebug) existingDebug.remove();
+        
+        const debugGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        debugGroup.setAttribute('id', 'debugNavigationPoints');
+        
+        // Show all building navigation endpoints
+        Object.keys(navigationPoints).forEach(buildingCode => {
+            const navPoint = navigationPoints[buildingCode];
+            
+            // Endpoint circle (blue)
+            const endpointCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            endpointCircle.setAttribute('cx', navPoint.x);
+            endpointCircle.setAttribute('cy', navPoint.y);
+            endpointCircle.setAttribute('r', '2.5');
+            endpointCircle.setAttribute('fill', '#3b82f6');
+            endpointCircle.setAttribute('stroke', '#fff');
+            endpointCircle.setAttribute('stroke-width', '0.8');
+            endpointCircle.setAttribute('opacity', '0.7');
+            debugGroup.appendChild(endpointCircle);
+            
+            // Building code label
+            const codeLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            codeLabel.setAttribute('x', navPoint.x + 3);
+            codeLabel.setAttribute('y', navPoint.y + 1);
+            codeLabel.setAttribute('font-size', '2.5');
+            codeLabel.setAttribute('fill', '#1e40af');
+            codeLabel.setAttribute('font-weight', 'bold');
+            codeLabel.textContent = buildingCode;
+            debugGroup.appendChild(codeLabel);
+        });
+        
+        // Show all road intersections (green)
+        Object.keys(roadNetwork.intersections).forEach(intersectionName => {
+            const intersection = roadNetwork.intersections[intersectionName];
+            
+            const intersectionCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            intersectionCircle.setAttribute('cx', intersection.x);
+            intersectionCircle.setAttribute('cy', intersection.y);
+            intersectionCircle.setAttribute('r', '1.5');
+            intersectionCircle.setAttribute('fill', '#10b981');
+            intersectionCircle.setAttribute('stroke', '#fff');
+            intersectionCircle.setAttribute('stroke-width', '0.5');
+            intersectionCircle.setAttribute('opacity', '0.6');
+            debugGroup.appendChild(intersectionCircle);
+            
+            // Intersection name label (small)
+            const nameLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            nameLabel.setAttribute('x', intersection.x + 2);
+            nameLabel.setAttribute('y', intersection.y - 2);
+            nameLabel.setAttribute('font-size', '2');
+            nameLabel.setAttribute('fill', '#065f46');
+            nameLabel.setAttribute('font-weight', 'normal');
+            nameLabel.textContent = intersectionName.replace('roundabout_', 'r_').replace('spine_', 's_').replace('horiz_', 'h_');
+            debugGroup.appendChild(nameLabel);
+        });
+        
+        svg.appendChild(debugGroup);
+        
+        console.log('🔍 DEBUG MODE: Showing all navigation points and intersections');
+        console.log('  🔵 Blue dots = Building navigation endpoints');
+        console.log('  🟢 Green dots = Road intersection points');
+    }
+
     function drawNavigationPath(buildingName) {
         const svg = document.getElementById('campusMap');
         
@@ -2044,6 +2126,8 @@
         if (existingPath) existingPath.remove();
         const existingMarkers = document.getElementById('navMarkers');
         if (existingMarkers) existingMarkers.remove();
+        const existingDebugPath = document.getElementById('debugRoadPath');
+        if (existingDebugPath) existingDebugPath.remove();
 
         const point = navigationPoints[buildingName];
         if (!point) {
@@ -2064,9 +2148,41 @@
         // Get path through road network using Dijkstra's algorithm
         const intersectionPath = findPath(startIntersection, endIntersection);
         
+        console.log('\n🗺️ ===== NAVIGATION PATH DEBUG =====');
+        console.log('Building:', buildingName);
+        console.log('Start:', startIntersection, '→', roadNetwork.intersections[startIntersection]);
+        console.log('End:', endIntersection, '→', roadNetwork.intersections[endIntersection]);
+        console.log('Path found:', intersectionPath);
+        console.log('Path length:', intersectionPath.length, 'intersections');
+        
         if (!intersectionPath || intersectionPath.length === 0) {
-            console.error('No path found from', startIntersection, 'to', endIntersection);
+            console.error('❌ No path found from', startIntersection, 'to', endIntersection);
             return;
+        }
+        
+        // Show road network segments (intersection to intersection)
+        console.log('\n📍 ROAD NETWORK SEGMENTS:');
+        const roundaboutIntersections = [];
+        for (let i = 0; i < intersectionPath.length; i++) {
+            const name = intersectionPath[i];
+            const coords = roadNetwork.intersections[name];
+            
+            if (i < intersectionPath.length - 1) {
+                const nextName = intersectionPath[i + 1];
+                const nextCoords = roadNetwork.intersections[nextName];
+                console.log(`  ${i}. ${name} (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}) → ${nextName} (${nextCoords.x.toFixed(2)}, ${nextCoords.y.toFixed(2)})`);
+            } else {
+                console.log(`  ${i}. ${name} (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}) [END]`);
+            }
+            
+            if (name.includes('roundabout')) {
+                roundaboutIntersections.push(name);
+            }
+        }
+        
+        if (roundaboutIntersections.length > 0) {
+            console.log('\n🔄 ROUNDABOUT SEGMENTS:', roundaboutIntersections.length);
+            console.log('   ', roundaboutIntersections.join(' → '));
         }
         
         // Build clean orthogonal path segments
@@ -2095,6 +2211,18 @@
         // Add final building destination
         segments.push({x: point.x, y: point.y});
         
+        console.log('\n📊 NAVIGATION PATH SEGMENTS (before cleaning):');
+        for (let i = 0; i < segments.length; i++) {
+            if (i < segments.length - 1) {
+                const curr = segments[i];
+                const next = segments[i + 1];
+                const dist = Math.sqrt(Math.pow(next.x - curr.x, 2) + Math.pow(next.y - curr.y, 2));
+                console.log(`  ${i}. (${curr.x.toFixed(2)}, ${curr.y.toFixed(2)}) → (${next.x.toFixed(2)}, ${next.y.toFixed(2)}) [${dist.toFixed(2)} units]`);
+            } else {
+                console.log(`  ${i}. (${segments[i].x.toFixed(2)}, ${segments[i].y.toFixed(2)}) [DESTINATION]`);
+            }
+        }
+        
         // Remove duplicate consecutive points
         const cleanedSegments = [segments[0]];
         for (let i = 1; i < segments.length; i++) {
@@ -2105,56 +2233,165 @@
             }
         }
         
-        // Enforce strict orthogonal routing (only horizontal and vertical lines)
-        const orthogonalSegments = enforceOrthogonalPath(cleanedSegments);
+        console.log('\n🧹 AFTER CLEANING (duplicates removed):', cleanedSegments.length, 'points');
+        cleanedSegments.forEach((seg, idx) => {
+            console.log(`  ${idx}. (${seg.x.toFixed(2)}, ${seg.y.toFixed(2)})`);
+        });
         
-        // Build orthogonal path - only vertical and horizontal lines
+        // DISABLED: Orthogonal routing - preserve natural curves
+        // const orthogonalSegments = enforceOrthogonalPath(cleanedSegments);
+        const orthogonalSegments = cleanedSegments;
+        
+        console.log('\n🔲 USING DIRECT PATH (orthogonal disabled):', orthogonalSegments.length, 'points');
+        orthogonalSegments.forEach((seg, idx) => {
+            console.log(`  ${idx}. (${seg.x.toFixed(2)}, ${seg.y.toFixed(2)})`);
+        });
+        
+        // Build smooth continuous path with rounded corners
         let pathData = `M ${orthogonalSegments[0].x} ${orthogonalSegments[0].y}`;
         
-        // Draw only horizontal or vertical lines
+        // Create smooth path with quadratic curves at corners
         for (let i = 1; i < orthogonalSegments.length; i++) {
-            pathData += ` L ${orthogonalSegments[i].x} ${orthogonalSegments[i].y}`;
+            const prev = orthogonalSegments[i - 1];
+            const curr = orthogonalSegments[i];
+            const next = orthogonalSegments[i + 1];
+            
+            if (next && i < orthogonalSegments.length - 1) {
+                // Calculate corner radius (smaller for tighter corners)
+                const cornerRadius = 8;
+                
+                // Determine if we're at a corner
+                const isCorner = (prev.x !== curr.x && curr.x !== next.x) || 
+                                (prev.y !== curr.y && curr.y !== next.y);
+                
+                if (isCorner) {
+                    // Calculate direction vectors
+                    const dx1 = curr.x - prev.x;
+                    const dy1 = curr.y - prev.y;
+                    const dx2 = next.x - curr.x;
+                    const dy2 = next.y - curr.y;
+                    
+                    // Calculate distances
+                    const dist1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+                    const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                    
+                    // Calculate points before and after corner
+                    const radius = Math.min(cornerRadius, dist1 / 2, dist2 / 2);
+                    
+                    const beforeX = curr.x - (dx1 / dist1) * radius;
+                    const beforeY = curr.y - (dy1 / dist1) * radius;
+                    const afterX = curr.x + (dx2 / dist2) * radius;
+                    const afterY = curr.y + (dy2 / dist2) * radius;
+                    
+                    // Line to point before corner, then quadratic curve through corner
+                    pathData += ` L ${beforeX} ${beforeY}`;
+                    pathData += ` Q ${curr.x} ${curr.y} ${afterX} ${afterY}`;
+                } else {
+                    pathData += ` L ${curr.x} ${curr.y}`;
+                }
+            } else {
+                // Last point - just draw straight line
+                pathData += ` L ${curr.x} ${curr.y}`;
+            }
         }
         
-        // Create navigation path - polished red line
+        // Create navigation path - thin smooth red line
         const navPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         navPath.setAttribute('id', 'navPath');
         navPath.setAttribute('d', pathData);
         navPath.setAttribute('fill', 'none');
         navPath.setAttribute('stroke', '#ef4444');
-        navPath.setAttribute('stroke-width', '5');
-        navPath.setAttribute('stroke-dasharray', '10,5');
+        navPath.setAttribute('stroke-width', '2.5');
         navPath.setAttribute('stroke-linecap', 'round');
         navPath.setAttribute('stroke-linejoin', 'round');
-        navPath.setAttribute('opacity', '1');
-        navPath.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(239, 68, 68, 0.4))');
+        navPath.setAttribute('opacity', '0.9');
+        navPath.setAttribute('filter', 'drop-shadow(0 1px 2px rgba(239, 68, 68, 0.3))');
         navPath.setAttribute('style', 'pointer-events: none;');
         svg.appendChild(navPath);
+        
+        // DEBUG: Draw the actual road network path in blue to compare
+        if (intersectionPath.length > 1) {
+            let roadPathData = '';
+            for (let i = 0; i < intersectionPath.length; i++) {
+                const intersection = roadNetwork.intersections[intersectionPath[i]];
+                if (intersection) {
+                    if (i === 0) {
+                        roadPathData = `M ${intersection.x} ${intersection.y}`;
+                    } else {
+                        roadPathData += ` L ${intersection.x} ${intersection.y}`;
+                    }
+                }
+            }
+            
+            const debugRoadPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            debugRoadPath.setAttribute('id', 'debugRoadPath');
+            debugRoadPath.setAttribute('d', roadPathData);
+            debugRoadPath.setAttribute('fill', 'none');
+            debugRoadPath.setAttribute('stroke', '#3b82f6');
+            debugRoadPath.setAttribute('stroke-width', '1.5');
+            debugRoadPath.setAttribute('stroke-dasharray', '4,2');
+            debugRoadPath.setAttribute('opacity', '0.6');
+            debugRoadPath.setAttribute('style', 'pointer-events: none;');
+            svg.appendChild(debugRoadPath);
+            
+            console.log('\n🎨 VISUAL DEBUG:');
+            console.log('  🔵 Blue dashed = Road network path (raw segments)');
+            console.log('  🔴 Red smooth = Final navigation path (with curves)');
+            console.log('  🟡 Yellow dots = Road intersections');
+            console.log('  Numbers = Intersection sequence');
+            console.log('===== END DEBUG =====\n');
+        }
         
         // Create markers group
         const markersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         markersGroup.setAttribute('id', 'navMarkers');
         
-        // Start marker (main gate) - polished green
+        // DEBUG: Add small markers at each intersection in the path
+        intersectionPath.forEach((intersectionName, idx) => {
+            const intersection = roadNetwork.intersections[intersectionName];
+            if (intersection) {
+                const debugMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                debugMarker.setAttribute('cx', intersection.x);
+                debugMarker.setAttribute('cy', intersection.y);
+                debugMarker.setAttribute('r', '2');
+                debugMarker.setAttribute('fill', idx === 0 ? '#10b981' : idx === intersectionPath.length - 1 ? '#ef4444' : '#fbbf24');
+                debugMarker.setAttribute('stroke', '#fff');
+                debugMarker.setAttribute('stroke-width', '1');
+                debugMarker.setAttribute('opacity', '0.9');
+                markersGroup.appendChild(debugMarker);
+                
+                // Add text label
+                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                label.setAttribute('x', intersection.x + 4);
+                label.setAttribute('y', intersection.y - 4);
+                label.setAttribute('font-size', '2.5');
+                label.setAttribute('fill', '#000');
+                label.setAttribute('font-weight', 'bold');
+                label.textContent = `${idx}`;
+                markersGroup.appendChild(label);
+            }
+        });
+        
+        // Start marker (main gate) - smaller refined green dot
         const startMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         startMarker.setAttribute('cx', kioskX);
         startMarker.setAttribute('cy', kioskY);
-        startMarker.setAttribute('r', '7');
+        startMarker.setAttribute('r', '5');
         startMarker.setAttribute('fill', '#10b981');
         startMarker.setAttribute('stroke', '#fff');
-        startMarker.setAttribute('stroke-width', '3');
-        startMarker.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(16, 185, 129, 0.5))');
+        startMarker.setAttribute('stroke-width', '2');
+        startMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(16, 185, 129, 0.4))');
         markersGroup.appendChild(startMarker);
         
-        // Destination marker - polished red circle with pulsing animation
+        // Destination marker - smaller refined red circle with pulsing animation
         const destMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         destMarker.setAttribute('cx', point.x);
         destMarker.setAttribute('cy', point.y);
-        destMarker.setAttribute('r', '9');
+        destMarker.setAttribute('r', '6');
         destMarker.setAttribute('fill', '#ef4444');
         destMarker.setAttribute('stroke', '#fff');
-        destMarker.setAttribute('stroke-width', '3');
-        destMarker.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(239, 68, 68, 0.5))');
+        destMarker.setAttribute('stroke-width', '2');
+        destMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(239, 68, 68, 0.4))');
         destMarker.setAttribute('class', 'endpoint-marker');
         destMarker.dataset.buildingName = buildingName; // Store building name for drag functionality
         markersGroup.appendChild(destMarker);
@@ -2163,10 +2400,10 @@
         const pulseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         pulseRing.setAttribute('cx', point.x);
         pulseRing.setAttribute('cy', point.y);
-        pulseRing.setAttribute('r', '8');
+        pulseRing.setAttribute('r', '6');
         pulseRing.setAttribute('fill', 'none');
         pulseRing.setAttribute('stroke', '#ef4444');
-        pulseRing.setAttribute('stroke-width', '2');
+        pulseRing.setAttribute('stroke-width', '1.5');
         pulseRing.setAttribute('opacity', '0.6');
         markersGroup.appendChild(pulseRing);
         
@@ -2219,6 +2456,11 @@
         markersGroup.appendChild(labelText);
         
         svg.appendChild(markersGroup);
+        
+        // Refresh debug points if enabled
+        if (showNavigationPoints) {
+            showDebugPoints();
+        }
         
         // Attach endpoint drag listeners (always available now)
         attachEndpointDragListeners();

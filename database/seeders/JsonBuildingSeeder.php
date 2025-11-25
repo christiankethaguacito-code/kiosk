@@ -46,6 +46,7 @@ class JsonBuildingSeeder extends Seeder
                 $building = Building::firstOrCreate(
                     ['name' => $buildingData['building_name']],
                     [
+                        'code' => $buildingData['building_code'] ?? null,
                         'image_path' => isset($buildingData['image']) ? 'buildings/' . $buildingData['image'] : null
                     ]
                 );

@@ -39,6 +39,7 @@ class AnnouncementController extends Controller
 
         $validated['is_active'] = $request->has('is_active');
         $validated['display_order'] = $validated['display_order'] ?? 0;
+        $validated['content'] = $validated['content'] ?? '';
 
         Announcement::create($validated);
         return redirect()->route('admin.announcements.index')->with('success', 'Announcement created successfully.');
@@ -71,6 +72,7 @@ class AnnouncementController extends Controller
 
         $validated['is_active'] = $request->has('is_active');
         $validated['display_order'] = $validated['display_order'] ?? 0;
+        $validated['content'] = $validated['content'] ?? $announcement->content ?? '';
 
         $announcement->update($validated);
         return redirect()->route('admin.announcements.index')->with('success', 'Announcement updated successfully.');

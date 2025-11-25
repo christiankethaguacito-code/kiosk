@@ -1,268 +1,211 @@
 @extends('Layouts.app')
 
-@section('title', 'Welcome - SKSU Access')
-@section('body-class', 'overflow-hidden')
+@section('title', 'SKSU Access - Campus Kiosk')
+@section('body-class', 'overflow-hidden font-sans')
 
 @section('head')
-<!-- Swiper CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
 <style>
-    /* Gradient Background */
-    .gradient-bg {
-        background: linear-gradient(135deg, #248823 0%, #1a6619 100%);
+    /* Full Screen Campus Background with Dark Overlay */
+    .campus-bg {
+        background: url('/images/background.jpg') center/cover no-repeat fixed;
         position: relative;
+        min-height: 100vh;
         overflow: hidden;
     }
     
-    /* Animated Background Pattern */
-    .gradient-bg::before {
+    .campus-bg::before {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 50px 50px;
-        animation: movePattern 20s linear infinite;
-    }
-    
-    @keyframes movePattern {
-        from { transform: translate(0, 0); }
-        to { transform: translate(50px, 50px); }
-    }
-    
-    /* Blur Background Image */
-    .blur-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('/images/campus-bg.jpg');
-        background-size: cover;
-        background-position: center;
-        filter: blur(8px);
-        opacity: 0.3;
-        z-index: 0;
-    }
-    
-    /* Content Container */
-    .content-container {
-        position: relative;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
         z-index: 1;
     }
     
-    /* Clock Styles */
-    .clock-display {
-        font-size: 6rem;
-        font-weight: 700;
-        color: white;
-        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        letter-spacing: 0.05em;
+    /* All content above overlay */
+    .content-layer {
+        position: relative;
+        z-index: 10;
     }
     
-    .date-display {
-        font-size: 2rem;
-        font-weight: 500;
-        color: rgba(255, 255, 255, 0.95);
-        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    /* Time & Date Widget - Top Right */
+    .time-widget {
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        z-index: 100;
+        text-align: right;
     }
     
-    /* Announcement Card */
+    /* Announcement Card - Full Width in 75% Container */
     .announcement-card {
-        background: white;
-        border-radius: 24px;
-        padding: 2rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(10px);
-        max-width: 800px;
+        position: relative;
         width: 90%;
+        max-width: 1500px;
+        height: 100%;
+        max-height: 100%;
+        margin: 0 auto;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+        background-size: cover;
+        background-position: center;
+        transition: opacity 0.5s ease;
     }
     
-    .announcement-image {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 16px;
-        margin-bottom: 1rem;
-    }
-    
-    .announcement-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.75rem;
-    }
-    
-    .announcement-content {
-        font-size: 1.125rem;
-        color: #64748b;
-        line-height: 1.8;
-    }
-    
-    /* Swiper Custom Styles */
-    .swiper-pagination-bullet {
-        width: 12px;
-        height: 12px;
-        background: white;
-        opacity: 0.5;
-    }
-    
-    .swiper-pagination-bullet-active {
-        opacity: 1;
-        background: white;
-        box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
-    }
-    
-    /* CTA Button */
+    /* CTA Button - Green Pill */
     .cta-button {
-        background: white;
-        color: #248823;
-        padding: 1.5rem 4rem;
-        border-radius: 16px;
-        font-size: 1.5rem;
-        font-weight: 700;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        animation: pulse 2s ease-in-out infinite;
-    }
-    
-    .cta-button:hover {
-        transform: translateY(-4px) scale(1.05);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-    }
-    
-    .cta-button:active {
-        transform: translateY(-2px) scale(1.02);
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
     
     @keyframes pulse {
         0%, 100% {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            opacity: 1;
         }
         50% {
-            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.4);
+            opacity: 0.85;
         }
     }
     
-    /* Entrance Animations */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    /* Admin Edit Controls */
+    .edit-controls {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 50;
+        display: flex;
+        gap: 0.5rem;
     }
     
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    @keyframes scaleIn {
-        from {
-            opacity: 0;
-            transform: scale(0.9);
-        }
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-    
-    .animate-fadeInDown {
-        animation: fadeInDown 0.8s ease-out;
-    }
-    
-    .animate-scaleIn {
-        animation: scaleIn 0.6s ease-out;
-        animation-delay: 0.3s;
-        animation-fill-mode: both;
-    }
-    
-    .animate-fadeInUp {
-        animation: fadeInUp 0.8s ease-out;
-        animation-delay: 0.6s;
-        animation-fill-mode: both;
+    /* Fade transition */
+    [x-cloak] {
+        display: none !important;
     }
 </style>
 @endsection
 
 @section('content')
-<div class="gradient-bg min-h-screen flex flex-col items-center justify-center p-8" 
-     x-data="welcomeScreen()">
+<div class="campus-bg flex items-center justify-center" x-data="kioskScreen()">
     
-    <!-- Optional Background Image with Blur -->
-    <div class="blur-bg"></div>
+    <!-- Time & Date Widget - Top Right (15% Header) -->
+    <div class="time-widget content-layer">
+        <div class="time text-5xl font-black" x-text="currentTime"></div>
+        <div class="date text-sm font-semibold" x-text="currentDate"></div>
+    </div>
     
-    <div class="content-container flex flex-col items-center gap-12 w-full">
+    <!-- Main Content Container with Proportional Layout -->
+    <div class="content-layer w-full h-screen flex flex-col">
         
-        <!-- Clock and Date Display -->
-        <div class="text-center animate-fadeInDown">
-            <div class="clock-display" x-text="currentTime"></div>
-            <div class="date-display" x-text="currentDate"></div>
-        </div>
+        <!-- Header Space (15%) -->
+        <div class="h-[15vh]"></div>
         
-        <!-- Announcement Carousel -->
-        @if($announcements->count() > 0)
-        <div class="w-full flex justify-center animate-scaleIn">
-            <div class="announcement-card">
-                <div class="swiper announcementSwiper">
-                    <div class="swiper-wrapper">
-                        @foreach($announcements as $announcement)
-                        <div class="swiper-slide">
-                            @if($announcement->image_path)
-                            <img src="{{ Storage::url($announcement->image_path) }}" 
-                                 alt="{{ $announcement->title }}"
-                                 class="announcement-image"
-                                 loading="lazy">
-                            @endif
-                            <h2 class="announcement-title">{{ $announcement->title }}</h2>
-                            <p class="announcement-content">{{ $announcement->content }}</p>
-                        </div>
-                        @endforeach
+        <!-- Announcement Card Container (75%) -->
+        <div class="h-[75vh] flex items-center justify-center px-8">
+        
+            <!-- Announcement Card -->
+            @if($announcements->count() > 0)
+        <div class="announcement-card" 
+             x-data="{ currentSlide: 0, slides: {{ $announcements->count() }} }"
+             x-init="setInterval(() => { currentSlide = (currentSlide + 1) % slides }, 5000)"
+             :style="'background-image: url(' + [
+                @foreach($announcements as $index => $announcement)
+                '{{ $announcement->image_path ? Storage::url($announcement->image_path) : "/images/background.jpg" }}'{{ !$loop->last ? ',' : '' }}
+                @endforeach
+             ][currentSlide] + ')'">
+            
+            <!-- Content Overlay -->
+            <div class="p-12">
+                
+                <!-- SKSU Header -->
+                <div class="flex items-center gap-4 mb-6">
+                    <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="w-20 h-20 drop-shadow-2xl">
+                    <div class="text-white text-2xl font-bold uppercase tracking-widest" style="text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">
+                        Sultan Kudarat State University
                     </div>
-                    <div class="swiper-pagination"></div>
                 </div>
+                
+                <template x-for="(announcement, index) in [
+                    @foreach($announcements as $announcement)
+                    {
+                        title: '{{ addslashes($announcement->title) }}',
+                        content: '{{ addslashes($announcement->content) }}'
+                    }{{ !$loop->last ? ',' : '' }}
+                    @endforeach
+                ]" :key="index">
+                    <div x-show="currentSlide === index" 
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-500"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0">
+                        
+                        <!-- Announcement Title (Red Badge) -->
+                        <div class="inline-block bg-red-600 text-white px-10 py-3 rounded-full text-2xl font-bold mb-6 shadow-2xl">
+                            <span x-text="announcement.title"></span>
+                        </div>
+                        
+                        <!-- Announcement Content -->
+                        <p class="text-3xl text-white italic" style="text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);">
+                            <span x-text="announcement.content"></span>
+                        </p>
+                        
+                    </div>
+                </template>
+                
+                <!-- Admin Edit Controls -->
+                @auth
+                <div class="edit-controls">
+                    <button class="bg-red-600 hover:bg-red-700 text-white p-3 rounded-full shadow-lg transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                    <button class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+                @endauth
+                
             </div>
+            
+            <!-- Slide Indicators -->
+            <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-3">
+                <template x-for="i in slides" :key="i">
+                    <button @click="currentSlide = i - 1"
+                            class="w-3 h-3 rounded-full transition"
+                            :class="currentSlide === i - 1 ? 'bg-yellow-400 scale-125' : 'bg-white/50'"></button>
+                </template>
+            </div>
+            
         </div>
-        @else
-        <!-- Fallback when no announcements -->
-        <div class="announcement-card animate-scaleIn">
-            <h2 class="announcement-title text-center">Welcome to SKSU Access</h2>
-            <p class="announcement-content text-center">Your interactive campus navigation system</p>
+            @endif
         </div>
-        @endif
         
-        <!-- Call to Action Button -->
-        <button class="cta-button animate-fadeInUp" onclick="window.location.href='{{ route('kiosk.map') }}'">
-            👆 Tap to Explore Campus
-        </button>
+        <!-- Footer Space (10%) - Touch to Continue -->
+        <a href="{{ route('kiosk.map') }}" class="h-[10vh] flex items-center justify-center cursor-pointer group">
+            <p class="text-white text-2xl font-bold animate-pulse" style="text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">
+                Touch the Screen to Continue
+            </p>
+        </a>
         
     </div>
     
+    <!-- Admin Add Button (Far Right) -->
+    @auth
+    <button class="fixed right-8 top-1/2 transform -translate-y-1/2 bg-green-600 hover:bg-green-700 text-white p-6 rounded-full shadow-2xl z-100 transition">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
+        </svg>
+    </button>
+    @endauth
+    
 </div>
-@endsection
-
-@section('scripts')
-<!-- Swiper JS -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <script>
-function welcomeScreen() {
+function kioskScreen() {
     return {
         currentTime: '',
         currentDate: '',
@@ -270,38 +213,23 @@ function welcomeScreen() {
         init() {
             this.updateClock();
             setInterval(() => this.updateClock(), 1000);
-            
-            // Initialize Swiper
-            new Swiper('.announcementSwiper', {
-                slidesPerView: 1,
-                spaceBetween: 30,
-                loop: {{ $announcements->count() > 1 ? 'true' : 'false' }},
-                autoplay: {
-                    delay: 5000,
-                    disableOnInteraction: false,
-                },
-                pagination: {
-                    el: '.swiper-pagination',
-                    clickable: true,
-                },
-            });
         },
         
         updateClock() {
             const now = new Date();
             
-            // Format time: 10:30 AM
+            // Format: 10:00 AM
             this.currentTime = now.toLocaleTimeString('en-US', {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: true
             });
             
-            // Format date: Wednesday, November 24, 2025
+            // Format: Wednesday, Nov 06, 2025
             this.currentDate = now.toLocaleDateString('en-US', {
                 weekday: 'long',
-                month: 'long',
-                day: 'numeric',
+                month: 'short',
+                day: '2-digit',
                 year: 'numeric'
             });
         }

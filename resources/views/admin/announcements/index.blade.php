@@ -181,13 +181,6 @@
             </tbody>
         </table>
     </div>
-    
-    <!-- Pagination -->
-    @if($announcements->hasPages())
-        <div class="mt-6">
-            {{ $announcements->links() }}
-        </div>
-    @endif
 </div>
 
 <style>

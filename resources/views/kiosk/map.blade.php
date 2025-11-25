@@ -157,37 +157,7 @@
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
     
-    /* Tooltip styling */
-    .building-tooltip {
-        position: absolute;
-        background: rgba(0, 0, 0, 0.9);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 500;
-        pointer-events: none;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.2s ease;
-        white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    }
-    
-    .building-tooltip.show {
-        opacity: 1;
-    }
-    
-    .building-tooltip::after {
-        content: '';
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        border: 6px solid transparent;
-        border-top-color: rgba(0, 0, 0, 0.9);
-    }
-    
+
     #navPath {
         pointer-events: none;
         z-index: 100;
@@ -284,13 +254,13 @@
 @endsection
 
 @section('content')
-<div class="min-h-screen flex flex-col">
-    <header class="text-white p-6 flex justify-between items-center" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+<div class="h-screen flex flex-col overflow-hidden">
+    <header class="text-white p-4 flex justify-between items-center" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
         <div class="flex items-center gap-4">
             <a href="{{ route('kiosk.idle') }}" class="flex items-center">
-                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-16 w-16 object-contain">
+                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-12 w-12 object-contain">
             </a>
-            <h1 class="text-3xl font-bold">Access Map</h1>
+            <h1 class="text-2xl font-bold">Access Map</h1>
         </div>
         <div class="flex-1 max-w-md mx-8">
             <div class="relative">
@@ -369,10 +339,10 @@
         </div>
     </header>
 
-    <div class="flex p-8">
-        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: calc(100vh - 120px); max-height: calc(100vh - 176px); width: 100%;">
-            <!-- Map Section (65%) -->
-            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 65%; height: 100%; position: relative; overflow: hidden;">
+    <div class="flex p-8" style="flex: 1; min-height: 0;">
+        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: 100%; width: 100%;">
+            <!-- Map Section (60%) -->
+            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: hidden;">
             <div class="hint-overlay" id="interactiveHint">👆 Click on any building to explore</div>
             <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
                 <g id="layer1" transform="translate(43.417 59.938)">
@@ -673,86 +643,76 @@
             </svg>
         </div>
             
-            <!-- Sidebar Section (35%) - Toggles between Legend and Building Details -->
-            <div class="bg-white" style="flex: 0 0 35%; display: flex; flex-direction: column; overflow: hidden;">
+            <!-- Sidebar Section (40%) - Toggles between Legend and Building Details -->
+            <div class="bg-white" style="flex: 0 0 40%; display: flex; flex-direction: column; overflow: hidden;">
             
             <!-- Legend View -->
             <div id="legendView" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
-                <div class="p-6 border-b" style="border-color: #248823; flex-shrink: 0;">
-                    <h2 class="text-3xl font-bold text-gray-800">Map Legend</h2>
+                <div class="p-2 border-b" style="border-color: #248823; flex-shrink: 0;">
+                    <h2 class="font-bold text-gray-800" style="font-size: 1rem;">Map Legend</h2>
                 </div>
                 
-                <div class="overflow-y-auto p-6" style="flex: 1 1 0; min-height: 0;">
-                    <h3 class="text-xl font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                        <span class="text-2xl">🏛️</span> Campus Buildings
-                    </h3>
-                    <div class="space-y-1 text-base" id="buildingList">
-                    <!-- Academic Colleges -->
-                    <div class="font-semibold text-gray-800 mt-2 mb-1 text-lg">Academic Colleges</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CTE')">• College of Education</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS')">• College of Nursing</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS_Labs')">• College of Health Sciences</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE')">• College of Criminal Justice</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE_ext')">• CCJE Extension</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CoM')">• College of Medicine</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS')">• Graduate School</div>
+                <div class="px-5 py-2" style="flex: 1 1 0; min-height: 0; overflow: hidden;">
+                    <div id="buildingList" style="column-count: 2; column-gap: 0.25rem; column-fill: balance; height: 100%; word-wrap: break-word; overflow-wrap: break-word; font-size: 0.75rem;">
+                    <!-- Column 1: Academic Colleges through part of list -->
+                    <div class="font-semibold text-gray-800 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Academic Colleges</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CTE')">• College of Education</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS')">• College of Nursing</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS_Labs')">• College of Health Sciences</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE')">• College of Criminal Justice</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE_ext')">• CCJE Extension</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CoM')">• College of Medicine</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS')">• Graduate School</div>
                     
-                    <!-- Facilities & Services -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Facilities & Services</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULRC')">• University Library (ULRC)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UG')">• University Gymnasium</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UC')">• University Canteen (UC)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Function')">• Function Hall</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UPP')">• UPP Building</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Motorpool')">• University Motorpool</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('FC')">• Food Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Parking_Space')">• Parking Area</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Restroom')">• Public Restroom</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Facilities & Services</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULRC')">• University Library (ULRC)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UG')">• University Gymnasium</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UC')">• University Canteen (UC)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Function')">• Function Hall</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UPP')">• UPP Building</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Motorpool')">• University Motorpool</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('FC')">• Food Center</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Parking_Space')">• Parking Area</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Restroom')">• Public Restroom</div>
                     
-                    <!-- Medical & Training -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Medical & Training Centers</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('BCSF')">• Basic & Clinical Sciences (BCSF)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('AMTC')">• Ang Magsasaka Training Center</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Medical & Training Centers</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('BCSF')">• Basic & Clinical Sciences (BCSF)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('AMTC')">• Ang Magsasaka Training Center</div>
                     
-                    <!-- Research & Development -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Research & Development</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TIP_center')">• Technology Incubation Park (TIP)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TCL')">• Technology & Computer Lab (TCL)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('DOST')">• DOST Innovation Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Climate')">• Climate Resillient and Adoptation Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_1')">• Agriculture Building 1</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_2')">• Agriculture Building 2</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Research & Development</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TIP_center')">• Technology Incubation Park (TIP)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TCL')">• Technology & Computer Lab (TCL)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('DOST')">• DOST Innovation Center</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Climate')">• Climate Resillient and Adoptation Center</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_1')">• Agriculture Building 1</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_2')">• Agriculture Building 2</div>
                     
-                    <!-- Administrative Offices -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Administrative Offices</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Reg_Office')">• Registrar's Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Alumni_Office')">• Alumni Relations Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-SBO')">• Graduate School - SBO Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-ext')">• GS Extension Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('OSAS')">• Student Affairs (OSAS)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('QMS')">• Quality Management (QMS)</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULD')">• Ladies Dormitory</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Univesity_AVR')">• Audio-Visual Room (AVR)</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Administrative Offices</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Reg_Office')">• Registrar's Office</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Alumni_Office')">• Alumni Relations Office</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-SBO')">• Graduate School - SBO Office</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-ext')">• GS Extension Office</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('OSAS')">• Student Affairs (OSAS)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('QMS')">• Quality Management (QMS)</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULD')">• Ladies Dormitory</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Univesity_AVR')">• Audio-Visual Room (AVR)</div>
                     
-                    <!-- Student Services -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Student Services</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS')">• Laboratory Highschool</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS_ext')">• LHS Extension</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ROTC')">• ROTC Office</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('SKSU-MPC')">• SKSU Multi-Purpose Center</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MPC-Dorm')">• MPC Dormitory</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_1')">• Men's Dormitory 1</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_2')">• Men's Dormitory 2</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Student Services</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS')">• Laboratory Highschool</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS_ext')">• LHS Extension</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ROTC')">• ROTC Office</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('SKSU-MPC')">• SKSU Multi-Purpose Center</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MPC-Dorm')">• MPC Dormitory</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_1')">• Men's Dormitory 1</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_2')">• Men's Dormitory 2</div>
                     
-                    <!-- Sports & Recreation -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Sports & Recreation</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Field')">• University Athletic Field</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Bleacher')">• Field Bleachers</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Sports & Recreation</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Field')">• University Athletic Field</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Bleacher')">• Field Bleachers</div>
                     
-                    <!-- Religious -->
-                    <div class="font-semibold text-gray-800 mt-3 mb-1 text-lg">Religious Facility</div>
-                    <div class="text-gray-700 pl-2 py-1 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
+                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Religious Facility</div>
+                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
                 </div>
                 </div>
             </div>
@@ -774,9 +734,6 @@
         </div>
     </div>
 </div>
-
-<!-- Building Tooltip -->
-<div class="building-tooltip" id="buildingTooltip"></div>
 
 <div class="modal-overlay" id="buildingModal">
     <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">

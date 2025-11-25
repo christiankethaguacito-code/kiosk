@@ -931,6 +931,112 @@
     const isAdmin = @json($isAdmin);
     const dbEndpoints = @json($navigationEndpoints ?? []);
     
+    // Image preloading cache
+    let imagesPreloaded = false;
+    const imageCache = new Map();
+    
+    // Preload all building images on first user interaction
+    function preloadAllBuildingImages() {
+        if (imagesPreloaded) return;
+        imagesPreloaded = true;
+        
+        // Clear console first
+        console.clear();
+        
+        let loadedCount = 0;
+        let totalImages = 0;
+        let currentFile = '';
+        
+        // Function to update progress
+        const updateProgress = () => {
+            console.clear();
+            console.log(`Caching: ${currentFile}`);
+            console.log(`Progress: ${loadedCount}/${totalImages}`);
+        };
+        
+        buildings.forEach(building => {
+            // Try JPG first, then PNG from public folder
+            const publicJpg = `/images/buildings/${building.code}.jpg`;
+            const publicPng = `/images/buildings/${building.code}.png`;
+            
+            // Preload public images
+            [publicJpg, publicPng].forEach(src => {
+                totalImages++;
+                const img = new Image();
+                img.onload = () => {
+                    imageCache.set(src, img);
+                    loadedCount++;
+                    currentFile = src;
+                    updateProgress();
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                    }
+                };
+                img.onerror = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                    }
+                };
+                img.src = src;
+            });
+            
+            // Preload database images
+            if (building.image_path) {
+                totalImages++;
+                const dbImg = new Image();
+                const dbSrc = `/storage/${building.image_path}`;
+                dbImg.onload = () => {
+                    imageCache.set(dbSrc, dbImg);
+                    loadedCount++;
+                    currentFile = dbSrc;
+                    updateProgress();
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                    }
+                };
+                dbImg.onerror = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                    }
+                };
+                dbImg.src = dbSrc;
+            }
+            
+            // Preload gallery images
+            if (building.image_gallery && building.image_gallery.length > 0) {
+                building.image_gallery.forEach(imgPath => {
+                    totalImages++;
+                    const galleryImg = new Image();
+                    const gallerySrc = `/storage/${imgPath}`;
+                    galleryImg.onload = () => {
+                        imageCache.set(gallerySrc, galleryImg);
+                        loadedCount++;
+                        currentFile = gallerySrc;
+                        updateProgress();
+                        if (loadedCount === totalImages) {
+                            console.clear();
+                            console.log(`All ${totalImages}/${totalImages} images cached`);
+                        }
+                    };
+                    galleryImg.onerror = () => {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            console.clear();
+                            console.log(`All ${totalImages}/${totalImages} images cached`);
+                        }
+                    };
+                    galleryImg.src = gallerySrc;
+                });
+            }
+        });
+    }
+    
     // Main gate starting point (aligned with path start)
     const kioskX = 188.32;
     const kioskY = 267.166;
@@ -1149,6 +1255,9 @@
     
     // Add click handlers to SVG buildings
     document.addEventListener('DOMContentLoaded', function() {
+        // Preload all building images immediately on page load
+        preloadAllBuildingImages();
+        
         const clickableBuildings = ['Administration', 'CTE', 'CHS', 'CCJE', 'BCSF', 'UPP', 'AMTC', 'ULRC', 'TCL', 'DOST', 
                                    'Motorpool', 'FC', 'mosque', 'TIP_center', 'Climate', 'Agri_bldg_1', 'Agri_bldg_2', 
                                    'ROTC', 'OSAS', 'UC', 'GS-SBO', 'Alumni_Office', 'Univesity_AVR', 'GS-ext', 'GS', 
@@ -1260,7 +1369,6 @@
             }
             
             const building = await response.json();
-            console.log('Building data loaded:', building);
         
         document.getElementById('modalTitle').textContent = building.name;
         
@@ -1269,26 +1377,75 @@
         // Image Gallery with Swiper
         const gallery = building.image_gallery || [];
         const hasMainImage = building.image_path;
+        
+        // Build image sources list (JPG default, PNG fallback, then DB images)
+        const publicImageJpg = `/images/buildings/${building.code}.jpg`;
+        const publicImagePng = `/images/buildings/${building.code}.png`;
+        
         const allImages = [];
         
+        // Add public images with fallback chain
+        allImages.push({src: publicImageJpg, isPublic: true, fallback: publicImagePng});
+        
         if (hasMainImage) {
-            allImages.push(building.image_path);
+            allImages.push({src: building.image_path, isPublic: false});
         }
         if (gallery.length > 0) {
-            allImages.push(...gallery);
+            gallery.forEach(img => allImages.push({src: img, isPublic: false}));
         }
         
-        // Always show image section (with placeholder if no image)
-        if (allImages.length > 0) {
+        // Build image gallery HTML - use cached images if available
+        let imageHtml = '';
+        let hasAnyValidImage = false;
+        
+        allImages.forEach((img, index) => {
+            const imgSrc = img.isPublic ? img.src : `/storage/${img.src}`;
+            const fallbackSrc = img.fallback || '';
+            
+            // Check if image is cached (exists)
+            const primaryCached = imageCache.has(imgSrc);
+            const fallbackCached = fallbackSrc && imageCache.has(fallbackSrc);
+            const isCached = primaryCached || fallbackCached;
+            
+            // If caching already ran and image is not cached, skip it (doesn't exist)
+            if (imagesPreloaded && !isCached) {
+                return; // Skip this image entirely
+            }
+            
+            hasAnyValidImage = true;
+            
+            // Use the cached image's src (already loaded and ready)
+            const finalSrc = primaryCached ? imgSrc : (fallbackCached ? fallbackSrc : imgSrc);
+            
+            imageHtml += `
+                <div class="swiper-slide" id="slide-${index}" style="position: relative; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
+                    <img src="${finalSrc}" 
+                         style="opacity: 1;"
+                         class="building-detail-image w-full h-full object-cover rounded-lg">
+                </div>
+            `;
+        });
+        
+        // If no valid images after caching check, show placeholder immediately
+        if (imagesPreloaded && !hasAnyValidImage) {
             content += `
-                <div class="relative mb-4">
-                    <div class="swiper buildingGallerySwiper">
+                <div id="placeholder-container" class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg items-center justify-center border-2 border-dashed" style="border-color: #248823; height: 12rem; display: flex; transition: height 0.5s ease;">
+                    <div class="text-center">
+                        <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <p class="text-gray-600 font-medium">${building.name}</p>
+                        <p class="text-gray-400 text-sm">Image not available</p>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Image section (expands when cabinet expanded)
+            content += `
+                <div id="image-container-0" class="relative mb-4" style="height: 12rem; transition: height 0.5s ease;">
+                    <div class="swiper buildingGallerySwiper" style="height: 100%;">
                         <div class="swiper-wrapper">
-                            ${allImages.map(img => `
-                                <div class="swiper-slide">
-                                    <img src="/storage/${img}" class="w-full h-48 object-cover rounded-lg">
-                                </div>
-                            `).join('')}
+                            ${imageHtml}
                         </div>
                         ${allImages.length > 1 ? `
                             <div class="swiper-button-next" style="color: #248823;"></div>
@@ -1298,15 +1455,11 @@
                     </div>
                     ${allImages.length > 1 ? `
                         <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                            <span class="swiper-current">1</span> / ${allImages.length}
+                            <span class="swiper-current">1</span> / <span class="swiper-total">${allImages.length}</span>
                         </div>
                     ` : ''}
                 </div>
-            `;
-        } else {
-            // Placeholder for buildings without images
-            content += `
-                <div class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg h-48 flex items-center justify-center border-2 border-dashed" style="border-color: #248823;">
+                <div id="placeholder-container" class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg items-center justify-center border-2 border-dashed" style="border-color: #248823; height: 12rem; display: none; transition: height 0.5s ease;">
                     <div class="text-center">
                         <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
@@ -1317,6 +1470,9 @@
                 </div>
             `;
         }
+        
+        // Scrollable details container
+        content += `<div id="detailsScrollContainer" class="" style="overflow-y: auto;">`;
         
         // Building Description
         if (building.description) {
@@ -1371,14 +1527,22 @@
             `;
         }
         
+        // Close details scroll container
+        content += `</div>`;
+        
             document.getElementById('buildingDetailTitle').textContent = building.name;
             document.getElementById('buildingDetailContent').innerHTML = content;
             
-            // Initialize Swiper after content is loaded
+            // Initialize Swiper immediately (images load asynchronously)
             if (allImages.length > 1) {
                 setTimeout(() => {
                     new Swiper('.buildingGallerySwiper', {
                         loop: true,
+                        lazy: {
+                            loadPrevNext: true,
+                            loadPrevNextAmount: 2,
+                        },
+                        preloadImages: false,
                         navigation: {
                             nextEl: '.swiper-button-next',
                             prevEl: '.swiper-button-prev',
@@ -1398,6 +1562,18 @@
                     });
                 }, 100);
             }
+            
+            // Check if all images failed after giving them time to load
+            setTimeout(() => {
+                const allSlides = document.querySelectorAll('.swiper-slide');
+                const visibleSlides = Array.from(allSlides).filter(slide => slide.style.display !== 'none');
+                
+                if (visibleSlides.length === 0) {
+                    // All images failed, show placeholder
+                    document.getElementById('image-container-0').style.display = 'none';
+                    document.getElementById('placeholder-container').style.display = 'flex';
+                }
+            }, 2000);
         } catch (error) {
             console.error('Error loading building:', error);
             document.getElementById('buildingDetailTitle').textContent = 'Error';
@@ -1410,14 +1586,33 @@
         }
     }
     
+    function clearNavigationPath() {
+        const svg = document.getElementById('campusMap');
+        if (!svg) return;
+        
+        // Remove navigation path and markers
+        const navPath = document.getElementById('navPath');
+        if (navPath) navPath.remove();
+        
+        const navMarkers = document.getElementById('navMarkers');
+        if (navMarkers) navMarkers.remove();
+    }
+    
     function closeBuildingDetails() {
+        // If cabinet is expanded, collapse it first
+        if (cabinetExpanded) {
+            toggleCabinet();
+        }
+        
         // Reset cabinet toggle to hidden position
         const cabinetToggle = document.getElementById('cabinetToggle');
         if (cabinetToggle) {
             cabinetToggle.style.left = '40px';
             cabinetToggle.style.opacity = '1';
         }
-        cabinetExpanded = false;
+        
+        // Clear navigation path and reset selected building
+        clearNavigationPath();
         
         document.getElementById('buildingDetailsView').style.display = 'none';
         document.getElementById('legendView').style.display = 'flex';
@@ -1433,6 +1628,10 @@
         const sidebarContainer = document.getElementById('sidebarContainer');
         const officesSection = document.getElementById('officesSection');
         const servicesSection = document.getElementById('servicesSection');
+        const imageContainer = document.getElementById('image-container-0');
+        const placeholderContainer = document.getElementById('placeholder-container');
+        const detailsScroll = document.getElementById('detailsScrollContainer');
+        const contentArea = document.getElementById('buildingDetailContent');
         cabinetExpanded = !cabinetExpanded;
         
         if (cabinetExpanded) {
@@ -1447,6 +1646,28 @@
             // Expand sidebar to full width
             mapContainer.style.flex = '0 0 0%';
             sidebarContainer.style.flex = '0 0 100%';
+            
+            // Expand image to take more vertical space
+            if (imageContainer) {
+                imageContainer.style.height = '59vh';
+            }
+            if (placeholderContainer) {
+                placeholderContainer.style.height = '59vh';
+            }
+            
+            // Change image object-fit to fill (stretch) when expanded
+            const detailImages = document.querySelectorAll('.building-detail-image');
+            detailImages.forEach(img => {
+                img.style.objectFit = 'fill';
+            });
+            
+            // Set max height for scrollable details area
+            if (detailsScroll) {
+                const headerHeight = 80; // Approximate header height
+                const imageHeight = imageContainer ? imageContainer.offsetHeight : 0;
+                detailsScroll.style.maxHeight = `calc(100vh - ${headerHeight + imageHeight + 80}px)`;
+            }
+            
             // Show offices and services with animation
             if (officesSection) {
                 officesSection.style.display = 'block';
@@ -1474,6 +1695,26 @@
             // Restore original 60/40 distribution
             mapContainer.style.flex = '0 0 60%';
             sidebarContainer.style.flex = '0 0 40%';
+            
+            // Restore image to normal size
+            if (imageContainer) {
+                imageContainer.style.height = '12rem';
+            }
+            if (placeholderContainer) {
+                placeholderContainer.style.height = '12rem';
+            }
+            
+            // Change image object-fit back to cover when collapsed
+            const detailImages = document.querySelectorAll('.building-detail-image');
+            detailImages.forEach(img => {
+                img.style.objectFit = 'cover';
+            });
+            
+            // Remove max height constraint
+            if (detailsScroll) {
+                detailsScroll.style.maxHeight = 'none';
+            }
+            
             // Hide offices and services with animation
             if (officesSection) {
                 officesSection.style.opacity = '0';
@@ -2210,9 +2451,9 @@
         
         svg.appendChild(debugGroup);
         
-        console.log('🔍 DEBUG MODE: Showing all navigation points and intersections');
-        console.log('  🔵 Blue dots = Building navigation endpoints');
-        console.log('  🟢 Green dots = Road intersection points');
+        // console.log('🔍 DEBUG MODE: Showing all navigation points and intersections');
+        // console.log('  🔵 Blue dots = Building navigation endpoints');
+        // console.log('  🟢 Green dots = Road intersection points');
     }
 
     function drawNavigationPath(buildingName) {
@@ -2245,12 +2486,12 @@
         // Get path through road network using Dijkstra's algorithm
         const intersectionPath = findPath(startIntersection, endIntersection);
         
-        console.log('\n🗺️ ===== NAVIGATION PATH DEBUG =====');
-        console.log('Building:', buildingName);
-        console.log('Start:', startIntersection, '→', roadNetwork.intersections[startIntersection]);
-        console.log('End:', endIntersection, '→', roadNetwork.intersections[endIntersection]);
-        console.log('Path found:', intersectionPath);
-        console.log('Path length:', intersectionPath.length, 'intersections');
+        // console.log('\n🗺️ ===== NAVIGATION PATH DEBUG =====');
+        // console.log('Building:', buildingName);
+        // console.log('Start:', startIntersection, '→', roadNetwork.intersections[startIntersection]);
+        // console.log('End:', endIntersection, '→', roadNetwork.intersections[endIntersection]);
+        // console.log('Path found:', intersectionPath);
+        // console.log('Path length:', intersectionPath.length, 'intersections');
         
         if (!intersectionPath || intersectionPath.length === 0) {
             console.error('❌ No path found from', startIntersection, 'to', endIntersection);
@@ -2258,29 +2499,29 @@
         }
         
         // Show road network segments (intersection to intersection)
-        console.log('\n📍 ROAD NETWORK SEGMENTS:');
+        // console.log('\n📍 ROAD NETWORK SEGMENTS:');
         const roundaboutIntersections = [];
         for (let i = 0; i < intersectionPath.length; i++) {
             const name = intersectionPath[i];
             const coords = roadNetwork.intersections[name];
             
-            if (i < intersectionPath.length - 1) {
-                const nextName = intersectionPath[i + 1];
-                const nextCoords = roadNetwork.intersections[nextName];
-                console.log(`  ${i}. ${name} (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}) → ${nextName} (${nextCoords.x.toFixed(2)}, ${nextCoords.y.toFixed(2)})`);
-            } else {
-                console.log(`  ${i}. ${name} (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}) [END]`);
-            }
+            // if (i < intersectionPath.length - 1) {
+            //     const nextName = intersectionPath[i + 1];
+            //     const nextCoords = roadNetwork.intersections[nextName];
+            //     console.log(`  ${i}. ${name} (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}) → ${nextName} (${nextCoords.x.toFixed(2)}, ${nextCoords.y.toFixed(2)})`);
+            // } else {
+            //     console.log(`  ${i}. ${name} (${coords.x.toFixed(2)}, ${coords.y.toFixed(2)}) [END]`);
+            // }
             
             if (name.includes('roundabout')) {
                 roundaboutIntersections.push(name);
             }
         }
         
-        if (roundaboutIntersections.length > 0) {
-            console.log('\n🔄 ROUNDABOUT SEGMENTS:', roundaboutIntersections.length);
-            console.log('   ', roundaboutIntersections.join(' → '));
-        }
+        // if (roundaboutIntersections.length > 0) {
+        //     console.log('\n🔄 ROUNDABOUT SEGMENTS:', roundaboutIntersections.length);
+        //     console.log('   ', roundaboutIntersections.join(' → '));
+        // }
         
         // Build clean orthogonal path segments
         const segments = [];
@@ -2308,17 +2549,17 @@
         // Add final building destination
         segments.push({x: point.x, y: point.y});
         
-        console.log('\n📊 NAVIGATION PATH SEGMENTS (before cleaning):');
-        for (let i = 0; i < segments.length; i++) {
-            if (i < segments.length - 1) {
-                const curr = segments[i];
-                const next = segments[i + 1];
-                const dist = Math.sqrt(Math.pow(next.x - curr.x, 2) + Math.pow(next.y - curr.y, 2));
-                console.log(`  ${i}. (${curr.x.toFixed(2)}, ${curr.y.toFixed(2)}) → (${next.x.toFixed(2)}, ${next.y.toFixed(2)}) [${dist.toFixed(2)} units]`);
-            } else {
-                console.log(`  ${i}. (${segments[i].x.toFixed(2)}, ${segments[i].y.toFixed(2)}) [DESTINATION]`);
-            }
-        }
+        // console.log('\n📊 NAVIGATION PATH SEGMENTS (before cleaning):');
+        // for (let i = 0; i < segments.length; i++) {
+        //     if (i < segments.length - 1) {
+        //         const curr = segments[i];
+        //         const next = segments[i + 1];
+        //         const dist = Math.sqrt(Math.pow(next.x - curr.x, 2) + Math.pow(next.y - curr.y, 2));
+        //         console.log(`  ${i}. (${curr.x.toFixed(2)}, ${curr.y.toFixed(2)}) → (${next.x.toFixed(2)}, ${next.y.toFixed(2)}) [${dist.toFixed(2)} units]`);
+        //     } else {
+        //         console.log(`  ${i}. (${segments[i].x.toFixed(2)}, ${segments[i].y.toFixed(2)}) [DESTINATION]`);
+        //     }
+        // }
         
         // Remove duplicate consecutive points
         const cleanedSegments = [segments[0]];
@@ -2330,19 +2571,19 @@
             }
         }
         
-        console.log('\n🧹 AFTER CLEANING (duplicates removed):', cleanedSegments.length, 'points');
-        cleanedSegments.forEach((seg, idx) => {
-            console.log(`  ${idx}. (${seg.x.toFixed(2)}, ${seg.y.toFixed(2)})`);
-        });
+        // console.log('\n🧹 AFTER CLEANING (duplicates removed):', cleanedSegments.length, 'points');
+        // cleanedSegments.forEach((seg, idx) => {
+        //     console.log(`  ${idx}. (${seg.x.toFixed(2)}, ${seg.y.toFixed(2)})`);
+        // });
         
         // DISABLED: Orthogonal routing - preserve natural curves
         // const orthogonalSegments = enforceOrthogonalPath(cleanedSegments);
         const orthogonalSegments = cleanedSegments;
         
-        console.log('\n🔲 USING DIRECT PATH (orthogonal disabled):', orthogonalSegments.length, 'points');
-        orthogonalSegments.forEach((seg, idx) => {
-            console.log(`  ${idx}. (${seg.x.toFixed(2)}, ${seg.y.toFixed(2)})`);
-        });
+        // console.log('\n🔲 USING DIRECT PATH (orthogonal disabled):', orthogonalSegments.length, 'points');
+        // orthogonalSegments.forEach((seg, idx) => {
+        //     console.log(`  ${idx}. (${seg.x.toFixed(2)}, ${seg.y.toFixed(2)})`);
+        // });
         
         // Build smooth continuous path with rounded corners
         let pathData = `M ${orthogonalSegments[0].x} ${orthogonalSegments[0].y}`;
@@ -2406,68 +2647,9 @@
         navPath.setAttribute('style', 'pointer-events: none;');
         svg.appendChild(navPath);
         
-        // DEBUG: Draw the actual road network path in blue to compare
-        if (intersectionPath.length > 1) {
-            let roadPathData = '';
-            for (let i = 0; i < intersectionPath.length; i++) {
-                const intersection = roadNetwork.intersections[intersectionPath[i]];
-                if (intersection) {
-                    if (i === 0) {
-                        roadPathData = `M ${intersection.x} ${intersection.y}`;
-                    } else {
-                        roadPathData += ` L ${intersection.x} ${intersection.y}`;
-                    }
-                }
-            }
-            
-            const debugRoadPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            debugRoadPath.setAttribute('id', 'debugRoadPath');
-            debugRoadPath.setAttribute('d', roadPathData);
-            debugRoadPath.setAttribute('fill', 'none');
-            debugRoadPath.setAttribute('stroke', '#3b82f6');
-            debugRoadPath.setAttribute('stroke-width', '1.5');
-            debugRoadPath.setAttribute('stroke-dasharray', '4,2');
-            debugRoadPath.setAttribute('opacity', '0.6');
-            debugRoadPath.setAttribute('style', 'pointer-events: none;');
-            svg.appendChild(debugRoadPath);
-            
-            console.log('\n🎨 VISUAL DEBUG:');
-            console.log('  🔵 Blue dashed = Road network path (raw segments)');
-            console.log('  🔴 Red smooth = Final navigation path (with curves)');
-            console.log('  🟡 Yellow dots = Road intersections');
-            console.log('  Numbers = Intersection sequence');
-            console.log('===== END DEBUG =====\n');
-        }
-        
         // Create markers group
         const markersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         markersGroup.setAttribute('id', 'navMarkers');
-        
-        // DEBUG: Add small markers at each intersection in the path
-        intersectionPath.forEach((intersectionName, idx) => {
-            const intersection = roadNetwork.intersections[intersectionName];
-            if (intersection) {
-                const debugMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                debugMarker.setAttribute('cx', intersection.x);
-                debugMarker.setAttribute('cy', intersection.y);
-                debugMarker.setAttribute('r', '2');
-                debugMarker.setAttribute('fill', idx === 0 ? '#10b981' : idx === intersectionPath.length - 1 ? '#ef4444' : '#fbbf24');
-                debugMarker.setAttribute('stroke', '#fff');
-                debugMarker.setAttribute('stroke-width', '1');
-                debugMarker.setAttribute('opacity', '0.9');
-                markersGroup.appendChild(debugMarker);
-                
-                // Add text label
-                const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                label.setAttribute('x', intersection.x + 4);
-                label.setAttribute('y', intersection.y - 4);
-                label.setAttribute('font-size', '2.5');
-                label.setAttribute('fill', '#000');
-                label.setAttribute('font-weight', 'bold');
-                label.textContent = `${idx}`;
-                markersGroup.appendChild(label);
-            }
-        });
         
         // Start marker (main gate) - smaller refined green dot
         const startMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -2484,10 +2666,10 @@
         const destMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         destMarker.setAttribute('cx', point.x);
         destMarker.setAttribute('cy', point.y);
-        destMarker.setAttribute('r', '6');
+        destMarker.setAttribute('r', '4');
         destMarker.setAttribute('fill', '#ef4444');
         destMarker.setAttribute('stroke', '#fff');
-        destMarker.setAttribute('stroke-width', '2');
+        destMarker.setAttribute('stroke-width', '1.5');
         destMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(239, 68, 68, 0.4))');
         destMarker.setAttribute('class', 'endpoint-marker');
         destMarker.dataset.buildingName = buildingName; // Store building name for drag functionality
@@ -2497,18 +2679,18 @@
         const pulseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         pulseRing.setAttribute('cx', point.x);
         pulseRing.setAttribute('cy', point.y);
-        pulseRing.setAttribute('r', '6');
+        pulseRing.setAttribute('r', '4');
         pulseRing.setAttribute('fill', 'none');
         pulseRing.setAttribute('stroke', '#ef4444');
-        pulseRing.setAttribute('stroke-width', '1.5');
+        pulseRing.setAttribute('stroke-width', '1');
         pulseRing.setAttribute('opacity', '0.6');
         markersGroup.appendChild(pulseRing);
         
         // Animate the pulse ring
         const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animate.setAttribute('attributeName', 'r');
-        animate.setAttribute('from', '8');
-        animate.setAttribute('to', '16');
+        animate.setAttribute('from', '6');
+        animate.setAttribute('to', '12');
         animate.setAttribute('dur', '1.5s');
         animate.setAttribute('repeatCount', 'indefinite');
         pulseRing.appendChild(animate);
@@ -2529,9 +2711,9 @@
         const displayName = svgToDisplayName[buildingName] || buildingName;
         labelText.textContent = displayName;
         labelText.setAttribute('x', point.x);
-        labelText.setAttribute('y', point.y - 15);
+        labelText.setAttribute('y', point.y - 12);
         labelText.setAttribute('text-anchor', 'middle');
-        labelText.setAttribute('font-size', '12');
+        labelText.setAttribute('font-size', '9');
         labelText.setAttribute('font-weight', 'bold');
         labelText.setAttribute('fill', '#fff');
         labelText.setAttribute('class', 'endpoint-label');
@@ -2541,12 +2723,12 @@
         svg.appendChild(labelText);
         const bbox = labelText.getBBox();
         
-        labelBg.setAttribute('x', bbox.x - 4);
-        labelBg.setAttribute('y', bbox.y - 2);
-        labelBg.setAttribute('width', bbox.width + 8);
-        labelBg.setAttribute('height', bbox.height + 4);
+        labelBg.setAttribute('x', bbox.x - 3);
+        labelBg.setAttribute('y', bbox.y - 1);
+        labelBg.setAttribute('width', bbox.width + 6);
+        labelBg.setAttribute('height', bbox.height + 2);
         labelBg.setAttribute('fill', '#ef4444');
-        labelBg.setAttribute('rx', '4');
+        labelBg.setAttribute('rx', '3');
         labelBg.setAttribute('opacity', '0.9');
         
         markersGroup.appendChild(labelBg);

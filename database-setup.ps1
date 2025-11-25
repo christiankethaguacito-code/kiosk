@@ -33,13 +33,15 @@ foreach ($path in $phpPaths) {
                 $phpPath = $path
                 break
             }
-        } else {
+        }
+        else {
             if (Test-Path $path) {
                 $phpPath = $path
                 break
             }
         }
-    } catch {
+    }
+    catch {
         continue
     }
 }
@@ -72,7 +74,8 @@ Write-Host "[1/5] Removing old database..." -ForegroundColor Yellow
 if (Test-Path "database/database.sqlite") {
     Remove-Item "database/database.sqlite" -Force
     Write-Host "✓ Old database removed" -ForegroundColor Green
-} else {
+}
+else {
     Write-Host "✓ No existing database found" -ForegroundColor Green
 }
 Write-Host ""

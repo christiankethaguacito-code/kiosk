@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('uploaded_by');
             $table->timestamps();
             
-            $table->foreign('uploaded_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('uploaded_by')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 

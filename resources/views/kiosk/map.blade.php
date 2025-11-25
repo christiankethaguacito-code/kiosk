@@ -36,10 +36,7 @@
         width: 100%;
         height: 100%;
         background: #f5f5f5;
-        border: 4px solid #374151;
-        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
     .modal-overlay {
         display: none;
@@ -372,12 +369,12 @@
         </div>
     </header>
 
-    <div class="flex-1 flex gap-6 p-8">
-        <!-- Map Section (65%) -->
-        <div class="flex-1" style="flex: 0 0 65%;">
-            <div class="map-wrapper" id="mapContainer" style="width: 100%; height: 100%;">
-                <div class="hint-overlay" id="interactiveHint">👆 Click on any building to explore</div>
-                <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+    <div class="flex p-8">
+        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: calc(100vh - 120px); max-height: calc(100vh - 176px); width: 100%;">
+            <!-- Map Section (65%) -->
+            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 65%; height: 100%; position: relative; overflow: hidden;">
+            <div class="hint-overlay" id="interactiveHint">👆 Click on any building to explore</div>
+            <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
                 <g id="layer1" transform="translate(43.417 59.938)">
                     <path id="Premises" d="m-33.024-7.685-1.12 176.012 156.418 1.031v36.09l129.52.001c-.035-88.47-.025-172.804 0-261.322l-177.22.568z" style="fill:#bfe4c5;fill-opacity:1;fill-rule:evenodd;stroke:#0a0a00;stroke-width:.275879;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
                 </g>
@@ -674,19 +671,18 @@
                     <circle cx="30" cy="167" r="2" fill="#f44336" data-building="Field"/>
                 </g>
             </svg>
-            </div>
         </div>
-        
-        <!-- Sidebar Section (35%) - Toggles between Legend and Building Details -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden" style="flex: 0 0 35%; max-height: calc(100vh - 200px); display: flex; flex-direction: column;">
+            
+            <!-- Sidebar Section (35%) - Toggles between Legend and Building Details -->
+            <div class="bg-white" style="flex: 0 0 35%; display: flex; flex-direction: column; overflow: hidden;">
             
             <!-- Legend View -->
-            <div id="legendView" style="display: flex; flex-direction: column; height: 100%;">
-                <div class="p-6 border-b" style="border-color: #248823;">
+            <div id="legendView" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                <div class="p-6 border-b" style="border-color: #248823; flex-shrink: 0;">
                     <h2 class="text-3xl font-bold text-gray-800">Map Legend</h2>
                 </div>
                 
-                <div class="flex-1 overflow-y-auto p-6">
+                <div class="overflow-y-auto p-6" style="flex: 1 1 0; min-height: 0;">
                     <h3 class="text-xl font-semibold text-gray-700 mb-3 flex items-center gap-2">
                         <span class="text-2xl">🏛️</span> Campus Buildings
                     </h3>
@@ -762,18 +758,19 @@
             </div>
             
             <!-- Building Details View (replaces legend when building is clicked) -->
-            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%;">
-                <div class="p-4 border-b flex items-center gap-3" style="border-color: #248823;">
+            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%; min-height: 0;">
+                <div class="p-4 border-b flex items-center gap-3" style="border-color: #248823; flex-shrink: 0;">
                     <button onclick="closeBuildingDetails()" class="text-2xl text-gray-600 hover:text-gray-800 transition p-2 rounded-lg hover:bg-gray-100">
                         ←
                     </button>
                     <h2 id="buildingDetailTitle" class="text-xl font-bold text-gray-800">Building Details</h2>
                 </div>
                 
-                <div id="buildingDetailContent" class="flex-1 overflow-y-auto p-4">
+                <div id="buildingDetailContent" class="flex-1 overflow-y-auto p-4" style="min-height: 0;">
                     <!-- Building details load here -->
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>

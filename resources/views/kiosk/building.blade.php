@@ -149,7 +149,7 @@
                             </div>
                         </div>
 
-                        @if($office->services->count() > 0)
+                        @if($office->services && $office->services->count() > 0)
                         <div class="mt-4 bg-white rounded-lg p-5 border border-gray-200">
                             <p class="font-bold text-base text-gray-700 mb-4 flex items-center gap-2">
                                 <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -24,7 +24,7 @@ class AnnouncementController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'image_path' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
             'display_order' => 'nullable|integer|min:0',
@@ -53,7 +53,7 @@ class AnnouncementController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => 'nullable|string',
             'image_path' => 'nullable|image|max:2048',
             'is_active' => 'boolean',
             'display_order' => 'nullable|integer|min:0',

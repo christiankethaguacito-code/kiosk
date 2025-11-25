@@ -37,7 +37,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-lg text-teal-700 font-bold uppercase">Total</p>
-                        <p class="text-5xl font-black text-teal-900 mt-2">{{ $announcements->total() }}</p>
+                        <p class="text-5xl font-black text-teal-900 mt-2">{{ $announcements->count() }}</p>
                     </div>
                     <div class="text-6xl">📊</div>
                 </div>

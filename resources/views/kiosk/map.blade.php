@@ -360,9 +360,9 @@
     </header>
 
     <div class="flex p-8" style="flex: 1; min-height: 0;">
-        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: 100%; width: 100%;">
+        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: 100%; width: 100%; position: relative;">
             <!-- Map Section (60%) -->
-            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: hidden;">
+            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: visible; transition: flex 0.5s ease;">
             <div class="hint-overlay" id="interactiveHint">👆 Click on any building to explore</div>
             <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
                 <g id="layer1" transform="translate(43.417 59.938)">
@@ -650,7 +650,7 @@
         </div>
             
             <!-- Sidebar Section (40%) - Toggles between Legend and Building Details -->
-            <div class="bg-white" style="flex: 0 0 40%; display: flex; flex-direction: column; overflow: hidden;">
+            <div id="sidebarContainer" class="bg-white" style="flex: 0 0 40%; display: flex; flex-direction: column; overflow: visible; position: relative; z-index: 20; transition: flex 0.5s ease;">
             
             <!-- Legend View -->
             <div id="legendView" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
@@ -724,7 +724,26 @@
             </div>
             
             <!-- Building Details View (replaces legend when building is clicked) -->
-            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%; min-height: 0;">
+            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%; min-height: 0; position: relative; overflow: visible; z-index: 5;">
+                <!-- Wrapper clips the right side, allows left side to show -->
+                <div style="position: absolute; left: -40px; top: 0; width: 40px; height: 100%; overflow: hidden; z-index: 25;">
+                    <div id="cabinetToggle" 
+                         style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%); 
+                                background: linear-gradient(135deg, #248823 0%, #1a6619 100%); 
+                                width: 40px; height: 100px; border-radius: 12px 0 0 12px; 
+                                box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+                                display: flex; align-items: center; justify-content: center;
+                                cursor: pointer; transition: left 0.5s ease, width 0.3s ease, border-radius 0.5s ease; opacity: 1;"
+                         onclick="toggleCabinet()"
+                         onmouseenter="if(!cabinetExpanded) { this.style.left='-5px'; this.style.width='45px'; }"
+                         onmouseleave="if(!cabinetExpanded) { this.style.left='0px'; this.style.width='40px'; }">
+                        <svg id="cabinetChevron" style="width: 24px; height: 24px; color: white; transition: transform 0.3s ease;" 
+                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </div>
+                </div>
+                
                 <div class="p-4 border-b flex items-center gap-3" style="border-color: #248823; flex-shrink: 0;">
                     <button onclick="closeBuildingDetails()" class="text-2xl text-gray-600 hover:text-gray-800 transition p-2 rounded-lg hover:bg-gray-100">
                         ←
@@ -1215,6 +1234,15 @@
         document.getElementById('legendView').style.display = 'none';
         document.getElementById('buildingDetailsView').style.display = 'flex';
         
+        // Animate cabinet toggle sliding from hidden (inside sidebar) to visible (on map)
+        const cabinetToggle = document.getElementById('cabinetToggle');
+        if (cabinetToggle) {
+            setTimeout(() => {
+                cabinetToggle.style.left = '0px';
+                cabinetToggle.style.opacity = '1';
+            }, 100);
+        }
+        
         // Show loading
         document.getElementById('buildingDetailTitle').textContent = 'Loading...';
         document.getElementById('buildingDetailContent').innerHTML = `
@@ -1299,57 +1327,20 @@
             `;
         }
         
-        // Offices Section
-        if (building.offices && building.offices.length > 0) {
-            content += `
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span style="color: #248823;">🏛️</span> Offices (${building.offices.length})
-                    </h3>
-                    <a href="/building/${building.id}" 
-                       target="_blank"
-                       class="px-3 py-1.5 text-xs font-semibold text-white rounded-lg shadow hover:shadow-lg transition"
-                       style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-                        View Full Details →
-                    </a>
-                </div>
-            `;
-            building.offices.forEach(office => {
-                content += `
-                    <div class="bg-white border border-gray-200 p-3 rounded-lg mb-2 hover:shadow-md transition">
-                        <h4 class="font-bold text-base mb-1" style="color: #248823;">${office.name}</h4>
-                        ${office.floor_number ? `<p class="text-gray-500 text-xs mb-1">📍 Floor ${office.floor_number}</p>` : ''}
-                        ${office.head_name ? `
-                            <div class="mt-2 bg-gray-50 rounded p-2">
-                                <p class="font-semibold text-sm text-gray-800">${office.head_name}</p>
-                                <p class="text-xs text-gray-600">${office.head_title || ''}</p>
-                            </div>
-                        ` : ''}
-                        ${office.services && office.services.length > 0 ? `
-                            <div class="mt-2">
-                                <p class="font-semibold text-xs text-gray-600 mb-1">Services:</p>
-                                <ul class="space-y-1">
-                                    ${office.services.map(s => `
-                                        <li class="flex items-start gap-1 text-xs text-gray-600">
-                                            <span class="mt-1">•</span>
-                                            <span>${s.description}</span>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            });
-        } else {
-            // No offices found
-            content += `
-                <div class="text-center py-8 bg-gray-50 rounded-lg">
-                    <p class="text-gray-500 text-sm mb-2">No office information available</p>
-                    <p class="text-gray-400 text-xs">This building's details are being updated</p>
-                </div>
-            `;
-        }
+        // View Full Details Link with Chevron
+        content += `
+            <div class="flex justify-start mt-6">
+                <a href="/building/${building.id}" 
+                   target="_blank"
+                   class="flex items-center gap-2 text-base font-semibold hover:gap-3 transition-all group"
+                   style="color: #248823;">
+                    <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                    <span class="border-b-2 border-transparent group-hover:border-current transition-all">View Full Details</span>
+                </a>
+            </div>
+        `;
         
             document.getElementById('buildingDetailTitle').textContent = building.name;
             document.getElementById('buildingDetailContent').innerHTML = content;
@@ -1391,8 +1382,53 @@
     }
     
     function closeBuildingDetails() {
+        // Reset cabinet toggle to hidden position
+        const cabinetToggle = document.getElementById('cabinetToggle');
+        if (cabinetToggle) {
+            cabinetToggle.style.left = '40px';
+            cabinetToggle.style.opacity = '1';
+        }
+        cabinetExpanded = false;
+        
         document.getElementById('buildingDetailsView').style.display = 'none';
         document.getElementById('legendView').style.display = 'flex';
+    }
+    
+    // Toggle expandable cabinet
+    let cabinetExpanded = false;
+    function toggleCabinet() {
+        const chevron = document.getElementById('cabinetChevron');
+        const toggle = document.getElementById('cabinetToggle');
+        const wrapper = toggle.parentElement;
+        const mapContainer = document.getElementById('mapContainer');
+        const sidebarContainer = document.getElementById('sidebarContainer');
+        cabinetExpanded = !cabinetExpanded;
+        
+        if (cabinetExpanded) {
+            // Rotate chevron to point right
+            chevron.style.transform = 'rotate(180deg)';
+            // Remove wrapper clipping so chevron is visible
+            wrapper.style.overflow = 'visible';
+            // Move chevron to the right (now visible since no clipping)
+            toggle.style.left = '40px';
+            // Shift border radius to right side
+            toggle.style.borderRadius = '0 12px 12px 0';
+            // Expand sidebar to full width
+            mapContainer.style.flex = '0 0 0%';
+            sidebarContainer.style.flex = '0 0 100%';
+        } else {
+            // Rotate chevron back to point left
+            chevron.style.transform = 'rotate(0deg)';
+            // Restore wrapper clipping
+            wrapper.style.overflow = 'hidden';
+            // Move chevron back to visible position (on map)
+            toggle.style.left = '0px';
+            // Restore border radius to left side
+            toggle.style.borderRadius = '12px 0 0 12px';
+            // Restore original 60/40 distribution
+            mapContainer.style.flex = '0 0 60%';
+            sidebarContainer.style.flex = '0 0 40%';
+        }
     }
     
     // Show message for buildings not yet in database

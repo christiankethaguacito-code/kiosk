@@ -8,7 +8,7 @@ Route::post('/buildings/{id}/coordinates', [MapController::class, 'updateCoordin
 Route::post('/navigation/endpoints', [MapController::class, 'updateNavigationEndpoints']);
 
 Route::get('/buildings', function() {
-    $buildings = Building::with(['offices'])->get();
+    $buildings = Building::with(['offices.services'])->get();
     return response()->json($buildings);
 });
 

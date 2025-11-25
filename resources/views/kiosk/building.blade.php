@@ -64,7 +64,12 @@
 
     <div class="max-w-7xl mx-auto px-6 py-10">
         <!-- Building Image Gallery -->
-        @if($building->image_path || $building->gallery_images)
+        @php
+            $galleryImages = $building->gallery_images ? json_decode($building->gallery_images, true) : [];
+            $hasGallery = is_array($galleryImages) && count($galleryImages) > 0;
+        @endphp
+        
+        @if($building->image_path || $hasGallery)
         <div class="mb-10 bg-white rounded-xl shadow-xl overflow-hidden">
             <div class="swiper building-gallery-swiper">
                 <div class="swiper-wrapper">
@@ -76,8 +81,8 @@
                     </div>
                     @endif
                     
-                    @if($building->gallery_images)
-                        @foreach(json_decode($building->gallery_images, true) as $image)
+                    @if($hasGallery)
+                        @foreach($galleryImages as $image)
                         <div class="swiper-slide">
                             <img src="{{ asset('storage/' . $image) }}" 
                                  alt="{{ $building->name }}"
@@ -86,7 +91,7 @@
                         @endforeach
                     @endif
                 </div>
-                @if($building->gallery_images && count(json_decode($building->gallery_images, true)) > 0)
+                @if($hasGallery)
                 <div class="swiper-button-next"></div>
                 <div class="swiper-button-prev"></div>
                 <div class="swiper-pagination"></div>

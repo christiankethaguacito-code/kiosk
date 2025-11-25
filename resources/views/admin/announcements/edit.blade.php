@@ -16,16 +16,10 @@
             @enderror
         </div>
 
-        <div class="mb-4">
-            <label for="content" class="block text-gray-700 font-medium mb-2">Content</label>
-            <textarea name="content" id="content" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2" style="--tw-ring-color: #248823;" required>{{ old('content', $announcement->content) }}</textarea>
-            @error('content')
-                <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-            @enderror
-        </div>
+        <input type="hidden" name="content" value="{{ old('content', $announcement->content) }}">
 
         <div class="mb-4">
-            <label for="image_path" class="block text-gray-700 font-medium mb-2">Image (Optional)</label>
+            <label for="image_path" class="block text-gray-700 font-medium mb-2">Upload Announcement</label>
             @if($announcement->image_path)
                 <div class="mb-2">
                     <img src="{{ asset('storage/' . $announcement->image_path) }}" alt="{{ $announcement->title }}" class="w-32 h-32 object-cover rounded" id="currentImage">

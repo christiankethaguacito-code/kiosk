@@ -4,7 +4,32 @@
 @section('header', 'Edit Service')
 
 @section('content')
-<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
+<!-- Full Page Background -->
+<div class="min-h-screen relative" style="background: url('{{ asset('images/background.jpg') }}') center/cover no-repeat fixed;">
+    <div class="absolute inset-0 bg-gradient-to-br from-teal-900/80 via-teal-800/70 to-green-900/80"></div>
+    
+    <div class="relative z-10 p-8 max-w-4xl mx-auto">
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-purple-700 to-purple-800 rounded-3xl p-8 shadow-2xl border-4 border-white/30">
+                <div class="flex items-center gap-6">
+                    <a href="{{ route('admin.services.index') }}" 
+                       class="group bg-white/20 hover:bg-white/30 text-white p-4 rounded-2xl transition-all duration-300 border-2 border-white/30 hover:border-white/50">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                    </a>
+                    <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-20 w-20 drop-shadow-2xl">
+                    <div>
+                        <h1 class="text-4xl font-black text-white drop-shadow-lg tracking-tight uppercase">
+                            ✏️ Edit Service
+                        </h1>
+                        <p class="text-lg text-purple-100 mt-2 font-semibold">{{ $service->description }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border-4 border-purple-600/30">
     <form action="{{ route('admin.services.update', $service) }}" method="POST">
         @csrf
         @method('PUT')

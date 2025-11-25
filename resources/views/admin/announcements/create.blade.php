@@ -2,7 +2,15 @@
 
 @section('content')
 <div class="p-6 max-w-2xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Add New Announcement</h1>
+    <div class="flex items-center gap-4 mb-6">
+        <a href="{{ route('admin.announcements.index') }}" 
+           class="bg-gradient-to-r from-teal-600 to-teal-700 hover:from-teal-700 hover:to-teal-800 text-white p-3 rounded-xl transition-all duration-300 shadow-lg hover:shadow-teal-500/50 transform hover:scale-105">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+        </a>
+        <h1 class="text-3xl font-bold text-gray-800">Add New Announcement</h1>
+    </div>
 
     <form action="{{ route('admin.announcements.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded-lg p-6">
         @csrf

@@ -12,6 +12,12 @@
             <div class="bg-gradient-to-r from-teal-700 to-teal-800 rounded-3xl p-8 shadow-2xl border-4 border-white/30">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-6">
+                        <a href="{{ route('admin.dashboard') }}" 
+                           class="group bg-white/20 hover:bg-white/30 text-white p-4 rounded-2xl transition-all duration-300 border-2 border-white/30 hover:border-white/50">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                        </a>
                         <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-24 w-24 drop-shadow-2xl">
                         <div>
                             <h1 class="text-5xl font-black text-white drop-shadow-lg tracking-tight uppercase">

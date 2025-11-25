@@ -11,12 +11,7 @@ class Office extends Model
         'name',
         'floor_number',
         'head_name',
-        'head_title',
-        'services'
-    ];
-
-    protected $casts = [
-        'services' => 'array',
+        'head_title'
     ];
 
     public function building()

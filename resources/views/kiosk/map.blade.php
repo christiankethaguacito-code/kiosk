@@ -1550,6 +1550,25 @@
         }
         
         drawNavigationPath(navKey);
+        
+        // Show building details in sidebar when clicking legend item
+        const svgId = Object.keys(svgToDisplayName).find(key => 
+            svgToDisplayName[key] === buildingName || key === navKey
+        );
+        
+        if (svgId) {
+            const dbName = svgToDbName[svgId];
+            if (dbName) {
+                const building = buildings.find(b => b.name === dbName);
+                if (building) {
+                    showBuildingModal(building.id);
+                } else {
+                    showBuildingNotAvailable(dbName);
+                }
+            } else {
+                showBuildingNotAvailable(svgToDisplayName[svgId] || buildingName);
+            }
+        }
     }
     
     // Enhanced interactivity: Keyboard shortcuts and click-outside-to-close

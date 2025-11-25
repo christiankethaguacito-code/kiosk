@@ -1364,7 +1364,19 @@
         
         // Offices Section
         if (building.offices && building.offices.length > 0) {
-            content += `<h3 class="text-lg font-bold mb-3 flex items-center gap-2"><span style="color: #248823;">🏛️</span> Offices (${building.offices.length})</h3>`;
+            content += `
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <span style="color: #248823;">🏛️</span> Offices (${building.offices.length})
+                    </h3>
+                    <a href="/building/${building.id}" 
+                       target="_blank"
+                       class="px-3 py-1.5 text-xs font-semibold text-white rounded-lg shadow hover:shadow-lg transition"
+                       style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                        View Full Details →
+                    </a>
+                </div>
+            `;
             building.offices.forEach(office => {
                 content += `
                     <div class="bg-white border border-gray-200 p-3 rounded-lg mb-2 hover:shadow-md transition">

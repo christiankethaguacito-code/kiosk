@@ -44,7 +44,7 @@ class KioskController extends Controller
 
     public function building($id)
     {
-        $building = Building::with('offices')->findOrFail($id);
+        $building = Building::with('offices.services')->findOrFail($id);
         return view('kiosk.building', compact('building'));
     }
 

@@ -1327,20 +1327,49 @@
             `;
         }
         
-        // View Full Details Link with Chevron
-        content += `
-            <div class="flex justify-start mt-6">
-                <a href="/building/${building.id}" 
-                   target="_blank"
-                   class="flex items-center gap-2 text-base font-semibold hover:gap-3 transition-all group"
-                   style="color: #248823;">
-                    <svg class="w-6 h-6 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                    <span class="border-b-2 border-transparent group-hover:border-current transition-all">View Full Details</span>
-                </a>
-            </div>
-        `;
+        // Offices (hidden by default, shown when expanded)
+        if (building.offices && building.offices.length > 0) {
+            content += `
+                <div id="officesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        Offices
+                    </h3>
+                    <div class="space-y-2">
+                        ${building.offices.map(office => `
+                            <div class="bg-white rounded-lg p-3 border-l-4" style="border-color: #248823;">
+                                <div class="font-medium text-gray-800">${office.name}</div>
+                                ${office.description ? `<div class="text-sm text-gray-600 mt-1">${office.description}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Services (hidden by default, shown when expanded)
+        if (building.services && building.services.length > 0) {
+            content += `
+                <div id="servicesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
+                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                        </svg>
+                        Services
+                    </h3>
+                    <div class="space-y-2">
+                        ${building.services.map(service => `
+                            <div class="bg-white rounded-lg p-3 border-l-4" style="border-color: #248823;">
+                                <div class="font-medium text-gray-800">${service.name}</div>
+                                ${service.description ? `<div class="text-sm text-gray-600 mt-1">${service.description}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
         
             document.getElementById('buildingDetailTitle').textContent = building.name;
             document.getElementById('buildingDetailContent').innerHTML = content;
@@ -1402,6 +1431,8 @@
         const wrapper = toggle.parentElement;
         const mapContainer = document.getElementById('mapContainer');
         const sidebarContainer = document.getElementById('sidebarContainer');
+        const officesSection = document.getElementById('officesSection');
+        const servicesSection = document.getElementById('servicesSection');
         cabinetExpanded = !cabinetExpanded;
         
         if (cabinetExpanded) {
@@ -1416,6 +1447,21 @@
             // Expand sidebar to full width
             mapContainer.style.flex = '0 0 0%';
             sidebarContainer.style.flex = '0 0 100%';
+            // Show offices and services with animation
+            if (officesSection) {
+                officesSection.style.display = 'block';
+                setTimeout(() => {
+                    officesSection.style.opacity = '1';
+                    officesSection.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            if (servicesSection) {
+                servicesSection.style.display = 'block';
+                setTimeout(() => {
+                    servicesSection.style.opacity = '1';
+                    servicesSection.style.transform = 'translateY(0)';
+                }, 10);
+            }
         } else {
             // Rotate chevron back to point left
             chevron.style.transform = 'rotate(0deg)';
@@ -1428,6 +1474,21 @@
             // Restore original 60/40 distribution
             mapContainer.style.flex = '0 0 60%';
             sidebarContainer.style.flex = '0 0 40%';
+            // Hide offices and services with animation
+            if (officesSection) {
+                officesSection.style.opacity = '0';
+                officesSection.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    officesSection.style.display = 'none';
+                }, 500);
+            }
+            if (servicesSection) {
+                servicesSection.style.opacity = '0';
+                servicesSection.style.transform = 'translateY(-10px)';
+                setTimeout(() => {
+                    servicesSection.style.display = 'none';
+                }, 500);
+            }
         }
     }
     

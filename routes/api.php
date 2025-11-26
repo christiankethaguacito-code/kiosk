@@ -8,7 +8,9 @@ Route::post('/buildings/{id}/coordinates', [MapController::class, 'updateCoordin
 Route::post('/navigation/endpoints', [MapController::class, 'updateNavigationEndpoints']);
 
 Route::get('/buildings', function() {
-    $buildings = Building::with(['offices.services'])->get();
+    $buildings = Building::with(['offices.services'])
+        ->select('id', 'code', 'name', 'description', 'image_path', 'image_gallery', 'map_x', 'map_y', 'endpoint_x', 'endpoint_y', 'road_connection')
+        ->get();
     return response()->json($buildings);
 });
 
@@ -21,8 +23,11 @@ Route::get('/buildings/{id}', function($id) {
     
     return response()->json([
         'id' => $building->id,
+        'code' => $building->code,
         'name' => $building->name,
+        'description' => $building->description,
         'image_path' => $building->image_path,
+        'image_gallery' => $building->image_gallery ? json_decode($building->image_gallery, true) : [],
         'offices' => $building->offices->map(function($office) {
             return [
                 'id' => $office->id,

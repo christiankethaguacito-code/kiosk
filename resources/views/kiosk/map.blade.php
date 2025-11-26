@@ -280,7 +280,10 @@
             <a href="{{ route('kiosk.idle') }}" class="flex items-center">
                 <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-12 w-12 object-contain">
             </a>
-            <h1 class="text-2xl font-bold">Access Map</h1>
+            <div>
+                <h1 class="text-2xl font-bold">Access Map</h1>
+                <p class="text-sm text-green-100 font-medium">Sultan Kudarat State University</p>
+            </div>
         </div>
         <div class="flex-1 max-w-md mx-8">
             <div class="relative">
@@ -1477,52 +1480,130 @@
         // Building Description
         if (building.description) {
             content += `
-                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-6 border-l-4" style="border-color: #248823;">
+                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-4 border-l-4" style="border-color: #248823;">
                     <p class="text-gray-700">${building.description}</p>
                 </div>
             `;
         }
         
-        // Offices and Services (hidden by default, shown when expanded)
+        // Quick Overview Section (Always visible - Summary of services)
         if (building.offices && building.offices.length > 0) {
-            // Collect all services from all offices
+            // Collect all services from all offices for quick preview
             const allServices = [];
             building.offices.forEach(office => {
                 if (office.services && office.services.length > 0) {
                     office.services.forEach(service => {
-                        allServices.push({
-                            ...service,
-                            officeName: office.name
-                        });
+                        allServices.push(service.description || service.name || 'Service');
                     });
                 }
             });
             
+            const serviceCount = allServices.length;
+            const officeCount = building.offices.length;
+            
+            // Show summary card
+            content += `
+                <div class="bg-white rounded-lg p-4 mb-4 border shadow-sm">
+                    <div class="flex items-start gap-3 mb-3">
+                        <div class="bg-green-100 p-2 rounded-lg">
+                            <svg class="w-6 h-6" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-gray-800 mb-1">Building Information</h3>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div class="flex items-center gap-1 text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span>${officeCount} ${officeCount === 1 ? 'Office' : 'Offices'}</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                    </svg>
+                                    <span>${serviceCount} ${serviceCount === 1 ? 'Service' : 'Services'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ${allServices.length > 0 ? `
+                        <div class="mt-3 pt-3 border-t">
+                            <div class="text-xs font-semibold text-gray-600 mb-2">Available Services:</div>
+                            <div class="space-y-1 max-h-32 overflow-y-auto">
+                                ${allServices.slice(0, 5).map(service => `
+                                    <div class="text-sm text-gray-700 flex items-start gap-2">
+                                        <span class="text-green-600 mt-1">•</span>
+                                        <span class="flex-1">${service}</span>
+                                    </div>
+                                `).join('')}
+                                ${allServices.length > 5 ? `
+                                    <div class="text-xs text-gray-500 italic pt-1">
+                                        +${allServices.length - 5} more services... <span style="color: #248823;">Expand to view all</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        // Detailed Offices and Services (hidden by default, shown when cabinet expanded)
+        if (building.offices && building.offices.length > 0) {
             content += `
                 <div id="officesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
                     <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-                        Offices & Services
+                        Detailed Offices & Services
                     </h3>
                     <div class="space-y-3">
                         ${building.offices.map(office => `
                             <div class="bg-white rounded-lg p-4 border-l-4 shadow-sm" style="border-color: #248823;">
-                                <div class="font-bold text-gray-800 mb-1">${office.name}</div>
-                                ${office.floor_number ? `<div class="text-xs text-gray-500 mb-2">📍 Floor ${office.floor_number}</div>` : ''}
+                                <div class="font-bold text-gray-800 mb-1 text-base">${office.name}</div>
+                                ${office.floor_number ? `
+                                    <div class="flex items-center gap-1 text-xs text-gray-500 mb-2">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        Floor ${office.floor_number}
+                                    </div>
+                                ` : ''}
                                 ${office.head_name ? `
-                                    <div class="bg-gray-50 rounded p-2 mb-2">
-                                        <div class="text-sm font-semibold text-gray-700">${office.head_name}</div>
-                                        ${office.head_title ? `<div class="text-xs text-gray-500">${office.head_title}</div>` : ''}
+                                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-3 mb-3">
+                                        <div class="flex items-start gap-2">
+                                            <div class="bg-white p-1.5 rounded-full">
+                                                <svg class="w-4 h-4" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                </svg>
+                                            </div>
+                                            <div class="flex-1">
+                                                <div class="text-sm font-semibold text-gray-800">${office.head_name}</div>
+                                                ${office.head_title ? `<div class="text-xs text-gray-600 mt-0.5">${office.head_title}</div>` : ''}
+                                            </div>
+                                        </div>
                                     </div>
                                 ` : ''}
                                 ${office.services && office.services.length > 0 ? `
-                                    <div class="mt-2 pl-3 border-l-2 border-gray-200">
-                                        <div class="text-xs font-semibold text-gray-600 mb-1">Services:</div>
-                                        ${office.services.map(service => `
-                                            <div class="text-sm text-gray-700 mb-1">• ${service.description || service.name || 'Service'}</div>
-                                        `).join('')}
+                                    <div class="mt-3">
+                                        <div class="flex items-center gap-1 text-xs font-semibold text-gray-700 mb-2">
+                                            <svg class="w-4 h-4" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                            </svg>
+                                            Services Offered:
+                                        </div>
+                                        <div class="space-y-1.5 pl-2">
+                                            ${office.services.map((service, idx) => `
+                                                <div class="flex items-start gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded">
+                                                    <span class="font-bold text-green-600 min-w-[20px]">${idx + 1}.</span>
+                                                    <span class="flex-1">${service.description || service.name || 'Service'}</span>
+                                                </div>
+                                            `).join('')}
+                                        </div>
                                     </div>
                                 ` : ''}
                             </div>

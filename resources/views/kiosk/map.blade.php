@@ -1483,43 +1483,48 @@
             `;
         }
         
-        // Offices (hidden by default, shown when expanded)
+        // Offices and Services (hidden by default, shown when expanded)
         if (building.offices && building.offices.length > 0) {
+            // Collect all services from all offices
+            const allServices = [];
+            building.offices.forEach(office => {
+                if (office.services && office.services.length > 0) {
+                    office.services.forEach(service => {
+                        allServices.push({
+                            ...service,
+                            officeName: office.name
+                        });
+                    });
+                }
+            });
+            
             content += `
                 <div id="officesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
                     <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-                        Offices
+                        Offices & Services
                     </h3>
-                    <div class="space-y-2">
+                    <div class="space-y-3">
                         ${building.offices.map(office => `
-                            <div class="bg-white rounded-lg p-3 border-l-4" style="border-color: #248823;">
-                                <div class="font-medium text-gray-800">${office.name}</div>
-                                ${office.description ? `<div class="text-sm text-gray-600 mt-1">${office.description}</div>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Services (hidden by default, shown when expanded)
-        if (building.services && building.services.length > 0) {
-            content += `
-                <div id="servicesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
-                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                        </svg>
-                        Services
-                    </h3>
-                    <div class="space-y-2">
-                        ${building.services.map(service => `
-                            <div class="bg-white rounded-lg p-3 border-l-4" style="border-color: #248823;">
-                                <div class="font-medium text-gray-800">${service.name}</div>
-                                ${service.description ? `<div class="text-sm text-gray-600 mt-1">${service.description}</div>` : ''}
+                            <div class="bg-white rounded-lg p-4 border-l-4 shadow-sm" style="border-color: #248823;">
+                                <div class="font-bold text-gray-800 mb-1">${office.name}</div>
+                                ${office.floor_number ? `<div class="text-xs text-gray-500 mb-2">📍 Floor ${office.floor_number}</div>` : ''}
+                                ${office.head_name ? `
+                                    <div class="bg-gray-50 rounded p-2 mb-2">
+                                        <div class="text-sm font-semibold text-gray-700">${office.head_name}</div>
+                                        ${office.head_title ? `<div class="text-xs text-gray-500">${office.head_title}</div>` : ''}
+                                    </div>
+                                ` : ''}
+                                ${office.services && office.services.length > 0 ? `
+                                    <div class="mt-2 pl-3 border-l-2 border-gray-200">
+                                        <div class="text-xs font-semibold text-gray-600 mb-1">Services:</div>
+                                        ${office.services.map(service => `
+                                            <div class="text-sm text-gray-700 mb-1">• ${service.description || service.name || 'Service'}</div>
+                                        `).join('')}
+                                    </div>
+                                ` : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -1627,7 +1632,6 @@
         const mapContainer = document.getElementById('mapContainer');
         const sidebarContainer = document.getElementById('sidebarContainer');
         const officesSection = document.getElementById('officesSection');
-        const servicesSection = document.getElementById('servicesSection');
         const imageContainer = document.getElementById('image-container-0');
         const placeholderContainer = document.getElementById('placeholder-container');
         const detailsScroll = document.getElementById('detailsScrollContainer');
@@ -1668,19 +1672,12 @@
                 detailsScroll.style.maxHeight = `calc(100vh - ${headerHeight + imageHeight + 80}px)`;
             }
             
-            // Show offices and services with animation
+            // Show offices/services section with animation
             if (officesSection) {
                 officesSection.style.display = 'block';
                 setTimeout(() => {
                     officesSection.style.opacity = '1';
                     officesSection.style.transform = 'translateY(0)';
-                }, 10);
-            }
-            if (servicesSection) {
-                servicesSection.style.display = 'block';
-                setTimeout(() => {
-                    servicesSection.style.opacity = '1';
-                    servicesSection.style.transform = 'translateY(0)';
                 }, 10);
             }
         } else {
@@ -1715,19 +1712,12 @@
                 detailsScroll.style.maxHeight = 'none';
             }
             
-            // Hide offices and services with animation
+            // Hide offices/services section with animation
             if (officesSection) {
                 officesSection.style.opacity = '0';
                 officesSection.style.transform = 'translateY(-10px)';
                 setTimeout(() => {
                     officesSection.style.display = 'none';
-                }, 500);
-            }
-            if (servicesSection) {
-                servicesSection.style.opacity = '0';
-                servicesSection.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    servicesSection.style.display = 'none';
                 }, 500);
             }
         }

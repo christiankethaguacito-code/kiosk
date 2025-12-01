@@ -582,12 +582,12 @@
                     <text x="223" y="147" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Graduate School</text>
                     
                     <!-- College of Health Sciences -->
-                    <rect x="148" y="135" width="54" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="175" y="139" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Health Sciences</text>
+                    <rect x="145" y="135" width="60" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                    <text x="175" y="139.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Health Sciences</text>
                     
                     <!-- Field -->
-                    <rect x="48" y="98" width="44" height="10" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="70" y="105" text-anchor="middle" font-size="8" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Field</text>
+                    <rect x="52" y="100" width="36" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                    <text x="70" y="106" text-anchor="middle" font-size="6" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Field</text>
                     
                     <!-- Bleacher -->
                     <rect x="97" y="79" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
@@ -602,16 +602,16 @@
                     <text x="275" y="27" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">LHS Ext</text>
                     
                     <!-- Laboratory Highschool -->
-                    <rect x="238" y="43" width="50" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="263" y="48" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Laboratory Highschool</text>
+                    <rect x="233" y="43" width="60" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                    <text x="263" y="48.5" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Laboratory Highschool</text>
                     
                     <!-- College of Medicine -->
-                    <rect x="258" y="30" width="54" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="285" y="35" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Medicine</text>
+                    <rect x="256" y="30" width="58" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                    <text x="285" y="35.5" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Medicine</text>
                     
                     <!-- Restroom -->
-                    <rect x="257" y="6" width="26" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="9.5" text-anchor="middle" font-size="2.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Restroom</text>
+                    <rect x="256" y="6" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                    <text x="270" y="10" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Restroom</text>
                     
                     <!-- SKSU-MPC -->
                     <rect x="236" y="7" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
@@ -634,8 +634,8 @@
                     <text x="135" y="60" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Function Hall</text>
                     
                     <!-- University Gymnasium -->
-                    <rect x="118" y="36" width="40" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="138" y="42" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">University Gymnasium</text>
+                    <rect x="108" y="36" width="60" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                    <text x="138" y="42" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">University Gymnasium</text>
                     
                     <!-- Registrar -->
                     <rect x="172" y="18" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
@@ -833,7 +833,7 @@
 
 <!-- About Modal -->
 <div class="modal-overlay" id="aboutModal" style="backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
+    <div class="bg-white rounded-2xl p-8 max-w-4xl w-full shadow-2xl overflow-y-auto" style="animation: modalSlideIn 0.3s ease-out; max-height: 90vh;">
         <div class="flex justify-between items-start mb-6">
             <div class="flex items-center gap-3">
                 <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
@@ -842,56 +842,180 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">About</h2>
-                    <p class="text-sm text-gray-500">SKSU Access Campus Map</p>
+                    <h2 class="text-2xl font-bold text-gray-800">About This Research</h2>
+                    <p class="text-sm text-gray-500">SKSU Access Campus Map System</p>
                 </div>
             </div>
             <button onclick="closeAbout()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
         </div>
         
-        <div class="space-y-4">
-            <div>
-                <h3 class="font-semibold text-gray-800 mb-2">Campus Navigation System</h3>
-                <p class="text-sm text-gray-600 leading-relaxed">
-                    An interactive campus map designed to help students, faculty, and visitors navigate the 
-                    Sultan Kudarat State University campus with ease.
+        <div class="space-y-6">
+            <!-- Research Overview -->
+            <div class="bg-gray-50 rounded-lg p-6 border-l-4" style="border-color: #248823;">
+                <h3 class="font-bold text-lg text-gray-800 mb-3">Research Overview</h3>
+                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                    This study presents the development and implementation of an <strong>Interactive Digital Campus Navigation System</strong> 
+                    for Sultan Kudarat State University (SKSU). The research addresses the increasing need for efficient wayfinding 
+                    solutions in modern educational institutions, particularly for new students, visitors, and faculty members 
+                    navigating the extensive SKSU campus.
+                </p>
+                <p class="text-sm text-gray-700 leading-relaxed">
+                    The system leverages web-based technologies to provide real-time, accessible campus information through an 
+                    intuitive interface, facilitating seamless navigation and information retrieval across 44 campus buildings, 
+                    116 offices, and 345 services.
                 </p>
             </div>
-            
-            <div class="border-t pt-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Features</h3>
-                <ul class="text-sm text-gray-600 space-y-2">
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Interactive building selection</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Office directory & services</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Real-time announcements</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Building image galleries</span>
-                    </li>
-                </ul>
+
+            <!-- Research Purpose -->
+            <div>
+                <h3 class="font-bold text-lg text-gray-800 mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Research Purpose & Objectives
+                </h3>
+                <div class="bg-white border rounded-lg p-4">
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        <strong>Primary Purpose:</strong> To design, develop, and deploy a comprehensive digital kiosk system 
+                        that enhances campus accessibility, reduces navigation barriers, and improves overall user experience 
+                        within the university environment.
+                    </p>
+                    <p class="text-sm text-gray-700 font-semibold mb-2">Specific Objectives:</p>
+                    <ul class="text-sm text-gray-600 space-y-2 ml-4">
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Develop an interactive SVG-based campus map with real-time building information</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Create a centralized database of campus facilities, offices, and services</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Implement an administrative system for content management and announcements</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Ensure responsive design and accessibility across multiple devices</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Evaluate system usability and effectiveness in improving campus navigation</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Key Features -->
+            <div>
+                <h3 class="font-bold text-lg text-gray-800 mb-3">System Features & Capabilities</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gradient-to-br from-green-50 to-white border border-green-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Interactive Map</span>
+                        </div>
+                        <p class="text-xs text-gray-600">SVG-based clickable buildings with visual feedback and detailed information</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Office Directory</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Comprehensive database with office heads and service descriptions</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-white border border-purple-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Announcements</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Real-time campus announcements and important notices</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-yellow-50 to-white border border-yellow-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Image Galleries</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Visual building documentation with image caching system</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research Team -->
+            <div class="border-t pt-6">
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Research Team</h3>
+                
+                <!-- Researchers -->
+                <div class="mb-6">
+                    <p class="text-sm font-semibold text-gray-700 mb-3">Researchers</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
+                            <img src="{{ asset('images/researcher1.jpg') }}" alt="Hannah Mae V. Magallosa" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm">Hannah Mae V. Magallosa</p>
+                                <p class="text-xs text-gray-600">Researcher</p>
+                                <p class="text-xs text-gray-500 mt-1">BS Computer Engineering</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
+                            <img src="{{ asset('images/researcher2.jpg') }}" alt="Sam Jones L. Cedana" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm">Sam Jones L. Cedana</p>
+                                <p class="text-xs text-gray-600">Researcher</p>
+                                <p class="text-xs text-gray-500 mt-1">BS Computer Engineering</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adviser -->
+                <div>
+                    <p class="text-sm font-semibold text-gray-700 mb-3">Research Adviser</p>
+                    <div class="flex items-center gap-4 bg-gradient-to-r from-green-50 to-white p-4 rounded-lg border-2" style="border-color: #248823;">
+                        <img src="{{ asset('images/adviser.jpg') }}" alt="Charity L. Oria, DEng" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                        <div>
+                            <p class="font-bold text-gray-800">Charity L. Oria, DEng</p>
+                            <p class="text-sm text-gray-600">Research Adviser</p>
+                            <p class="text-xs text-gray-500 mt-1">College of Engineering</p>
+                            <p class="text-xs text-gray-500">Sultan Kudarat State University</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Specifications -->
+            <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                <h3 class="font-semibold text-gray-800 mb-2 text-sm">Technical Implementation</h3>
+                <div class="grid grid-cols-3 gap-3 text-xs">
+                    <div>
+                        <p class="font-semibold text-gray-700">Frontend</p>
+                        <p class="text-gray-600">Laravel Blade, Alpine.js, Tailwind CSS</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Backend</p>
+                        <p class="text-gray-600">Laravel 11, PHP 8.2, MySQL</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Database</p>
+                        <p class="text-gray-600">44 Buildings, 116 Offices, 345 Services</p>
+                    </div>
+                </div>
             </div>
             
+            <!-- Footer -->
             <div class="border-t pt-4">
                 <p class="text-xs text-gray-500 text-center">
                     © 2025 Sultan Kudarat State University<br>
-                    Version 1.0.0
+                    Interactive Campus Navigation System • Version 1.0.0<br>
+                    Research Project - College of Computing Studies
                 </p>
             </div>
         </div>
@@ -909,6 +1033,37 @@
     });
 </script>
 @endif
+
+<script>
+    // Handle admin login form submission with CSRF refresh
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('adminLoginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Refresh CSRF token before submission
+                try {
+                    const response = await fetch('/refresh-csrf');
+                    const data = await response.json();
+                    
+                    if (data.csrf_token) {
+                        // Update the CSRF token in the form
+                        const csrfInput = loginForm.querySelector('input[name="_token"]');
+                        if (csrfInput) {
+                            csrfInput.value = data.csrf_token;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error refreshing CSRF token:', error);
+                }
+                
+                // Submit the form
+                loginForm.submit();
+            });
+        }
+    });
+</script>
 
 <style>
     @keyframes modalSlideIn {
@@ -3147,6 +3302,39 @@
             coordinateTooltip.style.display = 'none';
         }
     }
+
+    // Refresh CSRF token periodically to prevent 419 errors on kiosk
+    function refreshCsrfToken() {
+        fetch('/refresh-csrf', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.csrf_token) {
+                // Update all CSRF token inputs
+                document.querySelectorAll('input[name="_token"]').forEach(input => {
+                    input.value = data.csrf_token;
+                });
+                console.log('CSRF token refreshed successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Error refreshing CSRF token:', error);
+        });
+    }
+
+    // Refresh CSRF token every 90 minutes (before the 120-minute session expires)
+    setInterval(refreshCsrfToken, 90 * 60 * 1000);
+    
+    // Also refresh on page visibility change (when user returns to kiosk)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            refreshCsrfToken();
+        }
+    });
 </script>
 @endsection
 

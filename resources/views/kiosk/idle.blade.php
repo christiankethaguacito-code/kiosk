@@ -61,7 +61,105 @@
 
 @section('scripts')
 <script>
+    const buildings = @json($buildings);
     console.log('Idle screen script loaded');
+    
+    // Start preloading images immediately
+    let loadedCount = 0;
+    let totalImages = 0;
+    let currentFile = '';
+    
+    // Function to update progress
+    const updateProgress = () => {
+        console.clear();
+        console.log(`🖼️ Caching building images: ${currentFile}`);
+        console.log(`📊 Progress: ${loadedCount}/${totalImages}`);
+    };
+    
+    // Preload all building images in background
+    function preloadAllBuildingImages() {
+        buildings.forEach(building => {
+            // Try JPG first, then PNG from public folder
+            const publicJpg = `/images/buildings/${building.code}.jpg`;
+            const publicPng = `/images/buildings/${building.code}.png`;
+            
+            // Preload public images
+            [publicJpg, publicPng].forEach(src => {
+                totalImages++;
+                const img = new Image();
+                img.onload = () => {
+                    loadedCount++;
+                    currentFile = src.split('/').pop();
+                    updateProgress();
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`✅ All ${totalImages}/${totalImages} images cached successfully`);
+                    }
+                };
+                img.onerror = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`✅ All ${totalImages}/${totalImages} images cached successfully`);
+                    }
+                };
+                img.src = src;
+            });
+            
+            // Preload database images
+            if (building.image_path) {
+                totalImages++;
+                const dbImg = new Image();
+                const dbSrc = `/storage/${building.image_path}`;
+                dbImg.onload = () => {
+                    loadedCount++;
+                    currentFile = dbSrc.split('/').pop();
+                    updateProgress();
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`✅ All ${totalImages}/${totalImages} images cached successfully`);
+                    }
+                };
+                dbImg.onerror = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`✅ All ${totalImages}/${totalImages} images cached successfully`);
+                    }
+                };
+                dbImg.src = dbSrc;
+            }
+            
+            // Preload gallery images
+            if (building.image_gallery && building.image_gallery.length > 0) {
+                building.image_gallery.forEach(imgPath => {
+                    totalImages++;
+                    const galleryImg = new Image();
+                    const gallerySrc = `/storage/${imgPath}`;
+                    galleryImg.onload = () => {
+                        loadedCount++;
+                        currentFile = gallerySrc.split('/').pop();
+                        updateProgress();
+                        if (loadedCount === totalImages) {
+                            console.clear();
+                            console.log(`✅ All ${totalImages}/${totalImages} images cached successfully`);
+                        }
+                    };
+                    galleryImg.onerror = () => {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            console.clear();
+                            console.log(`✅ All ${totalImages}/${totalImages} images cached successfully`);
+                        }
+                    };
+                    galleryImg.src = gallerySrc;
+                });
+            }
+        });
+    }
+    
+    // Start preloading immediately
+    preloadAllBuildingImages();
     
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');

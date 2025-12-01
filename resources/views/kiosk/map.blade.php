@@ -530,8 +530,8 @@
                     <text x="260" y="201" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Food Center</text>
                     
                     <!-- Mosque -->
-                    <rect x="0" y="232" width="22" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));" transform="rotate(-40 2 236)"/>
-                    <text x="2" y="236" text-anchor="start" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;" transform="rotate(-40 2 236)">Mosque</text>
+                    <rect x="-6.247" y="230.701" width="22" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));" transform="rotate(-39.394)skewX(-.212)"/>
+                    <text x="4.753" y="233.201" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;" transform="rotate(-39.394)skewX(-.212)">Mosque</text>
                     
                     <!-- TIP -->
                     <rect x="110" y="174" width="22" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>

@@ -116,6 +116,109 @@
 </div>
 
 <script>
+const buildings = @json($buildings);
+
+// Start preloading all building images immediately when page loads
+(function preloadAllBuildingImages() {
+    let loadedCount = 0;
+    let totalImages = 0;
+    let currentFile = '';
+    
+    // Function to update progress
+    const updateProgress = () => {
+        console.clear();
+        console.log(`🖼️ Caching building images: ${currentFile}`);
+        console.log(`📊 Progress: ${loadedCount}/${totalImages}`);
+    };
+    
+    buildings.forEach(building => {
+        // Try JPG first, then PNG from public folder
+        const publicJpg = `/images/buildings/${building.code}.jpg`;
+        const publicPng = `/images/buildings/${building.code}.png`;
+        
+        // Preload public images
+        [publicJpg, publicPng].forEach(src => {
+            totalImages++;
+            const img = new Image();
+            img.onload = () => {
+                loadedCount++;
+                currentFile = src.split('/').pop();
+                updateProgress();
+                if (loadedCount === totalImages) {
+                    console.clear();
+                    console.log(`✅ All ${totalImages} building images cached successfully!`);
+                    console.log(`🚀 Map will load instantly when you continue`);
+                }
+            };
+            img.onerror = () => {
+                loadedCount++;
+                if (loadedCount === totalImages) {
+                    console.clear();
+                    console.log(`✅ All ${totalImages} building images cached successfully!`);
+                    console.log(`🚀 Map will load instantly when you continue`);
+                }
+            };
+            img.src = src;
+        });
+        
+        // Preload database images
+        if (building.image_path) {
+            totalImages++;
+            const dbImg = new Image();
+            const dbSrc = `/storage/${building.image_path}`;
+            dbImg.onload = () => {
+                loadedCount++;
+                currentFile = dbSrc.split('/').pop();
+                updateProgress();
+                if (loadedCount === totalImages) {
+                    console.clear();
+                    console.log(`✅ All ${totalImages} building images cached successfully!`);
+                    console.log(`🚀 Map will load instantly when you continue`);
+                }
+            };
+            dbImg.onerror = () => {
+                loadedCount++;
+                if (loadedCount === totalImages) {
+                    console.clear();
+                    console.log(`✅ All ${totalImages} building images cached successfully!`);
+                    console.log(`🚀 Map will load instantly when you continue`);
+                }
+            };
+            dbImg.src = dbSrc;
+        }
+        
+        // Preload gallery images
+        if (building.image_gallery && building.image_gallery.length > 0) {
+            building.image_gallery.forEach(imgPath => {
+                totalImages++;
+                const galleryImg = new Image();
+                const gallerySrc = `/storage/${imgPath}`;
+                galleryImg.onload = () => {
+                    loadedCount++;
+                    currentFile = gallerySrc.split('/').pop();
+                    updateProgress();
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`✅ All ${totalImages} building images cached successfully!`);
+                        console.log(`🚀 Map will load instantly when you continue`);
+                    }
+                };
+                galleryImg.onerror = () => {
+                    loadedCount++;
+                    if (loadedCount === totalImages) {
+                        console.clear();
+                        console.log(`✅ All ${totalImages} building images cached successfully!`);
+                        console.log(`🚀 Map will load instantly when you continue`);
+                    }
+                };
+                galleryImg.src = gallerySrc;
+            });
+        }
+    });
+    
+    console.log(`🔄 Started caching ${totalImages} building images in background...`);
+})();
+
 function kioskScreen() {
     return {
         currentTime: '',

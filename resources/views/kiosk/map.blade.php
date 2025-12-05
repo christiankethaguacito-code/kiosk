@@ -609,10 +609,10 @@
         right: 0;
         background: white;
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-        box-shadow: var(--shadow-lg);
+        box-shadow: var(--shadow-xl), 0 20px 40px rgba(0,0,0,0.2);
         max-height: 320px;
         overflow-y: auto;
-        z-index: 1000;
+        z-index: 9999;
         display: none;
         border: 1px solid var(--border);
         border-top: none;
@@ -1012,7 +1012,7 @@
 
 <div class="h-screen flex flex-col overflow-hidden" style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);">
     <!-- Enhanced Header -->
-    <header class="text-white px-6 py-4 flex justify-between items-center relative overflow-hidden" style="background: linear-gradient(135deg, #248823 0%, #166534 50%, #14532d 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+    <header class="text-white px-6 py-4 flex justify-between items-center relative" style="background: linear-gradient(135deg, #248823 0%, #166534 50%, #14532d 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 1000;">
         <!-- Decorative background elements -->
         <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none;"></div>
         <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none;"></div>
@@ -1074,8 +1074,8 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-95"
-                     class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden"
-                     style="display: none;">
+                     class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
+                     style="display: none; z-index: 9999;">
                     
                     @auth
                         <a href="{{ route('admin.dashboard') }}" 

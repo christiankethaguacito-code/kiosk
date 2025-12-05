@@ -587,6 +587,274 @@
         z-index: 100;
     }
     
+    /* Path animation styles */
+    @keyframes drawPath {
+        from {
+            stroke-dashoffset: var(--path-length);
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+    
+    .animated-path {
+        animation: drawPath 1.5s ease-out forwards;
+    }
+    
+    /* Search dropdown styles */
+    .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        max-height: 320px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        border: 1px solid var(--border);
+        border-top: none;
+    }
+    
+    .search-dropdown.active {
+        display: block;
+    }
+    
+    .search-item {
+        padding: 14px 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--border);
+        transition: all var(--transition-fast);
+    }
+    
+    .search-item:last-child {
+        border-bottom: none;
+    }
+    
+    .search-item:hover, .search-item.highlighted {
+        background: linear-gradient(90deg, rgba(36, 136, 35, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+    }
+    
+    .search-item-icon {
+        width: 36px;
+        height: 36px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.1rem;
+    }
+    
+    .search-item-text {
+        flex: 1;
+    }
+    
+    .search-item-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+    
+    .search-item-category {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    
+    .search-no-results {
+        padding: 24px;
+        text-align: center;
+        color: var(--text-muted);
+    }
+    
+    /* Walking time display */
+    .walking-time-badge {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: var(--radius-lg);
+        display: none;
+        align-items: center;
+        gap: 12px;
+        box-shadow: var(--shadow-xl);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        animation: slideUp 0.3s ease-out;
+    }
+    
+    .walking-time-badge.active {
+        display: flex;
+    }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+    
+    .walking-time-icon {
+        font-size: 1.5rem;
+    }
+    
+    .walking-time-text {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .walking-time-value {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--primary-light);
+    }
+    
+    .walking-time-distance {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+    
+    /* Accessibility panel */
+    .accessibility-panel {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        padding: 20px;
+        width: 320px;
+        z-index: 1000;
+        display: none;
+        animation: slideInRight 0.3s ease-out;
+    }
+    
+    .accessibility-panel.active {
+        display: block;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .accessibility-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .accessibility-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .accessibility-option:last-child {
+        border-bottom: none;
+    }
+    
+    .accessibility-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+    
+    /* Toggle switch */
+    .toggle-switch {
+        position: relative;
+        width: 52px;
+        height: 28px;
+        background: #e2e8f0;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .toggle-switch.active {
+        background: var(--primary);
+    }
+    
+    .toggle-switch::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        transition: all var(--transition-fast);
+    }
+    
+    .toggle-switch.active::after {
+        transform: translateX(24px);
+    }
+    
+    /* High contrast mode */
+    body.high-contrast {
+        --primary: #006400;
+        --text-primary: #000000;
+        --text-secondary: #333333;
+        --border: #000000;
+    }
+    
+    body.high-contrast .legend-item-enhanced,
+    body.high-contrast .search-item {
+        border: 2px solid #000 !important;
+    }
+    
+    body.high-contrast svg [id]:not(#Premises):not(#Outline) {
+        stroke: #000 !important;
+        stroke-width: 2 !important;
+    }
+    
+    /* Large text mode */
+    body.large-text {
+        font-size: 20px !important;
+    }
+    
+    body.large-text .legend-item-enhanced {
+        font-size: 1.1rem !important;
+        padding: 14px 16px !important;
+    }
+    
+    body.large-text .search-item-name {
+        font-size: 1.15rem !important;
+    }
+    
+    body.large-text .walking-time-value {
+        font-size: 1.5rem !important;
+    }
+    
     /* Road skeleton overlay */
     #roadSkeleton {
         pointer-events: none;
@@ -757,7 +1025,7 @@
         </div>
         
         <div class="flex-1 max-w-lg mx-10 relative z-10">
-            <div class="relative group">
+            <div class="relative group" id="searchContainer">
                 <input 
                     type="text" 
                     id="searchInput" 
@@ -774,6 +1042,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
+                <!-- Search Dropdown -->
+                <div class="search-dropdown" id="searchDropdown"></div>
             </div>
         </div>
         
@@ -831,6 +1101,15 @@
                         </button>
                     @endauth
                     
+                    <button onclick="toggleAccessibilityPanel()" 
+                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100 text-left">
+                        <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <span class="text-base font-medium text-gray-700">Accessibility</span>
+                    </button>
+                    
                     <button onclick="showAbout()" 
                             class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition text-left">
                         <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -842,6 +1121,46 @@
             </div>
         </div>
     </header>
+    
+    <!-- Accessibility Panel -->
+    <div class="accessibility-panel" id="accessibilityPanel">
+        <div class="accessibility-title">
+            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            Accessibility Options
+        </div>
+        
+        <div class="accessibility-option">
+            <div class="accessibility-label">
+                <span>🔍</span>
+                Large Text
+            </div>
+            <div class="toggle-switch" id="toggleLargeText" onclick="toggleLargeText()"></div>
+        </div>
+        
+        <div class="accessibility-option">
+            <div class="accessibility-label">
+                <span>🎨</span>
+                High Contrast
+            </div>
+            <div class="toggle-switch" id="toggleHighContrast" onclick="toggleHighContrast()"></div>
+        </div>
+        
+        <div class="accessibility-option">
+            <div class="accessibility-label">
+                <span>🚶</span>
+                Reduced Motion
+            </div>
+            <div class="toggle-switch" id="toggleReducedMotion" onclick="toggleReducedMotion()"></div>
+        </div>
+        
+        <button onclick="resetAccessibility()" 
+                class="w-full mt-4 py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-all">
+            Reset to Default
+        </button>
+    </div>
 
     <!-- Main Content Container - Unified 3-Panel Layout -->
     <div style="flex: 1; display: flex; padding: 1rem; min-height: 0;">
@@ -915,6 +1234,16 @@
                         <span>Tap on any building to explore</span>
                     </span>
                 </div>
+                
+                <!-- Walking Time Badge -->
+                <div class="walking-time-badge" id="walkingTimeBadge">
+                    <span class="walking-time-icon">🚶</span>
+                    <div class="walking-time-text">
+                        <span class="walking-time-value" id="walkingTimeValue">~2 min</span>
+                        <span class="walking-time-distance" id="walkingDistance">~150m walk</span>
+                    </div>
+                </div>
+                
                 <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; max-width: 100%; max-height: 100%; overflow: visible;" preserveAspectRatio="xMidYMid meet">
                 <g id="layer1" transform="translate(43.417 59.938)">
                     <path id="Premises" d="m-33.024-7.685-1.12 176.012 156.418 1.031v36.09l129.52.001c-.035-88.47-.025-172.804 0-261.322l-177.22.568z" style="fill:#bfe4c5;fill-opacity:1;fill-rule:evenodd;stroke:#0a0a00;stroke-width:.275879;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
@@ -2172,38 +2501,281 @@
     updateClock();
     setInterval(updateClock, 1000);
     
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const buildingList = document.getElementById('buildingList');
-        const buildings = buildingList.querySelectorAll('[onclick^="navigateTo"]');
-        const categories = buildingList.querySelectorAll('.font-semibold');
+    // ============================================
+    // ENHANCED SEARCH FUNCTIONALITY WITH DROPDOWN
+    // ============================================
+    
+    // Building categories for search
+    const buildingCategories = {
+        'Administration': 'Admin & Offices',
+        'CTE': 'Academic Colleges',
+        'CHS': 'Academic Colleges',
+        'CHS_Labs': 'Academic Colleges',
+        'CCJE': 'Academic Colleges',
+        'CCJE_ext': 'Academic Colleges',
+        'CoM': 'Academic Colleges',
+        'GS': 'Academic Colleges',
+        'ULRC': 'Facilities & Services',
+        'UG': 'Facilities & Services',
+        'UC': 'Facilities & Services',
+        'Function': 'Facilities & Services',
+        'UPP': 'Facilities & Services',
+        'Motorpool': 'Facilities & Services',
+        'FC': 'Facilities & Services',
+        'Parking_Space': 'Facilities & Services',
+        'Restroom': 'Facilities & Services',
+        'BCSF': 'Medical & Training',
+        'AMTC': 'Medical & Training',
+        'LHS': 'Academic Colleges',
+        'LHS_ext': 'Academic Colleges',
+        'QMS': 'Admin & Offices',
+        'ULD': 'Facilities & Services',
+        'Field': 'Sports & Recreation',
+        'Bleacher': 'Sports & Recreation',
+        'OSAS': 'Admin & Offices',
+        'ROTC': 'Facilities & Services',
+        'DOST': 'Research & Innovation',
+        'TCL': 'Research & Innovation',
+        'Climate': 'Research & Innovation',
+        'MD_1': 'Dormitories',
+        'MD_2': 'Dormitories',
+        'MPC-Dorm': 'Dormitories',
+        'SKSU-MPC': 'Facilities & Services',
+        'Reg_Office': 'Admin & Offices',
+        'Alumni_Office': 'Admin & Offices',
+        'GS-SBO': 'Admin & Offices',
+        'GS-ext': 'Academic Colleges',
+        'Univesity_AVR': 'Facilities & Services',
+        'TIP_center': 'Research & Innovation',
+        'Agri_bldg_1': 'Academic Colleges',
+        'Agri_bldg_2': 'Academic Colleges'
+    };
+    
+    const categoryIcons = {
+        'Academic Colleges': '🎓',
+        'Admin & Offices': '🏛️',
+        'Facilities & Services': '🏢',
+        'Medical & Training': '🏥',
+        'Sports & Recreation': '⚽',
+        'Research & Innovation': '🔬',
+        'Dormitories': '🏠'
+    };
+    
+    let searchHighlightIndex = -1;
+    let searchResults = [];
+    
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+    
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        searchHighlightIndex = -1;
         
-        buildings.forEach(building => {
-            const buildingName = building.textContent.toLowerCase();
-            if (buildingName.includes(searchTerm)) {
-                building.style.display = '';
-            } else {
-                building.style.display = 'none';
+        if (searchTerm.length < 1) {
+            searchDropdown.classList.remove('active');
+            searchDropdown.innerHTML = '';
+            return;
+        }
+        
+        // Search through all buildings
+        searchResults = [];
+        
+        // Search in svgToDisplayName
+        for (const [svgId, displayName] of Object.entries(svgToDisplayName)) {
+            if (displayName.toLowerCase().includes(searchTerm) || svgId.toLowerCase().includes(searchTerm)) {
+                searchResults.push({
+                    id: svgId,
+                    name: displayName,
+                    category: buildingCategories[svgId] || 'Other'
+                });
             }
+        }
+        
+        // Remove duplicates
+        searchResults = searchResults.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+        
+        // Limit results
+        searchResults = searchResults.slice(0, 8);
+        
+        if (searchResults.length === 0) {
+            searchDropdown.innerHTML = '<div class="search-no-results">No buildings found</div>';
+            searchDropdown.classList.add('active');
+            return;
+        }
+        
+        // Build dropdown HTML
+        let html = '';
+        searchResults.forEach((result, index) => {
+            const icon = categoryIcons[result.category] || '📍';
+            html += `
+                <div class="search-item" data-index="${index}" data-id="${result.id}" onclick="selectSearchResult('${result.id}')">
+                    <div class="search-item-icon">${icon}</div>
+                    <div class="search-item-text">
+                        <div class="search-item-name">${highlightMatch(result.name, searchTerm)}</div>
+                        <div class="search-item-category">${result.category}</div>
+                    </div>
+                </div>
+            `;
         });
         
-        // Show/hide category headers based on visible buildings
-        categories.forEach(category => {
-            let nextElement = category.nextElementSibling;
-            let hasVisibleBuildings = false;
-            
-            while (nextElement && !nextElement.classList.contains('font-semibold')) {
-                if (nextElement.style.display !== 'none') {
-                    hasVisibleBuildings = true;
-                    break;
-                }
-                nextElement = nextElement.nextElementSibling;
-            }
-            
-            category.style.display = hasVisibleBuildings ? '' : 'none';
-        });
+        searchDropdown.innerHTML = html;
+        searchDropdown.classList.add('active');
     });
+    
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        const items = searchDropdown.querySelectorAll('.search-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            searchHighlightIndex = Math.min(searchHighlightIndex + 1, items.length - 1);
+            updateSearchHighlight(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            searchHighlightIndex = Math.max(searchHighlightIndex - 1, 0);
+            updateSearchHighlight(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchHighlightIndex >= 0 && searchResults[searchHighlightIndex]) {
+                selectSearchResult(searchResults[searchHighlightIndex].id);
+            } else if (searchResults.length > 0) {
+                selectSearchResult(searchResults[0].id);
+            }
+        } else if (e.key === 'Escape') {
+            searchDropdown.classList.remove('active');
+            searchInput.blur();
+        }
+    });
+    
+    function updateSearchHighlight(items) {
+        items.forEach((item, idx) => {
+            if (idx === searchHighlightIndex) {
+                item.classList.add('highlighted');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('highlighted');
+            }
+        });
+    }
+    
+    function highlightMatch(text, term) {
+        const regex = new RegExp(`(${term})`, 'gi');
+        return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
+    }
+    
+    function selectSearchResult(buildingId) {
+        searchDropdown.classList.remove('active');
+        searchInput.value = '';
+        searchInput.blur();
+        navigateTo(buildingId);
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#searchContainer')) {
+            searchDropdown.classList.remove('active');
+        }
+    });
+    
+    // ============================================
+    // ACCESSIBILITY FUNCTIONS
+    // ============================================
+    
+    function toggleAccessibilityPanel() {
+        const panel = document.getElementById('accessibilityPanel');
+        panel.classList.toggle('active');
+    }
+    
+    function toggleLargeText() {
+        const toggle = document.getElementById('toggleLargeText');
+        toggle.classList.toggle('active');
+        document.body.classList.toggle('large-text');
+        localStorage.setItem('largeText', toggle.classList.contains('active'));
+    }
+    
+    function toggleHighContrast() {
+        const toggle = document.getElementById('toggleHighContrast');
+        toggle.classList.toggle('active');
+        document.body.classList.toggle('high-contrast');
+        localStorage.setItem('highContrast', toggle.classList.contains('active'));
+    }
+    
+    function toggleReducedMotion() {
+        const toggle = document.getElementById('toggleReducedMotion');
+        toggle.classList.toggle('active');
+        window.reducedMotion = toggle.classList.contains('active');
+        localStorage.setItem('reducedMotion', toggle.classList.contains('active'));
+    }
+    
+    function resetAccessibility() {
+        document.body.classList.remove('large-text', 'high-contrast');
+        window.reducedMotion = false;
+        document.getElementById('toggleLargeText').classList.remove('active');
+        document.getElementById('toggleHighContrast').classList.remove('active');
+        document.getElementById('toggleReducedMotion').classList.remove('active');
+        localStorage.removeItem('largeText');
+        localStorage.removeItem('highContrast');
+        localStorage.removeItem('reducedMotion');
+    }
+    
+    // Load saved accessibility settings
+    function loadAccessibilitySettings() {
+        if (localStorage.getItem('largeText') === 'true') {
+            document.getElementById('toggleLargeText').classList.add('active');
+            document.body.classList.add('large-text');
+        }
+        if (localStorage.getItem('highContrast') === 'true') {
+            document.getElementById('toggleHighContrast').classList.add('active');
+            document.body.classList.add('high-contrast');
+        }
+        if (localStorage.getItem('reducedMotion') === 'true') {
+            document.getElementById('toggleReducedMotion').classList.add('active');
+            window.reducedMotion = true;
+        }
+    }
+    
+    // Close accessibility panel when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#accessibilityPanel') && !e.target.closest('[onclick*="toggleAccessibilityPanel"]')) {
+            document.getElementById('accessibilityPanel').classList.remove('active');
+        }
+    });
+    
+    // ============================================
+    // WALKING TIME CALCULATION
+    // ============================================
+    
+    // Scale factor: 1 SVG unit ≈ 1 meter (approximate campus scale)
+    const METERS_PER_SVG_UNIT = 1.5;
+    const WALKING_SPEED_MPS = 1.2; // Average walking speed: 1.2 m/s (~4.3 km/h)
+    
+    function calculateWalkingTime(pathLength) {
+        const distanceMeters = pathLength * METERS_PER_SVG_UNIT;
+        const timeSeconds = distanceMeters / WALKING_SPEED_MPS;
+        const timeMinutes = Math.ceil(timeSeconds / 60);
+        
+        return {
+            distance: Math.round(distanceMeters),
+            minutes: Math.max(1, timeMinutes) // Minimum 1 minute
+        };
+    }
+    
+    function showWalkingTime(pathLength) {
+        const { distance, minutes } = calculateWalkingTime(pathLength);
+        
+        const badge = document.getElementById('walkingTimeBadge');
+        const timeValue = document.getElementById('walkingTimeValue');
+        const distanceEl = document.getElementById('walkingDistance');
+        
+        timeValue.textContent = `~${minutes} min`;
+        distanceEl.textContent = `~${distance}m walk`;
+        
+        badge.classList.add('active');
+    }
+    
+    function hideWalkingTime() {
+        document.getElementById('walkingTimeBadge').classList.remove('active');
+    }
     
     // Map SVG building IDs to database building names
     const buildingNameMap = {
@@ -2266,6 +2838,9 @@
     
     // Add click handlers to SVG buildings
     document.addEventListener('DOMContentLoaded', function() {
+        // Load accessibility settings
+        loadAccessibilitySettings();
+        
         // Preload all building images immediately on page load
         preloadAllBuildingImages();
         
@@ -2915,6 +3490,9 @@
         
         const navMarkers = document.getElementById('navMarkers');
         if (navMarkers) navMarkers.remove();
+        
+        // Hide walking time badge
+        hideWalkingTime();
     }
     function showBuildingNotAvailable(buildingName) {
         // Hide legend, show details view
@@ -3820,6 +4398,14 @@
             }
         }
         
+        // Calculate total path length for walking time and animation
+        let totalPathLength = 0;
+        for (let i = 1; i < orthogonalSegments.length; i++) {
+            const prev = orthogonalSegments[i - 1];
+            const curr = orthogonalSegments[i];
+            totalPathLength += Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2));
+        }
+        
         // Create navigation path - thin smooth red line
         const navPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         navPath.setAttribute('id', 'navPath');
@@ -3832,7 +4418,20 @@
         navPath.setAttribute('opacity', '0.9');
         navPath.setAttribute('filter', 'drop-shadow(0 1px 2px rgba(239, 68, 68, 0.3))');
         navPath.setAttribute('style', 'pointer-events: none;');
+        
+        // Add path animation (unless reduced motion is enabled)
+        if (!window.reducedMotion) {
+            const pathLen = navPath.getTotalLength ? navPath.getTotalLength() : totalPathLength * 3;
+            navPath.style.setProperty('--path-length', pathLen);
+            navPath.setAttribute('stroke-dasharray', pathLen);
+            navPath.setAttribute('stroke-dashoffset', pathLen);
+            navPath.classList.add('animated-path');
+        }
+        
         svg.appendChild(navPath);
+        
+        // Show walking time
+        showWalkingTime(totalPathLength);
         
         // Create markers group
         const markersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');

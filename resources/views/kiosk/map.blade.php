@@ -960,177 +960,202 @@
                     <path id="MD_1" d="M13.002 71.001h11.957V81H13.002z" style="fill:#53ac53;fill-rule:evenodd;stroke:#0b6614;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"/>
                 </g>
                 <g id="BuildingLabels">
-                    <!-- Administration -->
-                    <rect x="180" y="32" width="60" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="210" y="38" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Administration</text>
+                    <!-- ========================================
+                         ENHANCED BUILDING LABELS
+                         Organized by area, non-overlapping
+                         ======================================== -->
                     
-                    <!-- CTE -->
-                    <rect x="250" y="110" width="40" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="116" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">CTE</text>
+                    <!-- === TOP AREA (Administration & Offices) === -->
                     
-                    <!-- College of Nursing -->
-                    <rect x="118" y="104" width="54" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="145" y="110" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Nursing</text>
-                    
-                    <!-- CCJE -->
-                    <rect x="240" y="242" width="40" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="260" y="248" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">CCJE</text>
-                    
-                    <!-- CCJE Extension -->
-                    <rect x="242" y="256" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="260" y="260" text-anchor="middle" font-size="3" font-weight="normal" fill="#0d4710" style="pointer-events:none;">Extension</text>
-                    
-                    <!-- BCSF -->
-                    <rect x="161" y="239" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="176" y="243" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">BCSF</text>
-                    
-                    <!-- UPP Building -->
-                    <rect x="258" y="228" width="40" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="278" y="232" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">UPP Building</text>
-                    
-                    <!-- Ang Magsasaka -->
-                    <rect x="218" y="226" width="48" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="242" y="230" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Ang Magsasaka</text>
-                    
-                    <!-- ULRC -->
-                    <rect x="137" y="204" width="30" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="152" y="210" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">ULRC</text>
-                    
-                    <!-- TCL -->
-                    <rect x="107" y="213" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="120" y="217" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">TCL</text>
-                    
-                    <!-- DOST -->
-                    <rect x="56" y="215" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="70" y="219" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">DOST</text>
-                    
-                    <!-- Motorpool -->
-                    <rect x="30" y="211" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="46" y="215" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Motorpool</text>
-                    
-                    <!-- Food Center -->
-                    <rect x="242" y="196" width="36" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="260" y="201" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Food Center</text>
-                    
-                    <!-- Mosque -->
-                    <rect x="8" y="235" width="22" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));" transform="rotate(-40 11 237.5)"/>
-                    <text x="11" y="239" text-anchor="start" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;" transform="rotate(-40 11 237.5)">Mosque</text>
-                    
-                    <!-- TIP -->
-                    <rect x="110" y="174" width="22" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="121" y="178" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">TIP</text>
-                    
-                    <!-- Climate -->
-                    <rect x="84" y="174" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="100" y="178" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Climate</text>
-                    
-                    <!-- Agri 1 -->
-                    <rect x="52" y="174" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="65" y="178" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Agri 1</text>
-                    
-                    <!-- Agri 2 -->
-                    <rect x="24" y="174" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="37" y="178" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Agri 2</text>
-                    
-                    <!-- ROTC Office -->
-                    <rect x="5" y="148" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="19" y="152" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">ROTC Office</text>
-                    
-                    <!-- OSAS -->
-                    <rect x="109" y="152" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="123" y="156" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">OSAS</text>
-                    
-                    <!-- UC -->
-                    <rect x="139" y="152" width="20" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="149" y="156" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">UC</text>
-                    
-                    <!-- GS-SBO -->
-                    <rect x="262" y="155" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="277" y="159" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">GS-SBO</text>
-                    
-                    <!-- Alumni Relations -->
-                    <rect x="248" y="155" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="262" y="159" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Alumni</text>
-                    
-                    <!-- Univ AVR -->
-                    <rect x="252" y="145" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="149" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Univ AVR</text>
-                    
-                    <!-- GS Ext -->
-                    <rect x="230" y="153" width="24" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="242" y="157" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">GS Ext</text>
-                    
-                    <!-- Graduate School -->
-                    <rect x="200" y="141" width="46" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="223" y="147" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Graduate School</text>
-                    
-                    <!-- College of Health Sciences -->
-                    <rect x="145" y="135" width="60" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="175" y="139.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Health Sciences</text>
-                    
-                    <!-- Field -->
-                    <rect x="52" y="100" width="36" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="70" y="106" text-anchor="middle" font-size="6" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Field</text>
-                    
-                    <!-- Bleacher -->
-                    <rect x="97" y="79" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="110" y="83" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Bleacher</text>
-                    
-                    <!-- Parking Area -->
-                    <rect x="197" y="82" width="38" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="216" y="86" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Parking Area</text>
-                    
-                    <!-- LHS Ext -->
-                    <rect x="260" y="23" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="275" y="27" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">LHS Ext</text>
-                    
-                    <!-- Laboratory Highschool -->
-                    <rect x="233" y="43" width="60" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="263" y="48.5" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Laboratory Highschool</text>
-                    
-                    <!-- College of Medicine -->
-                    <rect x="256" y="30" width="58" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="285" y="35.5" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Medicine</text>
-                    
-                    <!-- Restroom -->
-                    <rect x="256" y="6" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="10" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Restroom</text>
-                    
-                    <!-- SKSU-MPC -->
-                    <rect x="236" y="7" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="252" y="11" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">SKSU-MPC</text>
-                    
-                    <!-- MPC Dorm -->
-                    <rect x="247" y="6" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="262" y="10" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">MPC Dorm</text>
-                    
-                    <!-- Ladies Dormitory -->
-                    <rect x="218" y="7" width="38" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="237" y="11" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Ladies Dormitory</text>
-                    
-                    <!-- QMS -->
-                    <rect x="209" y="6" width="24" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="221" y="10" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">QMS</text>
-                    
-                    <!-- Function Hall -->
-                    <rect x="113" y="56" width="44" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="135" y="60" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Function Hall</text>
-                    
-                    <!-- University Gymnasium -->
-                    <rect x="108" y="36" width="60" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="138" y="42" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">University Gymnasium</text>
+                    <!-- Administration - Main Building -->
+                    <rect x="178" y="28" width="52" height="9" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="204" y="34.5" text-anchor="middle" font-size="5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Administration</text>
                     
                     <!-- Registrar -->
-                    <rect x="172" y="18" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="190" y="22" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Registrar</text>
+                    <rect x="175" y="16" width="30" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="190" y="20.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Registrar</text>
+                    
+                    <!-- QMS -->
+                    <rect x="214" y="2" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="223" y="6.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">QMS</text>
+                    
+                    <!-- Ladies Dormitory -->
+                    <rect x="230" y="10" width="28" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="244" y="14.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Ladies Dorm</text>
+                    
+                    <!-- MPC -->
+                    <rect x="247" y="2" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="256" y="6.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">MPC</text>
+                    
+                    <!-- Restroom -->
+                    <rect x="266" y="2" width="22" height="6" rx="1.5" fill="#e8f5e9" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="277" y="6.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Restroom</text>
+                    
+                    <!-- === MEDICAL & COLLEGE AREA (Right Side) === -->
+                    
+                    <!-- College of Medicine -->
+                    <rect x="274" y="18" width="24" height="14" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="286" y="24" text-anchor="middle" font-size="2.8" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">College of</text>
+                    <text x="286" y="28.5" text-anchor="middle" font-size="2.8" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Medicine</text>
+                    
+                    <!-- LHS Extension -->
+                    <rect x="268" y="34" width="20" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="278" y="38" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">LHS Ext</text>
+                    
+                    <!-- Laboratory Highschool -->
+                    <rect x="253" y="42" width="24" height="12" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="265" y="47" text-anchor="middle" font-size="2.6" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Laboratory</text>
+                    <text x="265" y="51.5" text-anchor="middle" font-size="2.6" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Highschool</text>
+                    
+                    <!-- === GYMNASIUM AREA (Left-Center) === -->
+                    
+                    <!-- University Gymnasium -->
+                    <rect x="112" y="32" width="50" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="137" y="39" text-anchor="middle" font-size="4" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Gymnasium</text>
+                    
+                    <!-- Function Hall -->
+                    <rect x="117" y="56" width="36" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="135" y="60.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Function Hall</text>
+                    
+                    <!-- Field -->
+                    <rect x="54" y="96" width="30" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="69" y="103" text-anchor="middle" font-size="5.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Field</text>
+                    
+                    <!-- Bleacher -->
+                    <rect x="100" y="78" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="111" y="82" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Bleacher</text>
+                    
+                    <!-- === DORMITORIES (Left Side) === -->
                     
                     <!-- Men's Dormitory 1 -->
-                    <rect x="5" y="72" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="19" y="76" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Men's Dorm 1</text>
+                    <rect x="6" y="69" width="24" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="18" y="73" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Men's Dorm 1</text>
                     
                     <!-- Men's Dormitory 2 -->
-                    <rect x="5" y="83" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="19" y="87" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Men's Dorm 2</text>
+                    <rect x="6" y="82" width="24" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="18" y="86" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Men's Dorm 2</text>
+                    
+                    <!-- === CTE AREA (Right Side) === -->
+                    
+                    <!-- CTE -->
+                    <rect x="256" y="88" width="32" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="272" y="95" text-anchor="middle" font-size="5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">CTE</text>
+                    
+                    <!-- Parking Area -->
+                    <rect x="203" y="80" width="30" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="218" y="84.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Parking</text>
+                    
+                    <!-- === COLLEGE OF NURSING AREA (Center) === -->
+                    
+                    <!-- College of Nursing -->
+                    <rect x="118" y="98" width="44" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="140" y="103" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">College of</text>
+                    <text x="140" y="107.5" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Nursing</text>
+                    
+                    <!-- College of Health Sciences -->
+                    <rect x="145" y="130" width="50" height="8" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="170" y="135.5" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Health Sciences</text>
+                    
+                    <!-- === GRADUATE SCHOOL AREA === -->
+                    
+                    <!-- Graduate School -->
+                    <rect x="206" y="120" width="40" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="226" y="125" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Graduate</text>
+                    <text x="226" y="129" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">School</text>
+                    
+                    <!-- AVR -->
+                    <rect x="256" y="122" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="265" y="126.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">AVR</text>
+                    
+                    <!-- GS Extension -->
+                    <rect x="256" y="132" width="20" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="266" y="136" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">GS Ext</text>
+                    
+                    <!-- GS-SBO -->
+                    <rect x="256" y="140" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="267" y="144" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">GS-SBO</text>
+                    
+                    <!-- Alumni -->
+                    <rect x="280" y="140" width="18" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="289" y="144" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Alumni</text>
+                    
+                    <!-- === CANTEEN & OFFICES AREA === -->
+                    
+                    <!-- OSAS -->
+                    <rect x="113" y="148" width="22" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="124" y="152.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">OSAS</text>
+                    
+                    <!-- UC (University Canteen) -->
+                    <rect x="140" y="148" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="149" y="152.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">UC</text>
+                    
+                    <!-- ROTC Office -->
+                    <rect x="6" y="145" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="17" y="149" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">ROTC</text>
+                    
+                    <!-- === RESEARCH & AGRICULTURE AREA === -->
+                    
+                    <!-- TIP -->
+                    <rect x="113" y="172" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="122" y="176.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">TIP</text>
+                    
+                    <!-- Climate -->
+                    <rect x="86" y="172" width="24" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="98" y="176.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Climate</text>
+                    
+                    <!-- Agri 1 -->
+                    <rect x="54" y="172" width="20" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="64" y="176.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Agri 1</text>
+                    
+                    <!-- Agri 2 -->
+                    <rect x="29" y="172" width="20" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="39" y="176.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Agri 2</text>
+                    
+                    <!-- === FOOD CENTER AREA === -->
+                    
+                    <!-- Food Center -->
+                    <rect x="244" y="194" width="32" height="8" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="260" y="199.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Food Center</text>
+                    
+                    <!-- === LIBRARY AREA === -->
+                    
+                    <!-- ULRC (University Library) -->
+                    <rect x="140" y="200" width="26" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="153" y="207" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">ULRC</text>
+                    
+                    <!-- TCL -->
+                    <rect x="108" y="212" width="20" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="118" y="216.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">TCL</text>
+                    
+                    <!-- DOST -->
+                    <rect x="58" y="214" width="22" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="69" y="218.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">DOST</text>
+                    
+                    <!-- Motorpool -->
+                    <rect x="32" y="208" width="26" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="45" y="212.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Motorpool</text>
+                    
+                    <!-- === BOTTOM AREA (CCJE & Medical) === -->
+                    
+                    <!-- Ang Magsasaka -->
+                    <rect x="230" y="220" width="36" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="248" y="224.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Ang Magsasaka</text>
+                    
+                    <!-- UPP Building -->
+                    <rect x="268" y="228" width="24" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="280" y="232.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">UPP</text>
+                    
+                    <!-- BCSF -->
+                    <rect x="165" y="238" width="22" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="176" y="242.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">BCSF</text>
+                    
+                    <!-- CCJE -->
+                    <rect x="248" y="238" width="28" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="262" y="245" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">CCJE</text>
+                    
+                    <!-- CCJE Extension -->
+                    <rect x="240" y="254" width="28" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="254" y="258" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">CCJE Ext</text>
                 </g>
             </svg>
         </div>

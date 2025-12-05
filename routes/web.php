@@ -18,6 +18,7 @@ Route::get('/map', [KioskController::class, 'map'])->name('kiosk.map');
 Route::get('/dual-welcome', [DualModeController::class, 'welcome'])->name('dual.welcome');
 Route::get('/dual-map', [DualModeController::class, 'map'])->name('dual.map');
 Route::get('/building/{id}', [KioskController::class, 'building'])->name('kiosk.building');
+Route::get('/kiosk/building/{id}', [KioskController::class, 'building'])->name('kiosk.building.popup');
 Route::get('/office/{id}', [KioskController::class, 'office'])->name('kiosk.office');
 Route::get('/navigate/{buildingId}', [KioskController::class, 'navigate'])->name('kiosk.navigate');
 

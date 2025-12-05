@@ -1049,6 +1049,88 @@
     }
     
     /* ============================================
+       3D MAP MODE
+       ============================================ */
+    
+    /* 3D perspective container */
+    .map-3d-container {
+        perspective: 1200px;
+        perspective-origin: 50% 50%;
+        transform-style: preserve-3d;
+    }
+    
+    /* 3D map transform */
+    .map-3d-mode #campusMap {
+        transform: rotateX(45deg) rotateZ(-10deg) scale(0.85);
+        transform-style: preserve-3d;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Building 3D extrusion effect */
+    .map-3d-mode #campusMap path[id] {
+        filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.3));
+        transition: all 0.3s ease;
+    }
+    
+    .map-3d-mode #campusMap path[id]:hover {
+        filter: drop-shadow(4px 8px 6px rgba(0, 0, 0, 0.4)) brightness(1.15);
+        transform: translateY(-3px) scale(1.02);
+    }
+    
+    /* 3D Toggle Button */
+    .toggle-3d-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 100;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        transition: all 0.3s ease;
+        font-family: var(--font-display);
+    }
+    
+    .toggle-3d-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+    
+    .toggle-3d-btn:active {
+        transform: translateY(0);
+    }
+    
+    .toggle-3d-btn.active {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    }
+    
+    .toggle-3d-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* 3D mode label adjustments */
+    .map-3d-mode .building-label-enhanced,
+    .map-3d-mode .you-are-here-marker text {
+        transform: rotateX(-45deg) rotateZ(10deg);
+        transform-origin: center;
+    }
+    
+    /* Smooth transition back to 2D */
+    #campusMap {
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* ============================================
        MICRO-ANIMATIONS
        ============================================ */
     
@@ -1591,13 +1673,23 @@
             <div style="width: 1px; background: linear-gradient(180deg, #248823 0%, #1a6619 50%, #248823 100%); flex-shrink: 0;"></div>
             
             <!-- Map Section (60%) - Centered & Aligned -->
-            <div class="map-wrapper" id="mapContainer" style="flex: 1 1 60%; height: 100%; position: relative; overflow: visible; background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);">
+            <div class="map-wrapper map-3d-container" id="mapContainer" style="flex: 1 1 60%; height: 100%; position: relative; overflow: visible; background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);">
                 <div class="hint-overlay" id="interactiveHint">
                     <span class="flex items-center gap-3">
                         <span style="font-size: 1.5rem;">👆</span>
                         <span>Tap on any building to explore</span>
                     </span>
                 </div>
+                
+                <!-- 3D Mode Toggle Button -->
+                <button class="toggle-3d-btn" id="toggle3DBtn" onclick="toggle3DMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3L2 9l10 6 10-6-10-6z"/>
+                        <path d="M2 17l10 6 10-6"/>
+                        <path d="M2 13l10 6 10-6"/>
+                    </svg>
+                    <span id="toggle3DText">3D View</span>
+                </button>
                 
                 <!-- Walking Time Badge - Compact top-left position -->
                 <div class="walking-time-badge" id="walkingTimeBadge">
@@ -3956,6 +4048,37 @@
             closeAbout();
         }
     });
+    
+    // ==================== 3D MODE TOGGLE ====================
+    let is3DMode = false;
+    
+    function toggle3DMode() {
+        const mapContainer = document.getElementById('mapContainer');
+        const toggleBtn = document.getElementById('toggle3DBtn');
+        const toggleText = document.getElementById('toggle3DText');
+        
+        is3DMode = !is3DMode;
+        
+        if (is3DMode) {
+            mapContainer.classList.add('map-3d-mode');
+            toggleBtn.classList.add('active');
+            toggleText.textContent = '2D View';
+            
+            // Add a subtle bounce animation
+            const campusMap = document.getElementById('campusMap');
+            campusMap.style.animation = 'none';
+            setTimeout(() => {
+                campusMap.style.animation = '';
+            }, 10);
+        } else {
+            mapContainer.classList.remove('map-3d-mode');
+            toggleBtn.classList.remove('active');
+            toggleText.textContent = '3D View';
+        }
+        
+        // Reset idle timer on interaction
+        resetIdleTimer();
+    }
     
     function navigateTo(buildingName, showPopup = false) {
         closeModal();

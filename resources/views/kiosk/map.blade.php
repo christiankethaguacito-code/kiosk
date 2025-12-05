@@ -77,6 +77,81 @@
         --font-body: 'Inter', system-ui, sans-serif;
     }
     
+    /* ============================================
+       PERFORMANCE OPTIMIZATIONS - GPU & RENDERING
+       ============================================ */
+    
+    /* Enable hardware acceleration for animated elements */
+    .gpu-accelerated {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+    }
+    
+    /* Will-change hints for animated elements */
+    .modal-overlay,
+    .modal-overlay > div,
+    .building-tooltip,
+    #kioskIdleOverlay,
+    .screensaver-content,
+    .idle-logo,
+    .idle-hint,
+    .animated-path,
+    .loading-spinner,
+    .you-are-here-pulse,
+    #campusMap {
+        will-change: transform, opacity;
+    }
+    
+    /* Contain for layout optimization */
+    .legend-panel,
+    .map-wrapper,
+    .modal-content {
+        contain: layout style;
+    }
+    
+    /* Optimize repaints for frequently updated elements */
+    .search-dropdown,
+    .building-tooltip {
+        contain: layout paint;
+    }
+    
+    /* Reduce animation costs when not visible */
+    .modal-overlay:not(.active) * {
+        animation: none !important;
+    }
+    
+    #kioskIdleOverlay:not(.show) * {
+        animation: none !important;
+    }
+    
+    /* Respect user motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        
+        .animated-path {
+            animation: none !important;
+            stroke-dashoffset: 0 !important;
+        }
+    }
+    
+    /* Optimize SVG rendering */
+    #campusMap {
+        shape-rendering: geometricPrecision;
+        text-rendering: optimizeLegibility;
+    }
+    
+    /* Font display optimization */
+    @font-face {
+        font-display: swap;
+    }
+    
     /* Prevent text selection and callouts on touch - but allow scrolling */
     * {
         -webkit-touch-callout: none;
@@ -214,6 +289,7 @@
     
     .kiosk-btn:active {
         transform: scale(0.95);
+        box-shadow: var(--shadow-sm);
     }
     
     .kiosk-btn:hover {
@@ -221,18 +297,52 @@
         transform: translateY(-2px);
     }
     
-    /* Touch feedback for interactive elements */
+    /* Enhanced touch feedback for interactive elements */
     .touch-feedback {
-        transition: all var(--transition-fast);
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
         position: relative;
+        will-change: transform;
     }
     
     .touch-feedback:active {
         transform: scale(0.97);
+        box-shadow: var(--shadow-sm);
     }
     
     .touch-feedback:hover {
         transform: translateY(-1px);
+    }
+    
+    /* Ripple effect for touch feedback */
+    .touch-ripple {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .touch-ripple::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s, height 0.3s;
+    }
+    
+    .touch-ripple:active::after {
+        width: 300%;
+        height: 300%;
+    }
+    
+    /* Focus visible styles for accessibility */
+    .kiosk-btn:focus-visible,
+    .legend-item:focus-visible,
+    .touch-feedback:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
     }
     
     /* ============================================
@@ -298,22 +408,22 @@
     
     @keyframes modalSlideIn {
         from {
-            transform: translateY(40px) scale(0.95);
+            transform: translate3d(0, 40px, 0) scale(0.95);
             opacity: 0;
         }
         to {
-            transform: translateY(0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
             opacity: 1;
         }
     }
     
     @keyframes popupSlideIn {
         from {
-            transform: translateY(20px) scale(0.98);
+            transform: translate3d(0, 20px, 0) scale(0.98);
             opacity: 0;
         }
         to {
-            transform: translateY(0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
             opacity: 1;
         }
     }
@@ -423,7 +533,7 @@
         50% { box-shadow: 0 0 35px var(--primary-glow); }
     }
     
-    /* Loading spinner for modal content */
+    /* Loading spinner for modal content - GPU optimized */
     .loading-spinner {
         display: inline-block;
         width: 48px;
@@ -432,13 +542,12 @@
         border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
+        transform: translateZ(0);
     }
-    
+
     @keyframes spin {
-        to { transform: rotate(360deg); }
-    }
-    
-    /* Highlight effect for selected building */
+        to { transform: rotate(360deg) translateZ(0); }
+    }    /* Highlight effect for selected building */
     .building-selected {
         filter: brightness(1.3) drop-shadow(0 0 20px var(--primary)) !important;
         animation: buildingPulse 2s ease-in-out infinite;
@@ -1279,19 +1388,20 @@
         left: 100%;
     }
     
-    /* Card entrance animation */
+    /* Card entrance animation - GPU optimized */
     .card-enter {
         animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        will-change: transform, opacity;
     }
     
     @keyframes cardEnter {
         from {
             opacity: 0;
-            transform: translateY(20px) scale(0.95);
+            transform: translate3d(0, 20px, 0) scale(0.95);
         }
         to {
             opacity: 1;
-            transform: translateY(0) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
         }
     }
     
@@ -1324,13 +1434,14 @@
         background: radial-gradient(circle at 30% 30%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
                     radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
         animation: screensaverBg 15s ease-in-out infinite;
+        transform: translateZ(0);
     }
     
     @keyframes screensaverBg {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        25% { transform: translate(5%, 5%) rotate(5deg); }
-        50% { transform: translate(0, 10%) rotate(0deg); }
-        75% { transform: translate(-5%, 5%) rotate(-5deg); }
+        0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+        25% { transform: translate3d(5%, 5%, 0) rotate(5deg); }
+        50% { transform: translate3d(0, 10%, 0) rotate(0deg); }
+        75% { transform: translate3d(-5%, 5%, 0) rotate(-5deg); }
     }
     
     #kioskIdleOverlay.show {
@@ -1342,6 +1453,7 @@
         position: relative;
         z-index: 1;
         text-align: center;
+        transform: translateZ(0);
     }
     
     .idle-logo {
@@ -1350,11 +1462,12 @@
         margin: 0 auto 2rem;
         animation: logoFloat 3s ease-in-out infinite;
         filter: drop-shadow(0 10px 30px rgba(34, 197, 94, 0.3));
+        transform: translateZ(0);
     }
     
     @keyframes logoFloat {
-        0%, 100% { transform: translateY(0) scale(1); }
-        50% { transform: translateY(-15px) scale(1.02); }
+        0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
+        50% { transform: translateY(-15px) scale(1.02) translateZ(0); }
     }
     
     .idle-text {
@@ -1386,11 +1499,12 @@
         font-weight: 600;
         animation: hintPulse 2s ease-in-out infinite;
         border: 1px solid rgba(255, 255, 255, 0.2);
+        transform: translateZ(0);
     }
     
     @keyframes hintPulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.8; transform: scale(0.98); }
+        0%, 100% { opacity: 1; transform: scale(1) translateZ(0); }
+        50% { opacity: 0.8; transform: scale(0.98) translateZ(0); }
     }
     
     .idle-icon {
@@ -1399,11 +1513,11 @@
     }
     
     @keyframes tapBounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
+        0%, 100% { transform: translateY(0) translateZ(0); }
+        50% { transform: translateY(-5px) translateZ(0); }
     }
     
-    /* Floating particles */
+    /* Floating particles - GPU optimized */
     .screensaver-particle {
         position: absolute;
         width: 8px;
@@ -1412,11 +1526,12 @@
         border-radius: 50%;
         opacity: 0.3;
         animation: particleFloat 10s ease-in-out infinite;
+        transform: translateZ(0);
     }
     
     @keyframes particleFloat {
-        0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-        50% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
+        0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.3; }
+        50% { transform: translate3d(50px, -100px, 0); opacity: 0.6; }
     }
     
     /* ============================================
@@ -2161,7 +2276,7 @@
             <!-- Building Image with enhanced styling -->
             <div id="previewImageContainer" class="relative mb-5 rounded-xl overflow-hidden" style="height: 200px; box-shadow: 0 8px 25px -5px rgba(34,197,94,0.25);">
                 <div class="absolute inset-0 bg-gradient-to-br from-green-400/15 to-emerald-600/15"></div>
-                <img id="previewBuildingImage" src="" alt="" class="w-full h-full object-cover" style="display: none;">
+                <img id="previewBuildingImage" src="" alt="" class="w-full h-full object-cover" style="display: none;" loading="lazy" decoding="async">
                 <div id="previewImagePlaceholder" class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
                     <div class="text-center">
                         <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center">
@@ -2608,7 +2723,7 @@
                     <p class="text-sm font-semibold text-gray-700 mb-3">Researchers</p>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
-                            <img src="{{ asset('images/researcher1.jpg') }}" alt="Hannah Mae V. Magallosa" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;">
+                            <img src="{{ asset('images/researcher1.jpg') }}" alt="Hannah Mae V. Magallosa" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
                             <div>
                                 <p class="font-semibold text-gray-800 text-sm">Hannah Mae V. Magallosa</p>
                                 <p class="text-xs text-gray-600">Researcher</p>
@@ -2616,7 +2731,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
-                            <img src="{{ asset('images/researcher2.jpg') }}" alt="Sam Jones L. Cedana" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;">
+                            <img src="{{ asset('images/researcher2.jpg') }}" alt="Sam Jones L. Cedana" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
                             <div>
                                 <p class="font-semibold text-gray-800 text-sm">Sam Jones L. Cedana</p>
                                 <p class="text-xs text-gray-600">Researcher</p>
@@ -2630,7 +2745,7 @@
                 <div>
                     <p class="text-sm font-semibold text-gray-700 mb-3">Research Adviser</p>
                     <div class="flex items-center gap-4 bg-gradient-to-r from-green-50 to-white p-4 rounded-lg border-2" style="border-color: #248823;">
-                        <img src="{{ asset('images/adviser.jpg') }}" alt="Charity L. Oria, DEng" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                        <img src="{{ asset('images/adviser.jpg') }}" alt="Charity L. Oria, DEng" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" loading="lazy" decoding="async">
                         <div>
                             <p class="font-bold text-gray-800">Charity L. Oria, DEng</p>
                             <p class="text-sm text-gray-600">Research Adviser</p>
@@ -2736,6 +2851,67 @@
 @section('scripts')
 <script>
     // ============================================
+    // PERFORMANCE UTILITIES
+    // ============================================
+    
+    /**
+     * Debounce function for rate-limiting event handlers
+     * @param {Function} func - Function to debounce
+     * @param {number} wait - Wait time in ms
+     * @param {boolean} immediate - Execute on leading edge
+     */
+    function debounce(func, wait = 100, immediate = false) {
+        let timeout;
+        return function executedFunction(...args) {
+            const context = this;
+            const later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+    
+    /**
+     * Throttle function for high-frequency events
+     * @param {Function} func - Function to throttle
+     * @param {number} limit - Minimum time between calls in ms
+     */
+    function throttle(func, limit = 16) {
+        let inThrottle;
+        return function(...args) {
+            if (!inThrottle) {
+                func.apply(this, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+    
+    /**
+     * Request animation frame wrapper for smooth updates
+     */
+    const rafCallback = (callback) => {
+        return (...args) => {
+            requestAnimationFrame(() => callback(...args));
+        };
+    };
+    
+    /**
+     * Cache DOM queries for better performance
+     */
+    const domCache = new Map();
+    function getElement(id) {
+        if (!domCache.has(id)) {
+            domCache.set(id, document.getElementById(id));
+        }
+        return domCache.get(id);
+    }
+    
+    // ============================================
     // KIOSK IDLE TIMEOUT SYSTEM
     // ============================================
     let idleTimer = null;
@@ -2791,53 +2967,56 @@
     const imageCache = new Map();
     
     // Preload all building images on first user interaction
+    // Use requestIdleCallback polyfill for browsers that don't support it
+    const requestIdleCallbackPolyfill = window.requestIdleCallback || 
+        function(cb) { 
+            return setTimeout(() => cb({ timeRemaining: () => 50 }), 1); 
+        };
+    
     function preloadAllBuildingImages() {
         if (imagesPreloaded) return;
         imagesPreloaded = true;
         
-        // Clear console first
-        console.clear();
-        
-        let loadedCount = 0;
-        let totalImages = 0;
-        let currentFile = '';
-        
-        // Function to update progress
-        const updateProgress = () => {
-            console.clear();
-            console.log(`Caching: ${currentFile}`);
-            console.log(`Progress: ${loadedCount}/${totalImages}`);
-        };
-        
-        buildings.forEach(building => {
-            // Try JPG first, then PNG from public folder
-            const publicJpg = `/images/buildings/${building.code}.jpg`;
-            const publicPng = `/images/buildings/${building.code}.png`;
+        // Use requestIdleCallback to defer image loading to idle time
+        requestIdleCallbackPolyfill(() => {
+            let loadedCount = 0;
+            let totalImages = 0;
+            let currentFile = '';
             
-            // Preload public images
-            [publicJpg, publicPng].forEach(src => {
-                totalImages++;
-                const img = new Image();
-                img.onload = () => {
-                    imageCache.set(src, img);
-                    loadedCount++;
-                    currentFile = src;
-                    updateProgress();
-                    if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
-                    }
-                };
-                img.onerror = () => {
-                    loadedCount++;
-                    if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
-                    }
-                };
-                img.src = src;
-            });
+            // Function to update progress (throttled to reduce console spam)
+            const updateProgress = throttle(() => {
+                console.log(`Image caching: ${loadedCount}/${totalImages}`);
+            }, 1000);
             
+            buildings.forEach(building => {
+                // Try JPG first, then PNG from public folder
+                const publicJpg = `/images/buildings/${building.code}.jpg`;
+                const publicPng = `/images/buildings/${building.code}.png`;
+                
+                // Preload public images
+                [publicJpg, publicPng].forEach(src => {
+                    totalImages++;
+                    const img = new Image();
+                    img.onload = () => {
+                        imageCache.set(src, img);
+                        loadedCount++;
+                        currentFile = src;
+                        updateProgress();
+                        if (loadedCount === totalImages) {
+                            console.log(`✓ All ${totalImages} images cached`);
+                        }
+                    };
+                    img.onerror = () => {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            console.log(`✓ All ${totalImages} images cached`);
+                        }
+                    };
+                    // Defer image loading slightly for better initial load
+                    setTimeout(() => { img.src = src; }, 0);
+                });
+            
+            // Preload database images
             // Preload database images
             if (building.image_path) {
                 totalImages++;
@@ -2849,18 +3028,16 @@
                     currentFile = dbSrc;
                     updateProgress();
                     if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                        console.log(`✓ All ${totalImages} images cached`);
                     }
                 };
                 dbImg.onerror = () => {
                     loadedCount++;
                     if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                        console.log(`✓ All ${totalImages} images cached`);
                     }
                 };
-                dbImg.src = dbSrc;
+                setTimeout(() => { dbImg.src = dbSrc; }, 0);
             }
             
             // Preload gallery images
@@ -2875,21 +3052,20 @@
                         currentFile = gallerySrc;
                         updateProgress();
                         if (loadedCount === totalImages) {
-                            console.clear();
-                            console.log(`All ${totalImages}/${totalImages} images cached`);
+                            console.log(`✓ All ${totalImages} images cached`);
                         }
                     };
                     galleryImg.onerror = () => {
                         loadedCount++;
                         if (loadedCount === totalImages) {
-                            console.clear();
-                            console.log(`All ${totalImages}/${totalImages} images cached`);
+                            console.log(`✓ All ${totalImages} images cached`);
                         }
                     };
-                    galleryImg.src = gallerySrc;
+                    setTimeout(() => { galleryImg.src = gallerySrc; }, 0);
                 });
             }
         });
+        }); // End of requestIdleCallback
     }
     
     // Main gate starting point (aligned with path start)
@@ -3402,7 +3578,8 @@
                     }
                 });
                 
-                element.addEventListener('mousemove', function(e) {
+                // Throttled mousemove for better performance
+                const handleMouseMove = throttle(function(e) {
                     if (editMode) return;
                     
                     const tooltip = document.getElementById('buildingTooltip');
@@ -3414,7 +3591,9 @@
                         tooltip.style.left = (e.clientX + offsetX) + 'px';
                         tooltip.style.top = (e.clientY + offsetY) + 'px';
                     }
-                });
+                }, 16); // ~60fps
+                
+                element.addEventListener('mousemove', handleMouseMove, { passive: true });
                 
                 element.addEventListener('mouseleave', function(e) {
                     const tooltip = document.getElementById('buildingTooltip');

@@ -4,6 +4,11 @@
 @section('body-class', 'bg-gray-900')
 
 @section('head')
+<!-- Google Fonts - Modern Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
 <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <!-- Swiper JS -->
@@ -18,30 +23,58 @@
        ============================================ */
     
     :root {
-        --primary: #248823;
-        --primary-dark: #1a6619;
+        /* Brand Colors */
+        --primary: #22c55e;
+        --primary-dark: #16a34a;
+        --primary-darker: #15803d;
         --primary-light: #4ade80;
-        --primary-glow: rgba(36, 136, 35, 0.4);
+        --primary-glow: rgba(34, 197, 94, 0.4);
         --accent: #10b981;
         --accent-light: #34d399;
+        
+        /* Surfaces */
         --surface: #ffffff;
         --surface-elevated: #f8fafc;
-        --text-primary: #1e293b;
-        --text-secondary: #64748b;
+        --surface-hover: #f1f5f9;
+        
+        /* Text Colors */
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
         --text-muted: #94a3b8;
+        --text-inverse: #ffffff;
+        
+        /* Borders & Dividers */
         --border: #e2e8f0;
-        --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-        --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-        --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
-        --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
-        --shadow-glow: 0 0 30px var(--primary-glow);
+        --border-light: #f1f5f9;
+        --divider: rgba(0, 0, 0, 0.06);
+        
+        /* Shadows - More refined */
+        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+        --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+        --shadow-glow: 0 0 40px var(--primary-glow);
+        --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+        
+        /* Border Radius */
+        --radius-xs: 6px;
         --radius-sm: 8px;
         --radius-md: 12px;
         --radius-lg: 16px;
-        --radius-xl: 24px;
+        --radius-xl: 20px;
+        --radius-2xl: 24px;
+        --radius-full: 9999px;
+        
+        /* Transitions */
         --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
         --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        
+        /* Typography */
+        --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+        --font-body: 'Inter', system-ui, sans-serif;
     }
     
     /* Prevent text selection and callouts on touch - but allow scrolling */
@@ -58,6 +91,17 @@
         -ms-user-select: none;
         user-select: none;
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        letter-spacing: -0.01em;
+    }
+    
+    /* Headings use display font */
+    h1, h2, h3, h4, h5, h6, .font-display {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: -0.02em;
     }
     
     /* Allow text selection in specific areas if needed */
@@ -515,71 +559,95 @@
     }
 
     .legend-category {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
     }
     
     .legend-category-title {
+        font-family: var(--font-display);
         font-weight: 700;
-        font-size: 0.75rem;
-        color: var(--primary);
+        font-size: 0.7rem;
+        color: var(--primary-dark);
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        padding: 0.4rem 0.6rem;
-        background: linear-gradient(90deg, rgba(36, 136, 35, 0.08) 0%, transparent 100%);
+        letter-spacing: 0.08em;
+        padding: 0.5rem 0.75rem;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.04) 100%);
         border-left: 3px solid var(--primary);
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.4rem;
         border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
+        box-shadow: var(--shadow-xs);
     }
     
     .legend-category-icon {
-        font-size: 0.9rem;
+        font-size: 1rem;
+        line-height: 1;
     }
     
     .legend-item-enhanced {
         display: flex;
         align-items: center;
-        padding: 0.5rem 0.6rem;
-        margin: 0.1rem 0;
-        border-radius: var(--radius-sm);
+        padding: 0.6rem 0.75rem;
+        margin: 0.2rem 0;
+        border-radius: var(--radius-md);
         cursor: pointer;
         transition: all var(--transition-fast);
         background: transparent;
-        border-left: 3px solid transparent;
-        font-size: 0.8rem;
-        color: var(--text-primary);
-        line-height: 1.3;
+        border: 1px solid transparent;
+        font-family: var(--font-body);
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        position: relative;
+    }
+    
+    .legend-item-enhanced::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: var(--primary);
+        border-radius: 0 2px 2px 0;
+        transition: height var(--transition-fast);
     }
     
     .legend-item-enhanced:hover {
-        background: rgba(36, 136, 35, 0.1);
-        border-left-color: var(--primary);
-        padding-left: 0.85rem;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%);
         color: var(--primary-dark);
+        padding-left: 1rem;
+        border-color: rgba(34, 197, 94, 0.15);
+    }
+    
+    .legend-item-enhanced:hover::before {
+        height: 60%;
     }
     
     .legend-item-enhanced:active {
-        background: rgba(36, 136, 35, 0.2);
+        background: rgba(34, 197, 94, 0.18);
         transform: scale(0.98);
     }
     
     .legend-item-dot {
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
-        background: var(--primary);
-        margin-right: 0.6rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        margin-right: 0.65rem;
         flex-shrink: 0;
-        opacity: 0.6;
+        opacity: 0.7;
         transition: all var(--transition-fast);
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
     }
     
     .legend-item-enhanced:hover .legend-item-dot {
         opacity: 1;
-        transform: scale(1.3);
-        box-shadow: 0 0 8px var(--primary-glow);
+        transform: scale(1.4);
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2), 0 0 12px var(--primary-glow);
     }
 
     #navPath {
@@ -623,13 +691,14 @@
     }
     
     .search-item {
-        padding: 14px 20px;
+        padding: 14px 18px;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 12px;
-        border-bottom: 1px solid var(--border);
+        gap: 14px;
+        border-bottom: 1px solid var(--border-light);
         transition: all var(--transition-fast);
+        position: relative;
     }
     
     .search-item:last-child {
@@ -637,40 +706,64 @@
     }
     
     .search-item:hover, .search-item.highlighted {
-        background: linear-gradient(90deg, rgba(36, 136, 35, 0.08) 0%, rgba(16, 185, 129, 0.05) 100%);
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%);
+    }
+    
+    .search-item:hover::after {
+        content: '→';
+        position: absolute;
+        right: 16px;
+        color: var(--primary);
+        font-weight: 600;
+        opacity: 0.7;
     }
     
     .search-item-icon {
-        width: 36px;
-        height: 36px;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-        border-radius: 10px;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
+        box-shadow: var(--shadow-sm), 0 0 0 2px rgba(34, 197, 94, 0.1);
+        flex-shrink: 0;
     }
     
     .search-item-text {
         flex: 1;
+        min-width: 0;
     }
     
     .search-item-name {
+        font-family: var(--font-display);
         font-weight: 600;
         color: var(--text-primary);
-        font-size: 0.95rem;
+        font-size: 0.92rem;
+        margin-bottom: 2px;
     }
     
     .search-item-category {
-        font-size: 0.8rem;
+        font-size: 0.78rem;
         color: var(--text-muted);
+        font-weight: 500;
     }
     
     .search-no-results {
-        padding: 24px;
+        padding: 32px 24px;
         text-align: center;
         color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    .search-no-results::before {
+        content: '🔍';
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+        opacity: 0.5;
     }
     
     /* Walking time display - positioned at top-left corner */
@@ -678,18 +771,19 @@
         position: absolute;
         top: 12px;
         left: 12px;
-        background: linear-gradient(135deg, rgba(36, 136, 35, 0.95) 0%, rgba(26, 102, 25, 0.98) 100%);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         color: white;
-        padding: 8px 14px;
-        border-radius: var(--radius-md);
+        padding: 10px 16px;
+        border-radius: var(--radius-lg);
         display: none;
         align-items: center;
-        gap: 8px;
-        box-shadow: var(--shadow-lg);
+        gap: 10px;
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.1);
         backdrop-filter: blur(10px);
         z-index: 100;
         animation: fadeSlideIn 0.3s ease-out;
-        font-size: 0.9rem;
+        font-family: var(--font-display);
+        font-size: 0.88rem;
     }
     
     .walking-time-badge.active {
@@ -733,16 +827,17 @@
     /* Accessibility panel */
     .accessibility-panel {
         position: fixed;
-        top: 80px;
-        right: 20px;
-        background: white;
+        top: 85px;
+        right: 24px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
         border-radius: var(--radius-xl);
-        box-shadow: var(--shadow-xl);
-        padding: 20px;
-        width: 320px;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+        width: 340px;
         z-index: 1000;
         display: none;
         animation: slideInRight 0.3s ease-out;
+        border: 1px solid rgba(34, 197, 94, 0.2);
     }
     
     .accessibility-panel.active {
@@ -761,21 +856,31 @@
     }
     
     .accessibility-title {
-        font-size: 1.1rem;
+        font-family: var(--font-display);
+        font-size: 1.15rem;
         font-weight: 700;
         color: var(--text-primary);
-        margin-bottom: 16px;
+        margin-bottom: 1.25rem;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(34, 197, 94, 0.15);
     }
     
     .accessibility-option {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 14px 0;
+        padding: 1rem 0.5rem;
         border-bottom: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        margin: 0.25rem -0.5rem;
+        transition: background var(--transition-fast);
+    }
+    
+    .accessibility-option:hover {
+        background: rgba(34, 197, 94, 0.05);
     }
     
     .accessibility-option:last-child {
@@ -1012,18 +1117,18 @@
 
 <div class="h-screen flex flex-col overflow-hidden" style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);">
     <!-- Enhanced Header -->
-    <header class="text-white px-6 py-4 flex justify-between items-center relative" style="background: linear-gradient(135deg, #248823 0%, #166534 50%, #14532d 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 1000;">
+    <header class="text-white px-6 py-4 flex justify-between items-center relative" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1); z-index: 50;">
         <!-- Decorative background elements -->
-        <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none;"></div>
-        <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none;"></div>
+        <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%); pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); pointer-events: none;"></div>
         
         <div class="flex items-center gap-5 relative z-10">
-            <a href="{{ route('kiosk.idle') }}" class="touch-target touch-feedback flex items-center p-2 rounded-2xl bg-white bg-opacity-10 hover:bg-opacity-20 transition-all duration-300" style="box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            <a href="{{ route('kiosk.idle') }}" class="touch-target touch-feedback flex items-center p-2.5 rounded-2xl bg-white bg-opacity-15 hover:bg-opacity-25 transition-all duration-300" style="box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);">
                 <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-14 w-14 object-contain drop-shadow-lg">
             </a>
             <div>
-                <h1 class="text-3xl font-bold tracking-tight" style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Access Map</h1>
-                <p class="text-green-100 font-medium opacity-90">Sultan Kudarat State University</p>
+                <h1 class="text-3xl font-display font-extrabold tracking-tight" style="text-shadow: 0 2px 12px rgba(0,0,0,0.25); letter-spacing: -0.02em;">Campus Navigator</h1>
+                <p class="text-green-100 font-medium opacity-90 text-sm tracking-wide">Sultan Kudarat State University</p>
             </div>
         </div>
         
@@ -1032,16 +1137,16 @@
                 <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="🔍  Search buildings, offices, services..." 
-                    class="w-full px-6 py-4 rounded-2xl text-gray-800 text-lg focus:outline-none focus:ring-4 allow-select transition-all duration-300 shadow-lg"
-                    style="background: rgba(255,255,255,0.97); --tw-ring-color: rgba(74, 222, 128, 0.5);"
+                    placeholder="Search buildings, offices, services..." 
+                    class="w-full px-5 py-3.5 pl-12 rounded-2xl text-gray-800 text-base font-medium focus:outline-none focus:ring-4 allow-select transition-all duration-300"
+                    style="background: rgba(255,255,255,0.98); --tw-ring-color: rgba(74, 222, 128, 0.5); box-shadow: 0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,1);"
                     autocomplete="off"
                     autocorrect="off"
                     autocapitalize="off"
                     spellcheck="false"
                 />
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </div>
@@ -1050,15 +1155,16 @@
             </div>
         </div>
         
-        <div class="flex items-center gap-5 relative z-10">
+        <div class="flex items-center gap-4 relative z-10">
             <!-- Clock with enhanced styling -->
-            <div id="clock" class="text-2xl font-bold px-4 py-2 rounded-xl bg-white bg-opacity-10" style="font-variant-numeric: tabular-nums; text-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
+            <div id="clock" class="text-xl font-bold px-4 py-2.5 rounded-xl bg-white bg-opacity-15" style="font-variant-numeric: tabular-nums; text-shadow: 0 1px 4px rgba(0,0,0,0.2); font-family: var(--font-display); letter-spacing: 0.02em;"></div>
             
             <!-- Admin Menu Toggle -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" 
-                        class="touch-target touch-feedback p-4 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                        class="touch-target touch-feedback p-3.5 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-xl transition-all duration-300"
                         title="Menu"
+                        style="box-shadow: 0 2px 12px rgba(0,0,0,0.15);"
                         style="backdrop-filter: blur(10px);">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -1079,46 +1185,46 @@
                     
                     @auth
                         <a href="{{ route('admin.dashboard') }}" 
-                           class="touch-target touch-feedback flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100">
-                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="touch-target touch-feedback flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            <span class="text-base font-medium text-gray-700">Admin Dashboard</span>
+                            <span class="text-sm font-medium text-gray-600">Admin Dashboard</span>
                         </a>
                         
                         <button onclick="toggleEditMode()" 
-                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
-                            <span class="text-base font-medium text-gray-700">Admin Inline Edit</span>
+                            <span class="text-sm font-medium text-gray-600">Admin Inline Edit</span>
                         </button>
                     @else
                         <button onclick="showAdminLogin()" 
-                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                             </svg>
-                            <span class="text-base font-medium text-gray-700">Admin Login</span>
+                            <span class="text-sm font-medium text-gray-600">Admin Login</span>
                         </button>
                     @endauth
                     
                     <button onclick="toggleAccessibilityPanel()" 
-                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                        <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
+                        <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
-                        <span class="text-base font-medium text-gray-700">Accessibility</span>
+                        <span class="text-sm font-medium text-gray-600">Accessibility</span>
                     </button>
                     
                     <button onclick="showAbout()" 
-                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition text-left">
-                        <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition text-left">
+                        <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-base font-medium text-gray-700">About</span>
+                        <span class="text-sm font-medium text-gray-600">About</span>
                     </button>
                 </div>
             </div>
@@ -1128,7 +1234,7 @@
     <!-- Accessibility Panel -->
     <div class="accessibility-panel" id="accessibilityPanel">
         <div class="accessibility-title">
-            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
             </svg>
@@ -1137,7 +1243,9 @@
         
         <div class="accessibility-option">
             <div class="accessibility-label">
-                <span>🔍</span>
+                <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                </svg>
                 Large Text
             </div>
             <div class="toggle-switch" id="toggleLargeText" onclick="toggleLargeText()"></div>
@@ -1145,7 +1253,9 @@
         
         <div class="accessibility-option">
             <div class="accessibility-label">
-                <span>🎨</span>
+                <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                </svg>
                 High Contrast
             </div>
             <div class="toggle-switch" id="toggleHighContrast" onclick="toggleHighContrast()"></div>
@@ -1153,31 +1263,33 @@
         
         <div class="accessibility-option">
             <div class="accessibility-label">
-                <span>🚶</span>
+                <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
                 Reduced Motion
             </div>
             <div class="toggle-switch" id="toggleReducedMotion" onclick="toggleReducedMotion()"></div>
         </div>
         
         <button onclick="resetAccessibility()" 
-                class="w-full mt-4 py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-700 font-medium transition-all">
+                class="w-full mt-5 py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-600 font-medium transition-all" style="font-family: var(--font-body);">
             Reset to Default
         </button>
     </div>
 
     <!-- Main Content Container - Unified 3-Panel Layout -->
-    <div style="flex: 1; display: flex; padding: 1rem; min-height: 0;">
-        <div style="display: flex; width: 100%; height: 100%; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(36,136,35,0.2); border: 2px solid #248823;">
+    <div style="flex: 1; display: flex; padding: 1.25rem; min-height: 0;">
+        <div style="display: flex; width: 100%; height: 100%; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2), 0 4px 6px -1px rgba(0,0,0,0.1); border: 2px solid #22c55e; border-radius: 0.5rem;">
             
             <!-- Left Legend Section (20%) -->
-            <div id="leftLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);">
-                <div class="legend-header" style="flex-shrink: 0; padding: 0.875rem 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                    <div style="position: absolute; bottom: -30px; left: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                        <span class="flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            <div id="leftLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);">
+                <div class="legend-header" style="flex-shrink: 0; padding: 1rem 1.25rem; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -30px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -40px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 2px 4px rgba(0,0,0,0.15); letter-spacing: 0.025em;">
+                        <span class="flex items-center justify-center gap-2.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                             </svg>
                             Buildings & Facilities
                         </span>
@@ -1558,17 +1670,17 @@
             </div>
             
             <!-- Divider Line -->
-            <div style="width: 1px; background: linear-gradient(180deg, #248823 0%, #1a6619 50%, #248823 100%); flex-shrink: 0;"></div>
+            <div style="width: 2px; background: linear-gradient(180deg, #22c55e 0%, #16a34a 50%, #22c55e 100%); flex-shrink: 0;"></div>
             
             <!-- Right Legend Section (20%) - Aligned with Left -->
-            <div id="rightLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);">
-                <div class="legend-header" style="flex-shrink: 0; padding: 0.875rem 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: -20px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
-                    <div style="position: absolute; bottom: -30px; right: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                        <span class="flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            <div id="rightLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);">
+                <div class="legend-header" style="flex-shrink: 0; padding: 1rem 1.25rem; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -30px; left: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -40px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 2px 4px rgba(0,0,0,0.15); letter-spacing: 0.025em;">
+                        <span class="flex items-center justify-center gap-2.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                             Offices & Areas
                         </span>
@@ -1641,35 +1753,35 @@
 
 <!-- Building Preview Popup (shows when clicking a building on the map) -->
 <div id="buildingPreviewPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center" onclick="closeBuildingPreview(event)" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-3xl max-w-lg w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);">
+    <div class="bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);">
         <!-- Decorative top bar -->
-        <div style="height: 6px; background: linear-gradient(90deg, #248823, #10b981, #059669);"></div>
+        <div style="height: 5px; background: linear-gradient(90deg, #22c55e, #10b981, #059669);"></div>
         
-        <div class="p-7">
+        <div class="p-6">
             <!-- Building Image with enhanced styling -->
-            <div id="previewImageContainer" class="relative mb-6 rounded-2xl overflow-hidden" style="height: 220px; box-shadow: 0 10px 30px -5px rgba(36,136,35,0.3);">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-600/20"></div>
+            <div id="previewImageContainer" class="relative mb-5 rounded-xl overflow-hidden" style="height: 200px; box-shadow: 0 8px 25px -5px rgba(34,197,94,0.25);">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-400/15 to-emerald-600/15"></div>
                 <img id="previewBuildingImage" src="" alt="" class="w-full h-full object-cover" style="display: none;">
                 <div id="previewImagePlaceholder" class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
                     <div class="text-center">
-                        <div class="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center">
-                            <svg class="w-14 h-14" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center">
+                            <svg class="w-12 h-12" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                             </svg>
                         </div>
-                        <p class="text-gray-500 font-medium">No image available</p>
+                        <p class="text-gray-400 font-medium text-sm">No image available</p>
                     </div>
                 </div>
             </div>
             
             <!-- Building Name with decorative element -->
-            <div class="text-center mb-5">
-                <h2 id="previewBuildingName" class="text-2xl font-bold text-gray-800 mb-2"></h2>
-                <div class="w-16 h-1 mx-auto rounded-full" style="background: linear-gradient(90deg, #248823, #10b981);"></div>
+            <div class="text-center mb-4">
+                <h2 id="previewBuildingName" class="text-xl font-bold text-gray-800 mb-2" style="font-family: var(--font-display);"></h2>
+                <div class="w-12 h-1 mx-auto rounded-full" style="background: linear-gradient(90deg, #22c55e, #10b981);"></div>
             </div>
             
             <!-- Building Summary with badge styling -->
-            <div id="previewBuildingSummary" class="text-center mb-6">
+            <div id="previewBuildingSummary" class="text-center mb-5">
                 <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-full border border-green-100">
                     <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
@@ -1679,14 +1791,14 @@
             </div>
             
             <!-- Action Buttons - Enhanced styling -->
-            <div class="flex gap-4">
-                <button onclick="closeBuildingPreview()" class="touch-target touch-feedback flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-4 px-5 rounded-xl transition-all text-lg border-2 border-transparent hover:border-gray-300" style="box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);">
+            <div class="flex gap-3">
+                <button onclick="closeBuildingPreview()" class="touch-target touch-feedback flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3.5 px-5 rounded-xl transition-all text-base border-2 border-transparent hover:border-gray-300" style="box-shadow: inset 0 -2px 0 rgba(0,0,0,0.06);">
                     Close
                 </button>
-                <button id="viewBuildingDetailsBtn" onclick="openBuildingDetailsModal()" class="touch-target touch-feedback flex-1 text-white font-semibold py-4 px-5 rounded-xl transition-all text-lg relative overflow-hidden group" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%); box-shadow: 0 4px 15px rgba(36,136,35,0.4);">
+                <button id="viewBuildingDetailsBtn" onclick="openBuildingDetailsModal()" class="touch-target touch-feedback flex-1 text-white font-semibold py-3.5 px-5 rounded-xl transition-all text-base relative overflow-hidden group" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 15px rgba(34,197,94,0.35);">
                     <span class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
                     <span class="relative flex items-center justify-center gap-2">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                         </svg>
@@ -1699,19 +1811,19 @@
 </div>
 
 <!-- Building Details Modal (full details view with tabs) -->
-<div id="buildingDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);" onclick="closeBuildingDetailsModal(event)">
-    <div class="bg-white rounded-3xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col relative" onclick="event.stopPropagation()" style="animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 80px rgba(36,136,35,0.15);">
+<div id="buildingDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center" style="background: rgba(0,0,0,0.65); backdrop-filter: blur(12px);" onclick="closeBuildingDetailsModal(event)">
+    <div class="bg-white rounded-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col relative" onclick="event.stopPropagation()" style="animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 60px rgba(34,197,94,0.12);">
         <!-- Decorative gradient bar -->
-        <div style="height: 5px; background: linear-gradient(90deg, #248823, #10b981, #059669, #10b981, #248823);"></div>
+        <div style="height: 4px; background: linear-gradient(90deg, #22c55e, #10b981, #059669, #10b981, #22c55e);"></div>
         
         <!-- Modal Header with enhanced styling -->
-        <div class="flex items-center justify-between p-6 border-b relative overflow-hidden" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);">
+        <div class="flex items-center justify-between p-5 border-b relative overflow-hidden" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);">
             <!-- Decorative circles -->
-            <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: rgba(36,136,35,0.08); border-radius: 50%;"></div>
-            <div style="position: absolute; bottom: -30px; right: 60px; width: 60px; height: 60px; background: rgba(16,185,129,0.1); border-radius: 50%;"></div>
+            <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(34,197,94,0.08); border-radius: 50%;"></div>
+            <div style="position: absolute; bottom: -30px; right: 60px; width: 50px; height: 50px; background: rgba(16,185,129,0.08); border-radius: 50%;"></div>
             
-            <div class="flex items-center gap-5 relative z-10">
-                <div class="p-4 rounded-2xl relative overflow-hidden" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%); box-shadow: 0 8px 20px rgba(36,136,35,0.4);">
+            <div class="flex items-center gap-4 relative z-10">
+                <div class="p-3.5 rounded-xl relative overflow-hidden" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 6px 16px rgba(34,197,94,0.35);">
                     <div class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></div>
                     <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
@@ -1905,53 +2017,53 @@
     <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto touch-scroll hide-scrollbar">
         <div class="flex justify-between items-start mb-6">
             <h2 id="modalTitle" class="text-3xl font-bold text-gray-800"></h2>
-            <button onclick="closeModal()" class="touch-target touch-feedback text-4xl text-gray-500 hover:text-gray-700 p-2">×</button>
+            <button onclick="closeModal()" class="touch-target touch-feedback text-3xl text-gray-400 hover:text-gray-600 p-2 transition">×</button>
         </div>
         <div id="modalContent"></div>
     </div>
 </div>
 
 <!-- Admin Login Modal -->
-<div class="modal-overlay" id="adminLoginModal" style="backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
-        <div class="flex justify-between items-start mb-6">
+<div class="modal-overlay" id="adminLoginModal" style="backdrop-filter: blur(10px);">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
+        <div class="flex justify-between items-start mb-5">
             <div class="flex items-center gap-3">
-                <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34,197,94,0.3);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Admin Login</h2>
-                    <p class="text-sm text-gray-500">Access admin panel</p>
+                    <h2 class="text-xl font-bold text-gray-800" style="font-family: var(--font-display);">Admin Login</h2>
+                    <p class="text-xs text-gray-400">Access admin panel</p>
                 </div>
             </div>
-            <button onclick="closeAdminLogin()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
+            <button onclick="closeAdminLogin()" class="text-2xl text-gray-400 hover:text-gray-600 transition">×</button>
         </div>
         
         <form action="{{ route('login') }}" method="POST" id="adminLoginForm">
             @csrf
             <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">Username</label>
                 <input type="text" 
                        name="username" 
                        required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition"
+                       class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-400 transition text-sm"
                        placeholder="admin">
             </div>
             
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">Password</label>
                 <input type="password" 
                        name="password" 
                        required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition"
+                       class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-400 transition text-sm"
                        placeholder="admin123">
             </div>
 
-            <div id="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg hidden">
+            <div id="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg hidden text-sm">
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span id="loginErrorText"></span>
@@ -1959,10 +2071,10 @@
             </div>
             
             <button type="submit" 
-                    class="w-full text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-lg"
-                    style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);"
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(152, 216, 200, 0.5)';"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(152, 216, 200, 0.4)';">
+                    class="w-full text-white font-semibold py-2.5 px-5 rounded-lg transition duration-200"
+                    style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34,197,94,0.3);"
+                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px rgba(34,197,94,0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(34,197,94,0.3)';">
                 Login to Admin Panel
             </button>
         </form>
@@ -1970,34 +2082,34 @@
 </div>
 
 <!-- About Modal -->
-<div class="modal-overlay" id="aboutModal" style="backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-2xl p-8 max-w-4xl w-full shadow-2xl overflow-y-auto" style="animation: modalSlideIn 0.3s ease-out; max-height: 90vh;">
-        <div class="flex justify-between items-start mb-6">
+<div class="modal-overlay" id="aboutModal" style="backdrop-filter: blur(10px);">
+    <div class="bg-white rounded-xl p-6 max-w-4xl w-full shadow-2xl overflow-y-auto" style="animation: modalSlideIn 0.3s ease-out; max-height: 90vh;">
+        <div class="flex justify-between items-start mb-5">
             <div class="flex items-center gap-3">
-                <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34,197,94,0.3);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">About This Research</h2>
-                    <p class="text-sm text-gray-500">SKSU Access Campus Map System</p>
+                    <h2 class="text-xl font-bold text-gray-800" style="font-family: var(--font-display);">About This Research</h2>
+                    <p class="text-xs text-gray-400">SKSU Access Campus Map System</p>
                 </div>
             </div>
-            <button onclick="closeAbout()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
+            <button onclick="closeAbout()" class="text-2xl text-gray-400 hover:text-gray-600 transition">×</button>
         </div>
         
-        <div class="space-y-6">
+        <div class="space-y-5">
             <!-- Research Overview -->
-            <div class="bg-gray-50 rounded-lg p-6 border-l-4" style="border-color: #248823;">
-                <h3 class="font-bold text-lg text-gray-800 mb-3">Research Overview</h3>
-                <p class="text-sm text-gray-700 leading-relaxed mb-3">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-5 border-l-4" style="border-color: #22c55e;">
+                <h3 class="font-bold text-base text-gray-800 mb-2" style="font-family: var(--font-display);">Research Overview</h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-2">
                     This study presents the development and implementation of an <strong>Interactive Digital Campus Navigation System</strong> 
                     for Sultan Kudarat State University (SKSU). The research addresses the increasing need for efficient wayfinding 
                     solutions in modern educational institutions, particularly for new students, visitors, and faculty members 
                     navigating the extensive SKSU campus.
                 </p>
-                <p class="text-sm text-gray-700 leading-relaxed">
+                <p class="text-sm text-gray-600 leading-relaxed">
                     The system leverages web-based technologies to provide real-time, accessible campus information through an 
                     intuitive interface, facilitating seamless navigation and information retrieval across 44 campus buildings, 
                     116 offices, and 345 services.

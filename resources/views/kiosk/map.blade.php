@@ -363,7 +363,7 @@
         width: 100%;
         height: 100%;
         background: linear-gradient(145deg, #e8f5e9 0%, #f1f8e9 50%, #e8f5e9 100%);
-        overflow: hidden;
+        overflow: visible;
         touch-action: pan-x pan-y;
         border-radius: var(--radius-lg);
     }
@@ -403,6 +403,18 @@
     svg {
         width: 100%;
         height: 100%;
+        overflow: visible;
+    }
+    
+    /* Navigation endpoint labels - allow overflow visibility */
+    .endpoint-label {
+        pointer-events: none;
+        font-weight: bold;
+    }
+    
+    /* Ensure navigation markers group is visible even outside SVG bounds */
+    #navigationMarkers {
+        overflow: visible;
     }
     
     /* Interactive building hover effects */
@@ -446,58 +458,105 @@
     }
     
     /* ============================================
+       ENHANCED LAYOUT ALIGNMENT
+       ============================================ */
+    .main-content-wrapper {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        padding: 1rem;
+    }
+    
+    .content-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2), 
+                    0 0 0 1px rgba(36,136,35,0.12);
+    }
+    
+    /* ============================================
        ENHANCED LEGEND STYLES
        ============================================ */
     .legend-panel {
         background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);
+        display: flex;
+        flex-direction: column;
     }
     
     .legend-header {
         background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        flex-shrink: 0;
     }
     
+    .legend-scroll-content {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0.75rem;
+    }
+    
+    /* Map container alignment */
+    .map-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+        position: relative;
+    }
+    
+    .map-wrapper svg {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+    }
+
     .legend-category {
         margin-bottom: 0.5rem;
     }
     
     .legend-category-title {
         font-weight: 700;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         color: var(--primary);
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        padding: 0.5rem 0.75rem;
+        padding: 0.4rem 0.6rem;
         background: linear-gradient(90deg, rgba(36, 136, 35, 0.08) 0%, transparent 100%);
         border-left: 3px solid var(--primary);
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.2rem;
         border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.4rem;
     }
     
     .legend-category-icon {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
     
     .legend-item-enhanced {
         display: flex;
         align-items: center;
-        padding: 0.6rem 0.75rem;
-        margin: 0.15rem 0;
+        padding: 0.5rem 0.6rem;
+        margin: 0.1rem 0;
         border-radius: var(--radius-sm);
         cursor: pointer;
         transition: all var(--transition-fast);
         background: transparent;
         border-left: 3px solid transparent;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         color: var(--text-primary);
+        line-height: 1.3;
     }
     
     .legend-item-enhanced:hover {
         background: rgba(36, 136, 35, 0.1);
         border-left-color: var(--primary);
-        padding-left: 1rem;
+        padding-left: 0.85rem;
         color: var(--primary-dark);
     }
     
@@ -507,11 +566,12 @@
     }
     
     .legend-item-dot {
-        width: 6px;
-        height: 6px;
+        width: 5px;
+        height: 5px;
         border-radius: 50%;
         background: var(--primary);
-        margin-right: 0.75rem;
+        margin-right: 0.6rem;
+        flex-shrink: 0;
         opacity: 0.6;
         transition: all var(--transition-fast);
     }
@@ -783,16 +843,18 @@
         </div>
     </header>
 
-    <div class="flex p-6" style="flex: 1; min-height: 0;">
-        <div class="flex rounded-2xl overflow-hidden" style="height: 100%; width: 100%; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(36,136,35,0.1);">
+    <!-- Main Content Container - Unified 3-Panel Layout -->
+    <div style="flex: 1; display: flex; padding: 1rem; min-height: 0;">
+        <div style="display: flex; width: 100%; height: 100%; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(36,136,35,0.2); border: 2px solid #248823;">
+            
             <!-- Left Legend Section (20%) -->
-            <div id="leftLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%); border-right: 3px solid #248823;">
-                <div class="legend-header" style="flex-shrink: 0; padding: 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
+            <div id="leftLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);">
+                <div class="legend-header" style="flex-shrink: 0; padding: 0.875rem 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                     <div style="position: absolute; bottom: -30px; left: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-                    <h2 class="font-bold text-white text-center text-base relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
                         <span class="flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                             </svg>
                             Buildings & Facilities
@@ -842,15 +904,18 @@
                 </div>
             </div>
             
-            <!-- Map Section (60%) -->
-            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: visible;">
-            <div class="hint-overlay" id="interactiveHint">
-                <span class="flex items-center gap-3">
-                    <span style="font-size: 1.5rem;">👆</span>
-                    <span>Tap on any building to explore</span>
-                </span>
-            </div>
-            <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+            <!-- Divider Line -->
+            <div style="width: 1px; background: linear-gradient(180deg, #248823 0%, #1a6619 50%, #248823 100%); flex-shrink: 0;"></div>
+            
+            <!-- Map Section (60%) - Centered & Aligned -->
+            <div class="map-wrapper" id="mapContainer" style="flex: 1 1 60%; height: 100%; position: relative; overflow: visible; background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);">
+                <div class="hint-overlay" id="interactiveHint">
+                    <span class="flex items-center gap-3">
+                        <span style="font-size: 1.5rem;">👆</span>
+                        <span>Tap on any building to explore</span>
+                    </span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; max-width: 100%; max-height: 100%; overflow: visible;" preserveAspectRatio="xMidYMid meet">
                 <g id="layer1" transform="translate(43.417 59.938)">
                     <path id="Premises" d="m-33.024-7.685-1.12 176.012 156.418 1.031v36.09l129.52.001c-.035-88.47-.025-172.804 0-261.322l-177.22.568z" style="fill:#bfe4c5;fill-opacity:1;fill-rule:evenodd;stroke:#0a0a00;stroke-width:.275879;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
                 </g>
@@ -1158,16 +1223,19 @@
                     <text x="254" y="258" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">CCJE Ext</text>
                 </g>
             </svg>
-        </div>
+            </div>
             
-            <!-- Right Legend Section (20%) -->
-            <div id="rightLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%); border-left: 3px solid #248823;">
-                <div class="legend-header" style="flex-shrink: 0; padding: 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
+            <!-- Divider Line -->
+            <div style="width: 1px; background: linear-gradient(180deg, #248823 0%, #1a6619 50%, #248823 100%); flex-shrink: 0;"></div>
+            
+            <!-- Right Legend Section (20%) - Aligned with Left -->
+            <div id="rightLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);">
+                <div class="legend-header" style="flex-shrink: 0; padding: 0.875rem 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
                     <div style="position: absolute; top: -20px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
                     <div style="position: absolute; bottom: -30px; right: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
-                    <h2 class="font-bold text-white text-center text-base relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
                         <span class="flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                             </svg>
                             Offices & Areas
@@ -3829,8 +3897,33 @@
         // Get display name
         const displayName = svgToDisplayName[buildingName] || buildingName;
         labelText.textContent = displayName;
-        labelText.setAttribute('x', point.x);
-        labelText.setAttribute('y', point.y - 12);
+        
+        // Smart label positioning - check if near edges and adjust accordingly
+        let labelY = point.y - 14; // Default: above the marker
+        let labelX = point.x;
+        
+        // If near top edge (y < 30), place label below the marker
+        if (point.y < 30) {
+            labelY = point.y + 20;
+        }
+        
+        // If near left edge (x < 50), shift label to the right
+        if (point.x < 50) {
+            labelX = point.x + 25;
+        }
+        
+        // If near right edge (x > 260), shift label to the left
+        if (point.x > 260) {
+            labelX = point.x - 25;
+        }
+        
+        // If near bottom edge (y > 250), place label above
+        if (point.y > 250) {
+            labelY = point.y - 20;
+        }
+        
+        labelText.setAttribute('x', labelX);
+        labelText.setAttribute('y', labelY);
         labelText.setAttribute('text-anchor', 'middle');
         labelText.setAttribute('font-size', '9');
         labelText.setAttribute('font-weight', 'bold');

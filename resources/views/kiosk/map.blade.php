@@ -1020,7 +1020,169 @@
     }
     
     /* ============================================
-       KIOSK IDLE TIMEOUT & SCREENSAVER
+       "YOU ARE HERE" MARKER
+       ============================================ */
+    .you-are-here-marker {
+        pointer-events: none;
+    }
+    
+    .you-are-here-pulse {
+        animation: youAreHerePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes youAreHerePulse {
+        0%, 100% { 
+            r: 8;
+            opacity: 0.3;
+        }
+        50% { 
+            r: 16;
+            opacity: 0;
+        }
+    }
+    
+    .you-are-here-label {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 7px;
+        letter-spacing: 0.5px;
+    }
+    
+    /* ============================================
+       MICRO-ANIMATIONS
+       ============================================ */
+    
+    /* Building SVG hover effects - applies to all building paths */
+    #campusMap path[id] {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+    }
+    
+    #campusMap path[id]:hover {
+        filter: brightness(1.15) drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+        transform: scale(1.02);
+        cursor: pointer;
+    }
+    
+    #campusMap path[id]:active {
+        filter: brightness(1.25) drop-shadow(0 0 12px rgba(34, 197, 94, 0.8));
+        transform: scale(0.98);
+    }
+    
+    /* Building highlight on hover */
+    @keyframes buildingGlow {
+        0%, 100% { filter: brightness(1.1) drop-shadow(0 0 8px var(--primary-glow)); }
+        50% { filter: brightness(1.2) drop-shadow(0 0 16px var(--primary-glow)); }
+    }
+    
+    .building-hover-glow {
+        animation: buildingGlow 1.5s ease-in-out infinite;
+    }
+    
+    /* Selected building pulse effect */
+    @keyframes selectedBuildingPulse {
+        0%, 100% { 
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(34, 197, 94, 0.7));
+        }
+        50% { 
+            filter: brightness(1.3) drop-shadow(0 0 20px rgba(34, 197, 94, 0.9));
+        }
+    }
+    
+    .building-selected {
+        animation: selectedBuildingPulse 1.5s ease-in-out infinite;
+    }
+    
+    /* Smooth fade transitions */
+    .fade-in {
+        animation: smoothFadeIn 0.3s ease-out forwards;
+    }
+    
+    @keyframes smoothFadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Loading skeleton */
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.5s infinite;
+        border-radius: var(--radius-sm);
+    }
+    
+    @keyframes skeletonShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    
+    /* Button press effect */
+    .press-effect:active {
+        transform: scale(0.96);
+        transition: transform 0.1s ease;
+    }
+    
+    /* Ripple effect container */
+    .ripple-container {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: rippleEffect 0.6s ease-out;
+        pointer-events: none;
+    }
+    
+    @keyframes rippleEffect {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+    
+    /* Legend item hover enhancement */
+    .legend-item-enhanced {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .legend-item-enhanced::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .legend-item-enhanced:hover::before {
+        left: 100%;
+    }
+    
+    /* Card entrance animation */
+    .card-enter {
+        animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    
+    @keyframes cardEnter {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    /* ============================================
+       ENHANCED SCREENSAVER
        ============================================ */
     #kioskIdleOverlay {
         position: fixed;
@@ -1028,13 +1190,33 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.97) 0%, rgba(30, 41, 59, 0.97) 100%);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
         z-index: 9999;
         display: none;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         cursor: pointer;
+        overflow: hidden;
+    }
+    
+    #kioskIdleOverlay::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 30%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+        animation: screensaverBg 15s ease-in-out infinite;
+    }
+    
+    @keyframes screensaverBg {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(5%, 5%) rotate(5deg); }
+        50% { transform: translate(0, 10%) rotate(0deg); }
+        75% { transform: translate(-5%, 5%) rotate(-5deg); }
     }
     
     #kioskIdleOverlay.show {
@@ -1042,29 +1224,85 @@
         animation: fadeIn 0.5s ease;
     }
     
+    .screensaver-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+    
+    .idle-logo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        animation: logoFloat 3s ease-in-out infinite;
+        filter: drop-shadow(0 10px 30px rgba(34, 197, 94, 0.3));
+    }
+    
+    @keyframes logoFloat {
+        0%, 100% { transform: translateY(0) scale(1); }
+        50% { transform: translateY(-15px) scale(1.02); }
+    }
+    
     .idle-text {
         color: white;
         font-size: 2.5rem;
         font-weight: 700;
         text-align: center;
-        animation: pulseGlow 2.5s ease-in-out infinite;
-        text-shadow: 0 0 20px rgba(255,255,255,0.3);
+        margin-bottom: 0.5rem;
+        font-family: var(--font-display);
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .idle-subtext {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin-bottom: 3rem;
+    }
+    
+    .idle-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 16px 32px;
+        border-radius: var(--radius-full);
+        color: white;
+        font-weight: 600;
+        animation: hintPulse 2s ease-in-out infinite;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    @keyframes hintPulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.98); }
     }
     
     .idle-icon {
-        font-size: 5rem;
-        margin-bottom: 1.5rem;
-        animation: bounce 2s ease-in-out infinite;
+        font-size: 1.5rem;
+        animation: tapBounce 1s ease-in-out infinite;
     }
     
-    @keyframes pulseGlow {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(0.98); }
-    }
-    
-    @keyframes bounce {
+    @keyframes tapBounce {
         0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-15px); }
+        50% { transform: translateY(-5px); }
+    }
+    
+    /* Floating particles */
+    .screensaver-particle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: var(--primary);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: particleFloat 10s ease-in-out infinite;
+    }
+    
+    @keyframes particleFloat {
+        0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+        50% { transform: translateY(-100px) translateX(50px); opacity: 0.6; }
     }
     
     /* ============================================
@@ -1106,12 +1344,23 @@
 @endsection
 
 @section('content')
-<!-- Kiosk Idle Timeout Overlay (touch to dismiss) -->
+<!-- Enhanced Screensaver Overlay -->
 <div id="kioskIdleOverlay" onclick="resetIdleTimer()">
-    <div class="text-center">
-        <div class="idle-icon">👆</div>
-        <div class="idle-text">Touch anywhere to continue</div>
-        <p class="text-white text-opacity-60 mt-4 text-lg">SKSU Campus Navigation Kiosk</p>
+    <!-- Floating particles -->
+    <div class="screensaver-particle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+    <div class="screensaver-particle" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
+    <div class="screensaver-particle" style="top: 40%; left: 30%; animation-delay: 4s;"></div>
+    <div class="screensaver-particle" style="top: 80%; left: 60%; animation-delay: 6s;"></div>
+    <div class="screensaver-particle" style="top: 30%; left: 70%; animation-delay: 8s;"></div>
+    
+    <div class="screensaver-content">
+        <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="idle-logo">
+        <div class="idle-text">Campus Navigation Kiosk</div>
+        <div class="idle-subtext">Sultan Kudarat State University</div>
+        <div class="idle-hint">
+            <span class="idle-icon">👆</span>
+            <span>Touch anywhere to start</span>
+        </div>
     </div>
 </div>
 
@@ -1127,7 +1376,7 @@
                 <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-14 w-14 object-contain drop-shadow-lg">
             </a>
             <div>
-                <h1 class="text-3xl font-display font-extrabold tracking-tight" style="text-shadow: 0 2px 12px rgba(0,0,0,0.25); letter-spacing: -0.02em;">Campus Navigator</h1>
+                <h1 class="text-3xl font-display font-extrabold tracking-tight" style="text-shadow: 0 2px 12px rgba(0,0,0,0.25); letter-spacing: -0.02em;">Acces Map</h1>
                 <p class="text-green-100 font-medium opacity-90 text-sm tracking-wide">Sultan Kudarat State University</p>
             </div>
         </div>
@@ -1665,6 +1914,33 @@
                     <!-- CCJE Extension -->
                     <rect x="240" y="254" width="28" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
                     <text x="254" y="258" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">CCJE Ext</text>
+                </g>
+                
+                <!-- ==================== YOU ARE HERE MARKER ==================== -->
+                <g id="youAreHereMarker" class="you-are-here-marker" style="pointer-events: none;">
+                    <!-- Outer pulsing ring -->
+                    <circle cx="188.32" cy="267.166" r="8" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.3">
+                        <animate attributeName="r" values="6;12;6" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <!-- Middle ring -->
+                    <circle cx="188.32" cy="267.166" r="5" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.4">
+                        <animate attributeName="r" values="4;8;4" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                        <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                    </circle>
+                    <!-- Main marker circle -->
+                    <circle cx="188.32" cy="267.166" r="3.5" fill="#22c55e" stroke="white" stroke-width="1">
+                        <animate attributeName="r" values="3.5;4;3.5" dur="1.5s" repeatCount="indefinite"/>
+                    </circle>
+                    <!-- Inner dot -->
+                    <circle cx="188.32" cy="267.166" r="1.5" fill="white"/>
+                    <!-- "You Are Here" Label with background -->
+                    <rect x="192" y="258" width="30" height="8" rx="2" fill="white" fill-opacity="0.95" stroke="#22c55e" stroke-width="0.5" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));"/>
+                    <text x="207" y="263.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#16a34a" font-family="Inter, sans-serif">YOU ARE HERE</text>
+                    <!-- Location pin icon -->
+                    <g transform="translate(193.5, 259.5) scale(0.2)">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#22c55e"/>
+                    </g>
                 </g>
             </svg>
             </div>

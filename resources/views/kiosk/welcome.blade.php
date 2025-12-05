@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('title', 'SKSU Access - Campus Kiosk')
 @section('body-class', 'overflow-hidden font-sans')
@@ -49,6 +49,8 @@
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
         background-size: cover;
         background-position: center;
+        background-color: #1a1a1a;
+        transition: background-image 0.3s ease-in-out;
         transition: opacity 0.5s ease;
     }
     

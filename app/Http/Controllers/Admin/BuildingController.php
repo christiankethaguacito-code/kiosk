@@ -11,180 +11,71 @@ class BuildingController extends Controller
 {
     public function index()
     {
-        $buildings = Building::orderBy('name')->paginate(20);
+        $buildings = Building::latest()->get();
         return view('admin.buildings.index', compact('buildings'));
     }
 
     public function create()
     {
-        return view('admin.buildings.create');
+        return view('admin.buildings.form', ['building' => null]);
     }
 
     public function store(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'code' => 'required|string|max:100|unique:buildings,code',
-                'name' => 'required|string|max:150',
-                'description' => 'nullable|string',
-                'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'gallery_images' => 'nullable|array|max:10',
-                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-                'map_x' => 'required|integer|min:0',
-                'map_y' => 'required|integer|min:0',
-            ]);
+        $validated = $request->validate([
+            'name' => 'required',
+            'image_path' => 'nullable|image|max:2048',
+            'map_x' => 'required|integer',
+            'map_y' => 'required|integer',
+        ]);
 
-            $imagePath = null;
-            if ($request->hasFile('image_path')) {
-                $imagePath = $request->file('image_path')->store('buildings', 'public');
-            }
-
-            // Handle gallery images
-            $galleryPaths = [];
-            if ($request->hasFile('gallery_images')) {
-                foreach ($request->file('gallery_images') as $image) {
-                    $path = $image->store('buildings/gallery', 'public');
-                    $galleryPaths[] = $path;
-                }
-            }
-
-            Building::create([
-                'code' => $validated['code'],
-                'name' => $validated['name'],
-                'description' => $validated['description'] ?? null,
-                'image_path' => $imagePath,
-                'image_gallery' => $galleryPaths,
-                'map_x' => $validated['map_x'],
-                'map_y' => $validated['map_y'],
-            ]);
-
-            return redirect()->route('admin.buildings.index')
-                ->with('success', 'Building information added successfully!');
-                
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Failed to create building: ' . $e->getMessage())
-                ->withInput();
+        if ($request->hasFile('image_path')) {
+            $path = $request->file('image_path')->store('uploads', 'public');
+            $validated['image_path'] = $path;
         }
+
+        Building::create($validated);
+        return redirect()->route('buildings.index')->with('success', 'Building created successfully.');
+    }
+
+    public function show(Building $building)
+    {
+        $building->load('offices.services');
+        return view('admin.buildings.show', compact('building'));
     }
 
     public function edit(Building $building)
     {
-        return view('admin.buildings.edit', compact('building'));
+        return view('admin.buildings.form', compact('building'));
     }
 
     public function update(Request $request, Building $building)
     {
-        try {
-            $validated = $request->validate([
-                'code' => 'required|string|max:100|unique:buildings,code,' . $building->id,
-                'name' => 'required|string|max:150',
-                'description' => 'nullable|string',
-                'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'gallery_images' => 'nullable|array|max:10',
-                'gallery_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-                'map_x' => 'required|integer|min:0',
-                'map_y' => 'required|integer|min:0',
-            ]);
+        $validated = $request->validate([
+            'name' => 'required',
+            'image_path' => 'nullable|image|max:2048',
+            'map_x' => 'required|integer',
+            'map_y' => 'required|integer',
+        ]);
 
-            $imagePath = $building->image_path;
-            if ($request->hasFile('image_path')) {
-                if ($imagePath && Storage::disk('public')->exists($imagePath)) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-                $imagePath = $request->file('image_path')->store('buildings', 'public');
+        if ($request->hasFile('image_path')) {
+            if ($building->image_path) {
+                Storage::disk('public')->delete($building->image_path);
             }
-
-            // Handle gallery images - add to existing gallery
-            $existingGallery = $building->image_gallery ?? [];
-            if ($request->hasFile('gallery_images')) {
-                foreach ($request->file('gallery_images') as $image) {
-                    $path = $image->store('buildings/gallery', 'public');
-                    $existingGallery[] = $path;
-                }
-            }
-
-            $building->update([
-                'code' => $validated['code'],
-                'name' => $validated['name'],
-                'description' => $validated['description'] ?? null,
-                'image_path' => $imagePath,
-                'image_gallery' => $existingGallery,
-                'map_x' => $validated['map_x'],
-                'map_y' => $validated['map_y'],
-            ]);
-
-            return redirect()->route('admin.buildings.index')
-                ->with('success', 'Building information updated successfully!');
-                
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Failed to update building: ' . $e->getMessage())
-                ->withInput();
+            $path = $request->file('image_path')->store('uploads', 'public');
+            $validated['image_path'] = $path;
         }
+
+        $building->update($validated);
+        return redirect()->route('buildings.index')->with('success', 'Building updated successfully.');
     }
 
     public function destroy(Building $building)
     {
-        try {
-            if ($building->image_path && Storage::disk('public')->exists($building->image_path)) {
-                Storage::disk('public')->delete($building->image_path);
-            }
-
-            // Delete all gallery images
-            if ($building->image_gallery) {
-                foreach ($building->image_gallery as $imagePath) {
-                    if (Storage::disk('public')->exists($imagePath)) {
-                        Storage::disk('public')->delete($imagePath);
-                    }
-                }
-            }
-
-            $building->delete();
-
-            return redirect()->route('admin.buildings.index')
-                ->with('success', 'Building deleted successfully!');
-                
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Failed to delete building: ' . $e->getMessage());
+        if ($building->image_path) {
+            Storage::disk('public')->delete($building->image_path);
         }
-    }
-
-    public function deleteGalleryImage(Building $building, $index)
-    {
-        try {
-            $gallery = $building->image_gallery ?? [];
-            
-            if (!isset($gallery[$index])) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Image not found'
-                ], 404);
-            }
-
-            $imagePath = $gallery[$index];
-            
-            // Delete file from storage
-            if (Storage::disk('public')->exists($imagePath)) {
-                Storage::disk('public')->delete($imagePath);
-            }
-
-            // Remove from array and reindex
-            array_splice($gallery, $index, 1);
-            $building->image_gallery = array_values($gallery);
-            $building->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Image deleted successfully'
-            ]);
-            
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
-        }
+        $building->delete();
+        return redirect()->route('buildings.index')->with('success', 'Building deleted successfully.');
     }
 }

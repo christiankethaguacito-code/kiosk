@@ -9,7 +9,22 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @yield('head')
     <style>
-            body { margin:0; font-family: Arial, sans-serif; }
+            * {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+            }
+            
+            body { 
+                margin:0; 
+                font-family: Arial, sans-serif;
+                touch-action: pan-y pan-x;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
 
             /* Header */
             .header {
@@ -60,6 +75,16 @@
                 height: 100%;
                 display: block;
                 pointer-events: all;
+                touch-action: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+            }
+            
+            .svg-map svg * {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
             }
 
             .legend-box {

@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('title', $building->name . ' - Building Details')
 @section('body-class', 'bg-gray-50')
@@ -10,6 +10,21 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <style>
+    /* Prevent text selection during swipe */
+    .building-gallery-swiper,
+    .building-gallery-swiper * {
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+    }
+    
+    .building-gallery-swiper {
+        touch-action: pan-y !important;
+    }
+    
     .building-gallery-swiper .swiper-slide {
         height: 500px;
     }
@@ -17,6 +32,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        pointer-events: none;
     }
     .swiper-button-next, .swiper-button-prev {
         color: #248823;

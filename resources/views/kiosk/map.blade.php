@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Campus Map')
 @section('body-class', 'bg-gray-900')
@@ -9,35 +9,221 @@
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+<!-- Viewport meta for touch devices -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <style>
-    .building-marker {
-        display: none; /* Hide database-driven markers, use SVG buildings instead */
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #248823 0%, #1a6619 100%);
-        border: 3px solid white;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
+    /* ============================================
+       ENHANCED KIOSK UI - MODERN DESIGN SYSTEM
+       ============================================ */
+    
+    :root {
+        --primary: #248823;
+        --primary-dark: #1a6619;
+        --primary-light: #4ade80;
+        --primary-glow: rgba(36, 136, 35, 0.4);
+        --accent: #10b981;
+        --accent-light: #34d399;
+        --surface: #ffffff;
+        --surface-elevated: #f8fafc;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-muted: #94a3b8;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+        --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+        --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+        --shadow-glow: 0 0 30px var(--primary-glow);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 24px;
+        --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Prevent text selection and callouts on touch - but allow scrolling */
+    * {
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+    }
+    
+    /* Disable text selection on body level, not globally */
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+    
+    /* Allow text selection in specific areas if needed */
+    .allow-select {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+    }
+    
+    /* Minimum touch target size (44px recommended by Apple/Google) */
+    .touch-target {
+        min-height: 48px;
+        min-width: 48px;
+    }
+    
+    /* Smooth scrolling for touch and mouse */
+    .touch-scroll {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto !important;
+        scroll-behavior: smooth;
+    }
+    
+    /* Scrollable panel - ensure scrolling works */
+    .scrollable-panel {
+        overflow-y: auto !important;
+        overflow-x: hidden;
+        max-height: 100%;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Modern scrollbar styling */
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Elegant scrollbar - Enhanced for touch */
+    .show-scrollbar-on-hover {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(36, 136, 35, 0.4) rgba(36, 136, 35, 0.1);
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar {
+        width: 10px;
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar-track {
+        background: linear-gradient(90deg, transparent 0%, rgba(36,136,35,0.08) 50%, transparent 100%);
+        border-radius: 10px;
+        margin: 4px 0;
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 10px;
+        border: 2px solid rgba(255,255,255,0.8);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, var(--accent) 0%, var(--primary) 100%);
+        box-shadow: 0 0 10px var(--primary-glow);
+    }
+    
+    /* Larger fonts for touchscreen readability */
+    html {
+        font-size: 16px;
+    }
+    
+    @media (min-width: 1024px) {
+        html {
+            font-size: 18px;
+        }
+    }
+    
+    /* ============================================
+       ENHANCED BUTTON STYLES
+       ============================================ */
+    .kiosk-btn {
+        min-height: 52px;
+        padding: 14px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius-lg);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all var(--transition-fast);
         cursor: pointer;
-        transition: all 0.3s;
-        z-index: 10;
-    }
-    .building-marker:hover {
-        background: linear-gradient(135deg, #7CC4B5 0%, #4FB86A 100%);
-        transform: translate(-50%, -50%) scale(1.2);
-    }
-    .building-marker.dragging {
-        opacity: 0.7;
-        cursor: move;
-    }
-    .map-wrapper {
+        border: none;
         position: relative;
-        width: 100%;
-        height: 100%;
-        background: #f5f5f5;
         overflow: hidden;
     }
+    
+    .kiosk-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .kiosk-btn:hover::before {
+        left: 100%;
+    }
+    
+    .kiosk-btn:active {
+        transform: scale(0.95);
+    }
+    
+    .kiosk-btn:hover {
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+        transform: translateY(-2px);
+    }
+    
+    /* Touch feedback for interactive elements */
+    .touch-feedback {
+        transition: all var(--transition-fast);
+        position: relative;
+    }
+    
+    .touch-feedback:active {
+        transform: scale(0.97);
+    }
+    
+    .touch-feedback:hover {
+        transform: translateY(-1px);
+    }
+    
+    /* ============================================
+       ENHANCED LEGEND ITEMS
+       ============================================ */
+    .legend-item {
+        min-height: 44px;
+        padding: 12px 16px !important;
+        margin: 6px 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        border-left: 3px solid transparent;
+        background: transparent;
+    }
+    
+    .legend-item:hover {
+        color: var(--primary) !important;
+        background: linear-gradient(90deg, rgba(36, 136, 35, 0.12) 0%, rgba(36, 136, 35, 0.05) 100%) !important;
+        border-left-color: var(--primary);
+        padding-left: 20px !important;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .legend-item:active {
+        background: linear-gradient(90deg, rgba(36, 136, 35, 0.2) 0%, rgba(36, 136, 35, 0.1) 100%) !important;
+    }
+    
+    /* ============================================
+       ENHANCED MODAL STYLES
+       ============================================ */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -45,7 +231,8 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0,0,0,0.8);
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(8px);
         z-index: 50;
         align-items: center;
         justify-content: center;
@@ -57,66 +244,160 @@
     }
     
     .modal-overlay.active > div {
-        animation: slideUp 0.3s ease;
+        animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     
     @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes modalSlideIn {
         from {
+            transform: translateY(40px) scale(0.95);
             opacity: 0;
         }
         to {
+            transform: translateY(0) scale(1);
             opacity: 1;
         }
     }
     
-    @keyframes slideUp {
+    @keyframes popupSlideIn {
         from {
-            transform: translateY(30px);
+            transform: translateY(20px) scale(0.98);
             opacity: 0;
         }
         to {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
             opacity: 1;
         }
+    }
+    
+    /* ============================================
+       ENHANCED TAB STYLES
+       ============================================ */
+    .details-tab {
+        color: var(--text-secondary);
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        transition: all var(--transition-fast);
+        position: relative;
+    }
+    
+    .details-tab:hover {
+        color: var(--primary);
+        background: rgba(36, 136, 35, 0.08);
+    }
+    
+    .details-tab.active {
+        color: var(--primary);
+        background: white;
+        border-bottom-color: var(--primary);
+        box-shadow: 0 -2px 10px rgba(36, 136, 35, 0.1);
+    }
+    
+    .details-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        border-radius: 3px 3px 0 0;
+    }
+    
+    /* ============================================
+       ENHANCED SWIPE DOTS
+       ============================================ */
+    .swipe-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d1d5db;
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        border: 2px solid transparent;
+    }
+    
+    .swipe-dot:hover {
+        background: var(--primary-light);
+        transform: scale(1.2);
+    }
+    
+    .swipe-dot.active {
+        width: 32px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        box-shadow: 0 2px 8px var(--primary-glow);
+    }
+    
+    /* ============================================
+       ENHANCED MAP & BUILDING STYLES
+       ============================================ */
+    .building-marker {
+        display: none;
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border: 3px solid white;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        z-index: 10;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .building-marker:hover {
+        background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        transform: translate(-50%, -50%) scale(1.15);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+    
+    .map-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(145deg, #e8f5e9 0%, #f1f8e9 50%, #e8f5e9 100%);
+        overflow: hidden;
+        touch-action: pan-x pan-y;
+        border-radius: var(--radius-lg);
     }
     
     /* Subtle pulse animation for clickable buildings */
     @keyframes buildingPulse {
-        0%, 100% {
-            filter: brightness(1);
-        }
-        50% {
-            filter: brightness(1.05);
-        }
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.08); }
+    }
+    
+    @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+        50% { box-shadow: 0 0 35px var(--primary-glow); }
     }
     
     /* Loading spinner for modal content */
     .loading-spinner {
         display: inline-block;
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(36, 136, 35, 0.2);
-        border-top-color: #248823;
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgba(36, 136, 35, 0.15);
+        border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
     }
     
     @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
+        to { transform: rotate(360deg); }
     }
     
     /* Highlight effect for selected building */
     .building-selected {
-        filter: brightness(1.3) drop-shadow(0 0 16px rgba(36, 136, 35, 1)) !important;
+        filter: brightness(1.3) drop-shadow(0 0 20px var(--primary)) !important;
         animation: buildingPulse 2s ease-in-out infinite;
-    }
-    
-    /* Green gradient hover for legend items */
-    .legend-item:hover {
-        color: #248823 !important;
-        background-color: rgba(36, 136, 35, 0.1) !important;
     }
     
     svg {
@@ -126,56 +407,119 @@
     
     /* Interactive building hover effects */
     svg [id]:hover:not(#Premises):not(#Outline):not(#Main_Road):not(#Side_Entrance):not(#Main_Entrance):not(#BuildingLabels):not(path):not(g) {
-        filter: brightness(1.2) drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: brightness(1.15) drop-shadow(0 0 12px rgba(16, 185, 129, 0.7));
+        transition: all var(--transition-normal);
         cursor: pointer;
-        transform-origin: center;
     }
     
-    /* Building click animation */
     svg [id]:active:not(#Premises):not(#Outline):not(#Main_Road):not(#Side_Entrance):not(#Main_Entrance):not(#BuildingLabels):not(path):not(g) {
-        filter: brightness(1.3) drop-shadow(0 0 12px rgba(16, 185, 129, 0.8));
+        filter: brightness(1.25) drop-shadow(0 0 16px rgba(16, 185, 129, 0.9));
         transform: scale(0.98);
-        transition: all 0.1s ease;
     }
     
-    /* Smooth cursor change for interactive elements */
-    svg [id][style*="cursor: pointer"] {
-        will-change: filter, transform;
-    }
-    
-    /* Enhanced button interactions */
-    button {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    button:active {
-        transform: scale(0.96);
-    }
-    
-    button:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Building hover tooltip */
+    /* Enhanced building tooltip */
     .building-tooltip {
         position: fixed;
-        background: rgba(0, 0, 0, 0.85);
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
         color: white;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
+        padding: 12px 18px;
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+        font-weight: 600;
         pointer-events: none;
         z-index: 9999;
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: all var(--transition-fast);
         white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-xl);
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .building-tooltip::before {
+        content: '🏛️';
+        margin-right: 8px;
     }
     
     .building-tooltip.show {
         opacity: 1;
+        transform: translateY(-5px);
+    }
+    
+    /* ============================================
+       ENHANCED LEGEND STYLES
+       ============================================ */
+    .legend-panel {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);
+    }
+    
+    .legend-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    }
+    
+    .legend-category {
+        margin-bottom: 0.5rem;
+    }
+    
+    .legend-category-title {
+        font-weight: 700;
+        font-size: 0.8rem;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0.5rem 0.75rem;
+        background: linear-gradient(90deg, rgba(36, 136, 35, 0.08) 0%, transparent 100%);
+        border-left: 3px solid var(--primary);
+        margin-bottom: 0.25rem;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .legend-category-icon {
+        font-size: 1rem;
+    }
+    
+    .legend-item-enhanced {
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        margin: 0.15rem 0;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        background: transparent;
+        border-left: 3px solid transparent;
+        font-size: 0.85rem;
+        color: var(--text-primary);
+    }
+    
+    .legend-item-enhanced:hover {
+        background: rgba(36, 136, 35, 0.1);
+        border-left-color: var(--primary);
+        padding-left: 1rem;
+        color: var(--primary-dark);
+    }
+    
+    .legend-item-enhanced:active {
+        background: rgba(36, 136, 35, 0.2);
+        transform: scale(0.98);
+    }
+    
+    .legend-item-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary);
+        margin-right: 0.75rem;
+        opacity: 0.6;
+        transition: all var(--transition-fast);
+    }
+    
+    .legend-item-enhanced:hover .legend-item-dot {
+        opacity: 1;
+        transform: scale(1.3);
+        box-shadow: 0 0 8px var(--primary-glow);
     }
 
     #navPath {
@@ -198,43 +542,19 @@
         display: none;
     }
     
-    .skeleton-node {
-        fill: #3b82f6;
-        fill-opacity: 0;
-        stroke: #1e40af;
-        stroke-width: 1;
-        display: none;
-    }
-    
     /* Endpoint edit mode */
     .endpoint-marker {
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all var(--transition-fast);
     }
     
     .endpoint-marker.editable {
         cursor: move;
-        filter: brightness(1.2) drop-shadow(0 0 8px rgba(147, 51, 234, 0.8));
-    }
-    
-    .endpoint-marker.dragging {
-        filter: brightness(1.5) drop-shadow(0 0 12px rgba(147, 51, 234, 1));
-        opacity: 0.8;
+        filter: brightness(1.2) drop-shadow(0 0 10px rgba(147, 51, 234, 0.8));
     }
     
     .endpoint-marker:hover {
-        transform: scale(1.1);
-    }
-    
-    .endpoint-label {
-        pointer-events: none;
-        user-select: none;
-    }
-    
-    /* Edit mode overlay */
-    .edit-mode-active {
-        outline: 3px dashed #a855f7;
-        outline-offset: 5px;
+        transform: scale(1.15);
     }
     
     /* Interactive hint overlay */
@@ -243,70 +563,171 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(16, 185, 129, 0.95);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
         color: white;
-        padding: 20px 40px;
-        border-radius: 12px;
-        font-size: 18px;
+        padding: 24px 48px;
+        border-radius: var(--radius-xl);
+        font-size: 1.2rem;
         font-weight: 600;
         z-index: 200;
         opacity: 0;
         animation: hintFadeInOut 4s ease;
         pointer-events: none;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-xl), 0 0 40px var(--primary-glow);
+        border: 2px solid rgba(255,255,255,0.2);
     }
     
     @keyframes hintFadeInOut {
-        0% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.9);
-        }
-        10%, 70% {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-        100% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.9);
-        }
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        10%, 70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    }
+    
+    /* ============================================
+       KIOSK IDLE TIMEOUT & SCREENSAVER
+       ============================================ */
+    #kioskIdleOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.97) 0%, rgba(30, 41, 59, 0.97) 100%);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    
+    #kioskIdleOverlay.show {
+        display: flex;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .idle-text {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        animation: pulseGlow 2.5s ease-in-out infinite;
+        text-shadow: 0 0 20px rgba(255,255,255,0.3);
+    }
+    
+    .idle-icon {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        animation: bounce 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulseGlow {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(0.98); }
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    /* ============================================
+       ENHANCED CARD STYLES
+       ============================================ */
+    .info-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        transition: all var(--transition-normal);
+    }
+    
+    .info-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+    
+    .stat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, rgba(36, 136, 35, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        color: var(--primary);
+        border: 1px solid rgba(36, 136, 35, 0.2);
+    }
+    
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 </style>
 @endsection
 
 @section('content')
-<div class="h-screen flex flex-col overflow-hidden">
-    <header class="text-white p-4 flex justify-between items-center" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('kiosk.idle') }}" class="flex items-center">
-                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-12 w-12 object-contain">
+<!-- Kiosk Idle Timeout Overlay (touch to dismiss) -->
+<div id="kioskIdleOverlay" onclick="resetIdleTimer()">
+    <div class="text-center">
+        <div class="idle-icon">👆</div>
+        <div class="idle-text">Touch anywhere to continue</div>
+        <p class="text-white text-opacity-60 mt-4 text-lg">SKSU Campus Navigation Kiosk</p>
+    </div>
+</div>
+
+<div class="h-screen flex flex-col overflow-hidden" style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);">
+    <!-- Enhanced Header -->
+    <header class="text-white px-6 py-4 flex justify-between items-center relative overflow-hidden" style="background: linear-gradient(135deg, #248823 0%, #166534 50%, #14532d 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+        <!-- Decorative background elements -->
+        <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); pointer-events: none;"></div>
+        
+        <div class="flex items-center gap-5 relative z-10">
+            <a href="{{ route('kiosk.idle') }}" class="touch-target touch-feedback flex items-center p-2 rounded-2xl bg-white bg-opacity-10 hover:bg-opacity-20 transition-all duration-300" style="box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-14 w-14 object-contain drop-shadow-lg">
             </a>
             <div>
-                <h1 class="text-2xl font-bold">Access Map</h1>
-                <p class="text-sm text-green-100 font-medium">Sultan Kudarat State University</p>
+                <h1 class="text-3xl font-bold tracking-tight" style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">Access Map</h1>
+                <p class="text-green-100 font-medium opacity-90">Sultan Kudarat State University</p>
             </div>
         </div>
-        <div class="flex-1 max-w-md mx-8">
-            <div class="relative">
+        
+        <div class="flex-1 max-w-lg mx-10 relative z-10">
+            <div class="relative group">
                 <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="Search buildings..." 
-                    class="w-full px-4 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2" style="--tw-ring-color: #248823;"
+                    placeholder="🔍  Search buildings, offices, services..." 
+                    class="w-full px-6 py-4 rounded-2xl text-gray-800 text-lg focus:outline-none focus:ring-4 allow-select transition-all duration-300 shadow-lg"
+                    style="background: rgba(255,255,255,0.97); --tw-ring-color: rgba(74, 222, 128, 0.5);"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
                 />
-                <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-xl opacity-0 group-focus-within:opacity-100 transition-opacity">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <div id="clock" class="text-xl"></div>
+        
+        <div class="flex items-center gap-5 relative z-10">
+            <!-- Clock with enhanced styling -->
+            <div id="clock" class="text-2xl font-bold px-4 py-2 rounded-xl bg-white bg-opacity-10" style="font-variant-numeric: tabular-nums; text-shadow: 0 2px 8px rgba(0,0,0,0.2);"></div>
             
             <!-- Admin Menu Toggle -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" 
-                        class="p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition duration-200"
-                        title="Menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="touch-target touch-feedback p-4 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                        title="Menu"
+                        style="backdrop-filter: blur(10px);">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
@@ -320,53 +741,115 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-95"
-                     class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden"
+                     class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 z-50 overflow-hidden"
                      style="display: none;">
                     
                     @auth
                         <a href="{{ route('admin.dashboard') }}" 
-                           class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100">
-                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="touch-target touch-feedback flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100">
+                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-700">Admin Dashboard</span>
+                            <span class="text-base font-medium text-gray-700">Admin Dashboard</span>
                         </a>
                         
                         <button onclick="toggleEditMode()" 
-                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-700">Admin Inline Edit</span>
+                            <span class="text-base font-medium text-gray-700">Admin Inline Edit</span>
                         </button>
                     @else
                         <button onclick="showAdminLogin()" 
-                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-700">Admin Login</span>
+                            <span class="text-base font-medium text-gray-700">Admin Login</span>
                         </button>
                     @endauth
                     
                     <button onclick="showAbout()" 
-                            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-left">
-                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-gray-50 transition text-left">
+                        <svg class="w-6 h-6 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-sm font-medium text-gray-700">About</span>
+                        <span class="text-base font-medium text-gray-700">About</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
-    <div class="flex p-8" style="flex: 1; min-height: 0;">
-        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: 100%; width: 100%; position: relative;">
+    <div class="flex p-6" style="flex: 1; min-height: 0;">
+        <div class="flex rounded-2xl overflow-hidden" style="height: 100%; width: 100%; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(36,136,35,0.1);">
+            <!-- Left Legend Section (20%) -->
+            <div id="leftLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%); border-right: 3px solid #248823;">
+                <div class="legend-header" style="flex-shrink: 0; padding: 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -30px; left: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    <h2 class="font-bold text-white text-center text-base relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                        <span class="flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            Buildings & Facilities
+                        </span>
+                    </h2>
+                </div>
+                <div class="px-3 py-3 touch-scroll show-scrollbar-on-hover" style="flex: 1 1 0; min-height: 0; overflow-y: auto; font-size: 0.85rem;">
+                    <div class="legend-category">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🎓</span>
+                            Academic Colleges
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Administration')"><span class="legend-item-dot"></span>Administration</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CTE')"><span class="legend-item-dot"></span>College of Education</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CHS')"><span class="legend-item-dot"></span>College of Nursing</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CHS_Labs')"><span class="legend-item-dot"></span>College of Health Sciences</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CCJE')"><span class="legend-item-dot"></span>College of Criminal Justice</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CCJE_ext')"><span class="legend-item-dot"></span>CCJE Extension</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CoM')"><span class="legend-item-dot"></span>College of Medicine</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('GS')"><span class="legend-item-dot"></span>Graduate School</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🏢</span>
+                            Facilities & Services
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('ULRC')"><span class="legend-item-dot"></span>University Library</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('UG')"><span class="legend-item-dot"></span>University Gymnasium</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('UC')"><span class="legend-item-dot"></span>University Canteen</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Function')"><span class="legend-item-dot"></span>Function Hall</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('UPP')"><span class="legend-item-dot"></span>UPP Building</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Motorpool')"><span class="legend-item-dot"></span>University Motorpool</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('FC')"><span class="legend-item-dot"></span>Food Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Parking_Space')"><span class="legend-item-dot"></span>Parking Area</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Restroom')"><span class="legend-item-dot"></span>Public Restroom</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🏥</span>
+                            Medical & Training
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('BCSF')"><span class="legend-item-dot"></span>Basic & Clinical Sciences</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('AMTC')"><span class="legend-item-dot"></span>Ang Magsasaka Center</div>
+                </div>
+            </div>
+            
             <!-- Map Section (60%) -->
-            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: visible; transition: flex 0.5s ease;">
-            <div class="hint-overlay" id="interactiveHint">👆 Click on any building to explore</div>
+            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: visible;">
+            <div class="hint-overlay" id="interactiveHint">
+                <span class="flex items-center gap-3">
+                    <span style="font-size: 1.5rem;">👆</span>
+                    <span>Tap on any building to explore</span>
+                </span>
+            </div>
             <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
                 <g id="layer1" transform="translate(43.417 59.938)">
                     <path id="Premises" d="m-33.024-7.685-1.12 176.012 156.418 1.031v36.09l129.52.001c-.035-88.47-.025-172.804 0-261.322l-177.22.568z" style="fill:#bfe4c5;fill-opacity:1;fill-rule:evenodd;stroke:#0a0a00;stroke-width:.275879;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
@@ -530,8 +1013,8 @@
                     <text x="260" y="201" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Food Center</text>
                     
                     <!-- Mosque -->
-                    <rect x="-6.247" y="230.701" width="22" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));" transform="rotate(-39.394)skewX(-.212)"/>
-                    <text x="4.753" y="233.201" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;" transform="rotate(-39.394)skewX(-.212)">Mosque</text>
+                    <rect x="8" y="235" width="22" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));" transform="rotate(-40 11 237.5)"/>
+                    <text x="11" y="239" text-anchor="start" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;" transform="rotate(-40 11 237.5)">Mosque</text>
                     
                     <!-- TIP -->
                     <rect x="110" y="174" width="22" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
@@ -652,122 +1135,352 @@
             </svg>
         </div>
             
-            <!-- Sidebar Section (40%) - Toggles between Legend and Building Details -->
-            <div id="sidebarContainer" class="bg-white" style="flex: 0 0 40%; display: flex; flex-direction: column; overflow: visible; position: relative; z-index: 20; transition: flex 0.5s ease;">
-            
-            <!-- Legend View -->
-            <div id="legendView" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
-                <div class="p-2 border-b" style="border-color: #248823; flex-shrink: 0;">
-                    <h2 class="font-bold text-gray-800" style="font-size: 1rem;">Map Legend</h2>
+            <!-- Right Legend Section (20%) -->
+            <div id="rightLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%); border-left: 3px solid #248823;">
+                <div class="legend-header" style="flex-shrink: 0; padding: 1rem; background: linear-gradient(135deg, #248823 0%, #1a6619 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -20px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -30px; right: -10px; width: 60px; height: 60px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    <h2 class="font-bold text-white text-center text-base relative z-10" style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                        <span class="flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            Offices & Areas
+                        </span>
+                    </h2>
                 </div>
-                
-                <div class="px-5 py-2" style="flex: 1 1 0; min-height: 0; overflow: hidden;">
-                    <div id="buildingList" style="column-count: 2; column-gap: 0.25rem; column-fill: balance; height: 100%; word-wrap: break-word; overflow-wrap: break-word; font-size: 0.75rem;">
-                    <!-- Column 1: Academic Colleges through part of list -->
-                    <div class="font-semibold text-gray-800 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Academic Colleges</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CTE')">• College of Education</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS')">• College of Nursing</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS_Labs')">• College of Health Sciences</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE')">• College of Criminal Justice</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE_ext')">• CCJE Extension</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CoM')">• College of Medicine</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS')">• Graduate School</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Facilities & Services</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULRC')">• University Library (ULRC)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UG')">• University Gymnasium</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UC')">• University Canteen (UC)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Function')">• Function Hall</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UPP')">• UPP Building</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Motorpool')">• University Motorpool</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('FC')">• Food Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Parking_Space')">• Parking Area</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Restroom')">• Public Restroom</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Medical & Training Centers</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('BCSF')">• Basic & Clinical Sciences (BCSF)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('AMTC')">• Ang Magsasaka Training Center</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Research & Development</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TIP_center')">• Technology Incubation Park (TIP)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TCL')">• Technology & Computer Lab (TCL)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('DOST')">• DOST Innovation Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Climate')">• Climate Resillient and Adoptation Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_1')">• Agriculture Building 1</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_2')">• Agriculture Building 2</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Administrative Offices</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Reg_Office')">• Registrar's Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Alumni_Office')">• Alumni Relations Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-SBO')">• Graduate School - SBO Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-ext')">• GS Extension Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('OSAS')">• Student Affairs (OSAS)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('QMS')">• Quality Management (QMS)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULD')">• Ladies Dormitory</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Univesity_AVR')">• Audio-Visual Room (AVR)</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Student Services</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS')">• Laboratory Highschool</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS_ext')">• LHS Extension</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ROTC')">• ROTC Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('SKSU-MPC')">• SKSU Multi-Purpose Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MPC-Dorm')">• MPC Dormitory</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_1')">• Men's Dormitory 1</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_2')">• Men's Dormitory 2</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Sports & Recreation</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Field')">• University Athletic Field</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Bleacher')">• Field Bleachers</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Religious Facility</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
-                </div>
-                </div>
-            </div>
-            
-            <!-- Building Details View (replaces legend when building is clicked) -->
-            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%; min-height: 0; position: relative; overflow: visible; z-index: 5;">
-                <!-- Wrapper clips the right side, allows left side to show -->
-                <div style="position: absolute; left: -40px; top: 0; width: 40px; height: 100%; overflow: hidden; z-index: 25;">
-                    <div id="cabinetToggle" 
-                         style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%); 
-                                background: linear-gradient(135deg, #248823 0%, #1a6619 100%); 
-                                width: 40px; height: 100px; border-radius: 12px 0 0 12px; 
-                                box-shadow: -2px 0 8px rgba(0,0,0,0.2);
-                                display: flex; align-items: center; justify-content: center;
-                                cursor: pointer; transition: left 0.5s ease, width 0.3s ease, border-radius 0.5s ease; opacity: 1;"
-                         onclick="toggleCabinet()"
-                         onmouseenter="if(!cabinetExpanded) { this.style.left='-5px'; this.style.width='45px'; }"
-                         onmouseleave="if(!cabinetExpanded) { this.style.left='0px'; this.style.width='40px'; }">
-                        <svg id="cabinetChevron" style="width: 24px; height: 24px; color: white; transition: transform 0.3s ease;" 
-                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
-                        </svg>
+                <div class="px-3 py-3 touch-scroll show-scrollbar-on-hover" style="flex: 1 1 0; min-height: 0; overflow-y: auto; font-size: 0.85rem;">
+                    <div class="legend-category">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🔬</span>
+                            Research & Development
+                        </div>
                     </div>
-                </div>
-                
-                <div class="p-4 border-b flex items-center gap-3" style="border-color: #248823; flex-shrink: 0;">
-                    <button onclick="closeBuildingDetails()" class="text-2xl text-gray-600 hover:text-gray-800 transition p-2 rounded-lg hover:bg-gray-100">
-                        ←
-                    </button>
-                    <h2 id="buildingDetailTitle" class="text-xl font-bold text-gray-800">Building Details</h2>
-                </div>
-                
-                <div id="buildingDetailContent" class="flex-1 overflow-y-auto p-4" style="min-height: 0;">
-                    <!-- Building details load here -->
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('TIP_center')"><span class="legend-item-dot"></span>Technology Incubation Park</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('TCL')"><span class="legend-item-dot"></span>Tech & Computer Lab</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('DOST')"><span class="legend-item-dot"></span>DOST Innovation Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Climate')"><span class="legend-item-dot"></span>Climate Research Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Agri_bldg_1')"><span class="legend-item-dot"></span>Agriculture Building 1</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Agri_bldg_2')"><span class="legend-item-dot"></span>Agriculture Building 2</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">📋</span>
+                            Administrative Offices
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Reg_Office')"><span class="legend-item-dot"></span>Registrar's Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Alumni_Office')"><span class="legend-item-dot"></span>Alumni Relations Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('GS-SBO')"><span class="legend-item-dot"></span>GS - SBO Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('GS-ext')"><span class="legend-item-dot"></span>GS Extension Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('OSAS')"><span class="legend-item-dot"></span>Student Affairs (OSAS)</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('QMS')"><span class="legend-item-dot"></span>Quality Management</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('ULD')"><span class="legend-item-dot"></span>Ladies Dormitory</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Univesity_AVR')"><span class="legend-item-dot"></span>Audio-Visual Room</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">👥</span>
+                            Student Services
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('LHS')"><span class="legend-item-dot"></span>Laboratory Highschool</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('LHS_ext')"><span class="legend-item-dot"></span>LHS Extension</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('ROTC')"><span class="legend-item-dot"></span>ROTC Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('SKSU-MPC')"><span class="legend-item-dot"></span>Multi-Purpose Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('MPC-Dorm')"><span class="legend-item-dot"></span>MPC Dormitory</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('MD_1')"><span class="legend-item-dot"></span>Men's Dormitory 1</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('MD_2')"><span class="legend-item-dot"></span>Men's Dormitory 2</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">⚽</span>
+                            Sports & Recreation
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Field')"><span class="legend-item-dot"></span>University Athletic Field</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Bleacher')"><span class="legend-item-dot"></span>Field Bleachers</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🕌</span>
+                            Religious Facility
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('mosque')"><span class="legend-item-dot"></span>University Mosque</div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 </div>
 
+<!-- Building Preview Popup (shows when clicking a building on the map) -->
+<div id="buildingPreviewPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center" onclick="closeBuildingPreview(event)" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);">
+    <div class="bg-white rounded-3xl max-w-lg w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);">
+        <!-- Decorative top bar -->
+        <div style="height: 6px; background: linear-gradient(90deg, #248823, #10b981, #059669);"></div>
+        
+        <div class="p-7">
+            <!-- Building Image with enhanced styling -->
+            <div id="previewImageContainer" class="relative mb-6 rounded-2xl overflow-hidden" style="height: 220px; box-shadow: 0 10px 30px -5px rgba(36,136,35,0.3);">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-600/20"></div>
+                <img id="previewBuildingImage" src="" alt="" class="w-full h-full object-cover" style="display: none;">
+                <div id="previewImagePlaceholder" class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
+                    <div class="text-center">
+                        <div class="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center">
+                            <svg class="w-14 h-14" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-500 font-medium">No image available</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Building Name with decorative element -->
+            <div class="text-center mb-5">
+                <h2 id="previewBuildingName" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+                <div class="w-16 h-1 mx-auto rounded-full" style="background: linear-gradient(90deg, #248823, #10b981);"></div>
+            </div>
+            
+            <!-- Building Summary with badge styling -->
+            <div id="previewBuildingSummary" class="text-center mb-6">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-full border border-green-100">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <p id="previewOfficeCount" class="text-base font-medium text-green-700"></p>
+                </div>
+            </div>
+            
+            <!-- Action Buttons - Enhanced styling -->
+            <div class="flex gap-4">
+                <button onclick="closeBuildingPreview()" class="touch-target touch-feedback flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-4 px-5 rounded-xl transition-all text-lg border-2 border-transparent hover:border-gray-300" style="box-shadow: inset 0 -2px 0 rgba(0,0,0,0.1);">
+                    Close
+                </button>
+                <button id="viewBuildingDetailsBtn" onclick="openBuildingDetailsModal()" class="touch-target touch-feedback flex-1 text-white font-semibold py-4 px-5 rounded-xl transition-all text-lg relative overflow-hidden group" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%); box-shadow: 0 4px 15px rgba(36,136,35,0.4);">
+                    <span class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                    <span class="relative flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        View Details
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Building Details Modal (full details view with tabs) -->
+<div id="buildingDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center" style="background: rgba(0,0,0,0.7); backdrop-filter: blur(12px);" onclick="closeBuildingDetailsModal(event)">
+    <div class="bg-white rounded-3xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col relative" onclick="event.stopPropagation()" style="animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 80px rgba(36,136,35,0.15);">
+        <!-- Decorative gradient bar -->
+        <div style="height: 5px; background: linear-gradient(90deg, #248823, #10b981, #059669, #10b981, #248823);"></div>
+        
+        <!-- Modal Header with enhanced styling -->
+        <div class="flex items-center justify-between p-6 border-b relative overflow-hidden" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);">
+            <!-- Decorative circles -->
+            <div style="position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: rgba(36,136,35,0.08); border-radius: 50%;"></div>
+            <div style="position: absolute; bottom: -30px; right: 60px; width: 60px; height: 60px; background: rgba(16,185,129,0.1); border-radius: 50%;"></div>
+            
+            <div class="flex items-center gap-5 relative z-10">
+                <div class="p-4 rounded-2xl relative overflow-hidden" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%); box-shadow: 0 8px 20px rgba(36,136,35,0.4);">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></div>
+                    <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="detailsModalTitle" class="text-2xl font-bold text-gray-800">Building Details</h2>
+                    <p id="detailsModalSubtitle" class="text-sm text-gray-500 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Complete building information
+                    </p>
+                </div>
+            </div>
+            <button onclick="closeBuildingDetailsModal()" class="touch-target touch-feedback text-gray-400 hover:text-gray-600 transition-all p-3 hover:bg-white/80 rounded-xl relative z-10 group" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <svg class="w-8 h-8 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Tab Navigation - Enhanced styling -->
+        <div class="border-b px-4 py-2" style="background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);">
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar" id="detailsTabNav">
+                <button onclick="switchDetailsTab('overview')" id="tab-overview" class="details-tab active touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    Overview
+                </button>
+                <button onclick="switchDetailsTab('offices')" id="tab-offices" class="details-tab touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                    Offices <span id="officeCountBadge" class="ml-1 px-2.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200">0</span>
+                </button>
+                <button onclick="switchDetailsTab('services')" id="tab-services" class="details-tab touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Services <span id="serviceCountBadge" class="ml-1 px-2.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200">0</span>
+                </button>
+                <button onclick="switchDetailsTab('heads')" id="tab-heads" class="details-tab touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Heads <span id="headsCountBadge" class="ml-1 px-2.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border border-purple-200">0</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Swipe Indicator - Enhanced styling -->
+        <div class="flex justify-center py-4" style="background: linear-gradient(180deg, #f3f4f6 0%, #ffffff 100%);">
+            <div class="flex gap-3 p-2 rounded-full bg-gray-100/80" id="swipeIndicators">
+                <div class="swipe-dot active" data-tab="overview"></div>
+                <div class="swipe-dot" data-tab="offices"></div>
+                <div class="swipe-dot" data-tab="services"></div>
+                <div class="swipe-dot" data-tab="heads"></div>
+            </div>
+        </div>
+        
+        <!-- Tab Content Container - Simple show/hide for reliable scrolling -->
+        <div id="detailsTabContent" style="flex: 1; overflow-y: auto; min-height: 0; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);">
+            <!-- Overview Tab -->
+            <div class="tab-panel p-6" id="panel-overview">
+                <div class="flex items-center justify-center py-12">
+                    <div class="text-center">
+                        <div class="loading-spinner mx-auto mb-4"></div>
+                        <p class="text-gray-500 font-medium">Loading building information...</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Offices Tab -->
+            <div class="tab-panel p-6 hidden" id="panel-offices">
+                <!-- Content loaded dynamically -->
+            </div>
+            <!-- Services Tab -->
+            <div class="tab-panel p-6 hidden" id="panel-services">
+                <!-- Content loaded dynamically -->
+            </div>
+            <!-- Heads Tab -->
+            <div class="tab-panel p-6 hidden" id="panel-heads">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+        
+        <!-- Modal Footer with Navigation - Touch optimized -->
+        <div class="p-4 border-t bg-gray-50 flex items-center justify-between gap-4">
+            <button onclick="prevDetailsTab()" id="prevTabBtn" class="touch-target touch-feedback kiosk-btn bg-gray-200 hover:bg-gray-300 text-gray-700 opacity-50 cursor-not-allowed" disabled>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                Previous
+            </button>
+            <div class="text-base text-gray-500 text-center flex-1">
+                <span id="currentTabLabel" class="font-semibold">Overview</span>
+                <br><span class="text-sm">Swipe or tap arrows</span>
+            </div>
+            <button onclick="nextDetailsTab()" id="nextTabBtn" class="touch-target touch-feedback kiosk-btn text-white" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                Next
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.details-tab {
+    color: #6b7280;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+
+.details-tab:hover, .details-tab:active {
+    color: #248823;
+    background: rgba(36, 136, 35, 0.05);
+}
+
+.details-tab.active {
+    color: #248823;
+    background: white;
+    border-bottom: 3px solid #248823;
+}
+
+.swipe-dot {
+    width: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d1d5db;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    /* Larger touch target via padding */
+    padding: 6px;
+    box-sizing: content-box;
+    background-clip: content-box;
+}
+
+.swipe-dot:hover, .swipe-dot:active {
+    background: #9ca3af;
+    background-clip: content-box;
+}
+
+.swipe-dot.active {
+    width: 32px;
+    border-radius: 6px;
+    background: #248823;
+    background-clip: content-box;
+}
+
+.tab-panel {
+    flex-shrink: 0;
+}
+
+.office-card {
+    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+    border-left: 4px solid #248823;
+    transition: all 0.2s ease;
+}
+
+.office-card:hover, .office-card:active {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateX(4px);
+}
+
+.service-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.service-card:hover, .service-card:active {
+    border-color: #248823;
+    box-shadow: 0 2px 8px rgba(36, 136, 35, 0.15);
+}
+
+.head-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border: 2px solid #bbf7d0;
+    transition: all 0.2s ease;
+}
+
+.head-card:hover, .head-card:active {
+    border-color: #248823;
+    box-shadow: 0 4px 12px rgba(36, 136, 35, 0.2);
+}
+</style>
+
 <div class="modal-overlay" id="buildingModal">
-    <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto touch-scroll hide-scrollbar">
         <div class="flex justify-between items-start mb-6">
             <h2 id="modalTitle" class="text-3xl font-bold text-gray-800"></h2>
-            <button onclick="closeModal()" class="text-4xl text-gray-500 hover:text-gray-700">×</button>
+            <button onclick="closeModal()" class="touch-target touch-feedback text-4xl text-gray-500 hover:text-gray-700 p-2">×</button>
         </div>
         <div id="modalContent"></div>
     </div>
@@ -1015,7 +1728,7 @@
                 <p class="text-xs text-gray-500 text-center">
                     © 2025 Sultan Kudarat State University<br>
                     Interactive Campus Navigation System • Version 1.0.0<br>
-                    Research Project - College of Computing Studies
+                    Research Project - College of Engineering
                 </p>
             </div>
         </div>
@@ -1085,6 +1798,53 @@
 
 @section('scripts')
 <script>
+    // ============================================
+    // KIOSK IDLE TIMEOUT SYSTEM
+    // ============================================
+    let idleTimer = null;
+    const IDLE_TIMEOUT = 120000; // 2 minutes of inactivity (adjust as needed)
+    
+    function resetIdleTimer() {
+        // Hide idle overlay if visible
+        const idleOverlay = document.getElementById('kioskIdleOverlay');
+        if (idleOverlay) {
+            idleOverlay.classList.remove('show');
+        }
+        
+        // Clear existing timer
+        if (idleTimer) {
+            clearTimeout(idleTimer);
+        }
+        
+        // Set new timer
+        idleTimer = setTimeout(showIdleScreen, IDLE_TIMEOUT);
+    }
+    
+    function showIdleScreen() {
+        const idleOverlay = document.getElementById('kioskIdleOverlay');
+        if (idleOverlay) {
+            // Close any open modals first
+            closeBuildingPreview();
+            closeBuildingDetailsModal();
+            
+            // Show idle screen
+            idleOverlay.classList.add('show');
+        }
+    }
+    
+    // Start idle timer and listen for user activity
+    document.addEventListener('DOMContentLoaded', function() {
+        // Events that reset idle timer
+        const resetEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'touchmove', 'click'];
+        
+        resetEvents.forEach(event => {
+            document.addEventListener(event, resetIdleTimer, { passive: true });
+        });
+        
+        // Start initial timer
+        resetIdleTimer();
+    });
+
     const buildings = @json($buildings);
     const isAdmin = @json($isAdmin);
     const dbEndpoints = @json($navigationEndpoints ?? []);
@@ -1442,20 +2202,9 @@
                         hint.style.display = 'none';
                     }
                     
-                    // Get display name for navigation
+                    // Get display name for navigation and show popup when clicking on map
                     const displayName = svgToDisplayName[buildingId] || buildingId;
-                    navigateTo(displayName);
-                    
-                    // Show building details in sidebar
-                    // Use building code (from fullinfo.json building_id) to match
-                    const building = buildings.find(b => b.code === buildingId);
-                    if (building) {
-                        showBuildingModal(building.id);
-                    } else {
-                        // Building exists in map but not in database yet
-                        console.warn('Building not found in database with code:', buildingId);
-                        showBuildingNotAvailable(svgToDisplayName[buildingId] || buildingId);
-                    }
+                    navigateTo(displayName, true); // true = show popup
                 });
                 
                 // Add hover tooltip functionality
@@ -1497,334 +2246,570 @@
     async function showBuildingModal(buildingId) {
         if (editMode) return;
         
-        // Hide legend, show building details
-        document.getElementById('legendView').style.display = 'none';
-        document.getElementById('buildingDetailsView').style.display = 'flex';
+        // Store current building ID for details window
+        window.currentBuildingId = buildingId;
         
-        // Animate cabinet toggle sliding from hidden (inside sidebar) to visible (on map)
-        const cabinetToggle = document.getElementById('cabinetToggle');
-        if (cabinetToggle) {
-            setTimeout(() => {
-                cabinetToggle.style.left = '0px';
-                cabinetToggle.style.opacity = '1';
-            }, 100);
-        }
-        
-        // Show loading
-        document.getElementById('buildingDetailTitle').textContent = 'Loading...';
-        document.getElementById('buildingDetailContent').innerHTML = `
-            <div class="flex items-center justify-center py-12">
-                <div class="loading-spinner"></div>
-                <p class="ml-4 text-gray-600">Loading...</p>
-            </div>
-        `;
+        // Show building preview popup instead of sidebar
+        const popup = document.getElementById('buildingPreviewPopup');
+        popup.classList.remove('hidden');
         
         try {
-            // Fetch full building data with offices and services from API
+            // Fetch building data
             const response = await fetch(`/api/buildings/${buildingId}`);
             if (!response.ok) {
                 throw new Error('Building not found');
             }
             
             const building = await response.json();
-        
-        document.getElementById('modalTitle').textContent = building.name;
-        
-        let content = '';
-        
-        // Image Gallery with Swiper
-        const gallery = building.image_gallery || [];
-        const hasMainImage = building.image_path;
-        
-        // Build image sources list (JPG default, PNG fallback, then DB images)
-        const publicImageJpg = `/images/buildings/${building.code}.jpg`;
-        const publicImagePng = `/images/buildings/${building.code}.png`;
-        
-        const allImages = [];
-        
-        // Add public images with fallback chain
-        allImages.push({src: publicImageJpg, isPublic: true, fallback: publicImagePng});
-        
-        if (hasMainImage) {
-            allImages.push({src: building.image_path, isPublic: false});
-        }
-        if (gallery.length > 0) {
-            gallery.forEach(img => allImages.push({src: img, isPublic: false}));
-        }
-        
-        // Build image gallery HTML - use cached images if available
-        let imageHtml = '';
-        let hasAnyValidImage = false;
-        
-        allImages.forEach((img, index) => {
-            const imgSrc = img.isPublic ? img.src : `/storage/${img.src}`;
-            const fallbackSrc = img.fallback || '';
             
-            // Check if image is cached (exists)
-            const primaryCached = imageCache.has(imgSrc);
-            const fallbackCached = fallbackSrc && imageCache.has(fallbackSrc);
-            const isCached = primaryCached || fallbackCached;
+            // Update popup content
+            document.getElementById('previewBuildingName').textContent = building.name;
             
-            // If caching already ran and image is not cached, skip it (doesn't exist)
-            if (imagesPreloaded && !isCached) {
-                return; // Skip this image entirely
+            // Handle image
+            const publicImageJpg = `/images/buildings/${building.code}.jpg`;
+            const publicImagePng = `/images/buildings/${building.code}.png`;
+            const previewImage = document.getElementById('previewBuildingImage');
+            const placeholder = document.getElementById('previewImagePlaceholder');
+            
+            // Check cached images
+            const jpgCached = imageCache.has(publicImageJpg);
+            const pngCached = imageCache.has(publicImagePng);
+            const dbImageCached = building.image_path && imageCache.has(`/storage/${building.image_path}`);
+            
+            if (jpgCached || pngCached || dbImageCached) {
+                let imgSrc = jpgCached ? publicImageJpg : (pngCached ? publicImagePng : `/storage/${building.image_path}`);
+                previewImage.src = imgSrc;
+                previewImage.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                previewImage.style.display = 'none';
+                placeholder.style.display = 'flex';
             }
             
-            hasAnyValidImage = true;
+            // Update summary
+            const officeCount = building.offices ? building.offices.length : 0;
+            let serviceCount = 0;
+            if (building.offices) {
+                building.offices.forEach(office => {
+                    if (office.services) serviceCount += office.services.length;
+                });
+            }
             
-            // Use the cached image's src (already loaded and ready)
-            const finalSrc = primaryCached ? imgSrc : (fallbackCached ? fallbackSrc : imgSrc);
+            document.getElementById('previewOfficeCount').innerHTML = `
+                <span class="inline-flex items-center gap-1"><strong>${officeCount}</strong> ${officeCount === 1 ? 'Office' : 'Offices'}</span>
+                <span class="mx-2">•</span>
+                <span class="inline-flex items-center gap-1"><strong>${serviceCount}</strong> ${serviceCount === 1 ? 'Service' : 'Services'}</span>
+            `;
             
-            imageHtml += `
-                <div class="swiper-slide" id="slide-${index}" style="position: relative; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
-                    <img src="${finalSrc}" 
-                         style="opacity: 1;"
-                         class="building-detail-image w-full h-full object-cover rounded-lg">
-                </div>
-            `;
-        });
-        
-        // If no valid images after caching check, show placeholder immediately
-        if (imagesPreloaded && !hasAnyValidImage) {
-            content += `
-                <div id="placeholder-container" class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg items-center justify-center border-2 border-dashed" style="border-color: #248823; height: 12rem; display: flex; transition: height 0.5s ease;">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                        <p class="text-gray-600 font-medium">${building.name}</p>
-                        <p class="text-gray-400 text-sm">Image not available</p>
-                    </div>
-                </div>
-            `;
-        } else {
-            // Image section (expands when cabinet expanded)
-            content += `
-                <div id="image-container-0" class="relative mb-4" style="height: 12rem; transition: height 0.5s ease;">
-                    <div class="swiper buildingGallerySwiper" style="height: 100%;">
-                        <div class="swiper-wrapper">
-                            ${imageHtml}
-                        </div>
-                        ${allImages.length > 1 ? `
-                            <div class="swiper-button-next" style="color: #248823;"></div>
-                            <div class="swiper-button-prev" style="color: #248823;"></div>
-                            <div class="swiper-pagination"></div>
-                        ` : ''}
-                    </div>
-                    ${allImages.length > 1 ? `
-                        <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                            <span class="swiper-current">1</span> / <span class="swiper-total">${allImages.length}</span>
-                        </div>
-                    ` : ''}
-                </div>
-                <div id="placeholder-container" class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg items-center justify-center border-2 border-dashed" style="border-color: #248823; height: 12rem; display: none; transition: height 0.5s ease;">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                        <p class="text-gray-600 font-medium">${building.name}</p>
-                        <p class="text-gray-400 text-sm">Image not available</p>
-                    </div>
-                </div>
-            `;
+        } catch (error) {
+            console.error('Error loading building:', error);
+            document.getElementById('previewBuildingName').textContent = 'Error loading building';
+            document.getElementById('previewOfficeCount').textContent = error.message;
         }
+    }
+    
+    function closeBuildingPreview(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('buildingPreviewPopup').classList.add('hidden');
+    }
+    
+    // Tab navigation state
+    let currentDetailsTab = 0;
+    const tabNames = ['overview', 'offices', 'services', 'heads'];
+    const tabLabels = ['Overview', 'Offices', 'Services', 'Office Heads'];
+    let currentBuildingData = null;
+    
+    async function openBuildingDetailsModal() {
+        if (!window.currentBuildingId) return;
         
-        // Scrollable details container
-        content += `<div id="detailsScrollContainer" class="" style="overflow-y: auto;">`;
+        // Close preview and show details modal
+        closeBuildingPreview();
+        const modal = document.getElementById('buildingDetailsModal');
+        modal.classList.remove('hidden');
         
-        // Building Description
-        if (building.description) {
-            content += `
-                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-4 border-l-4" style="border-color: #248823;">
-                    <p class="text-gray-700">${building.description}</p>
-                </div>
-            `;
-        }
+        // Reset to first tab
+        currentDetailsTab = 0;
+        updateTabUI();
         
-        // Quick Overview Section (Always visible - Summary of services)
-        if (building.offices && building.offices.length > 0) {
-            // Collect all services from all offices for quick preview
-            const allServices = [];
-            building.offices.forEach(office => {
-                if (office.services && office.services.length > 0) {
-                    office.services.forEach(service => {
-                        allServices.push(service.description || service.name || 'Service');
+        // Show loading state in overview
+        document.getElementById('panel-overview').innerHTML = `
+            <div class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
+            </div>
+        `;
+        
+        try {
+            // Fetch building data with offices and services
+            const response = await fetch(`/api/buildings/${window.currentBuildingId}`);
+            if (!response.ok) throw new Error('Building not found');
+            
+            const building = await response.json();
+            currentBuildingData = building;
+            
+            // Update modal title
+            document.getElementById('detailsModalTitle').textContent = building.name;
+            
+            // Calculate counts
+            const offices = building.offices || [];
+            let allServices = [];
+            let allHeads = [];
+            
+            offices.forEach(office => {
+                if (office.services) {
+                    office.services.forEach(s => {
+                        allServices.push({ ...s, officeName: office.name });
+                    });
+                }
+                if (office.head_name) {
+                    allHeads.push({
+                        name: office.head_name,
+                        title: office.head_title,
+                        officeName: office.name,
+                        floor: office.floor_number
                     });
                 }
             });
             
-            const serviceCount = allServices.length;
-            const officeCount = building.offices.length;
+            // Update badge counts
+            document.getElementById('officeCountBadge').textContent = offices.length;
+            document.getElementById('serviceCountBadge').textContent = allServices.length;
+            document.getElementById('headsCountBadge').textContent = allHeads.length;
+            document.getElementById('detailsModalSubtitle').textContent = 
+                `${offices.length} offices • ${allServices.length} services • ${allHeads.length} heads`;
             
-            // Show summary card
-            content += `
-                <div class="bg-white rounded-lg p-4 mb-4 border shadow-sm">
-                    <div class="flex items-start gap-3 mb-3">
-                        <div class="bg-green-100 p-2 rounded-lg">
-                            <svg class="w-6 h-6" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-gray-800 mb-1">Building Information</h3>
-                            <div class="grid grid-cols-2 gap-2 text-sm">
-                                <div class="flex items-center gap-1 text-gray-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                    </svg>
-                                    <span>${officeCount} ${officeCount === 1 ? 'Office' : 'Offices'}</span>
-                                </div>
-                                <div class="flex items-center gap-1 text-gray-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                                    </svg>
-                                    <span>${serviceCount} ${serviceCount === 1 ? 'Service' : 'Services'}</span>
-                                </div>
-                            </div>
-                        </div>
+            // Build Overview Tab
+            buildOverviewTab(building);
+            
+            // Build Offices Tab
+            buildOfficesTab(offices);
+            
+            // Build Services Tab
+            buildServicesTab(allServices);
+            
+            // Build Heads Tab
+            buildHeadsTab(allHeads);
+            
+            // Setup swipe gestures
+            setupSwipeGestures();
+            
+        } catch (error) {
+            console.error('Error loading building details:', error);
+            document.getElementById('panel-overview').innerHTML = `
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-16 w-16 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <p class="text-gray-600 text-lg">Failed to load building details</p>
+                    <p class="text-gray-400">${error.message}</p>
+                </div>
+            `;
+        }
+    }
+    
+    function buildOverviewTab(building) {
+        let html = '';
+        
+        // Building Image
+        const publicImageJpg = `/images/buildings/${building.code}.jpg`;
+        const publicImagePng = `/images/buildings/${building.code}.png`;
+        const hasImage = imageCache.has(publicImageJpg) || imageCache.has(publicImagePng) || building.image_path;
+        
+        if (hasImage) {
+            let imgSrc = imageCache.has(publicImageJpg) ? publicImageJpg : 
+                        (imageCache.has(publicImagePng) ? publicImagePng : `/storage/${building.image_path}`);
+            html += `
+                <div class="mb-6 rounded-xl overflow-hidden shadow-lg" style="height: 250px;">
+                    <img src="${imgSrc}" alt="${building.name}" class="w-full h-full object-cover" 
+                         onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full bg-gradient-to-br from-green-50 to-green-100\\'><svg class=\\'w-20 h-20 text-green-300\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4\\'></path></svg></div>'">
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="mb-6 rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center" style="height: 200px;">
+                    <div class="text-center">
+                        <svg class="w-20 h-20 mx-auto text-green-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <p class="text-green-400 text-sm">No image available</p>
                     </div>
-                    ${allServices.length > 0 ? `
-                        <div class="mt-3 pt-3 border-t">
-                            <div class="text-xs font-semibold text-gray-600 mb-2">Available Services:</div>
-                            <div class="space-y-1 max-h-32 overflow-y-auto">
-                                ${allServices.slice(0, 5).map(service => `
-                                    <div class="text-sm text-gray-700 flex items-start gap-2">
-                                        <span class="text-green-600 mt-1">•</span>
-                                        <span class="flex-1">${service}</span>
-                                    </div>
-                                `).join('')}
-                                ${allServices.length > 5 ? `
-                                    <div class="text-xs text-gray-500 italic pt-1">
-                                        +${allServices.length - 5} more services... <span style="color: #248823;">Expand to view all</span>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                    ` : ''}
                 </div>
             `;
         }
         
-        // Detailed Offices and Services (hidden by default, shown when cabinet expanded)
-        if (building.offices && building.offices.length > 0) {
-            content += `
-                <div id="officesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
-                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                        Detailed Offices & Services
+        // Quick Stats
+        const offices = building.offices || [];
+        let serviceCount = 0;
+        let headCount = 0;
+        offices.forEach(o => {
+            if (o.services) serviceCount += o.services.length;
+            if (o.head_name) headCount++;
+        });
+        
+        html += `
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-600">${offices.length}</div>
+                    <div class="text-sm text-blue-500">Offices</div>
+                </div>
+                <div class="bg-green-50 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-green-600">${serviceCount}</div>
+                    <div class="text-sm text-green-500">Services</div>
+                </div>
+                <div class="bg-purple-50 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-600">${headCount}</div>
+                    <div class="text-sm text-purple-500">Office Heads</div>
+                </div>
+            </div>
+        `;
+        
+        // Building Description
+        if (building.description) {
+            html += `
+                <div class="bg-gray-50 rounded-xl p-5 mb-6">
+                    <h3 class="text-lg font-bold mb-3 flex items-center gap-2" style="color: #248823;">
+                        <span>📋</span> About This Building
                     </h3>
-                    <div class="space-y-3">
-                        ${building.offices.map(office => `
-                            <div class="bg-white rounded-lg p-4 border-l-4 shadow-sm" style="border-color: #248823;">
-                                <div class="font-bold text-gray-800 mb-1 text-base">${office.name}</div>
+                    <p class="text-gray-700 leading-relaxed">${building.description}</p>
+                </div>
+            `;
+        }
+        
+        // Quick Links to other tabs
+        html += `
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <h3 class="text-lg font-bold mb-4 text-gray-800">Quick Navigation</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button onclick="switchDetailsTab('offices')" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg text-left transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-500 rounded-lg text-white group-hover:scale-110 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800">View Offices</div>
+                                <div class="text-sm text-gray-500">${offices.length} available</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button onclick="switchDetailsTab('services')" class="p-4 bg-green-50 hover:bg-green-100 rounded-lg text-left transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-green-500 rounded-lg text-white group-hover:scale-110 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800">View Services</div>
+                                <div class="text-sm text-gray-500">${serviceCount} available</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button onclick="switchDetailsTab('heads')" class="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg text-left transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-purple-500 rounded-lg text-white group-hover:scale-110 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800">Office Heads</div>
+                                <div class="text-sm text-gray-500">${headCount} personnel</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('panel-overview').innerHTML = html;
+    }
+    
+    function buildOfficesTab(offices) {
+        let html = '';
+        
+        if (offices.length === 0) {
+            html = `
+                <div class="text-center py-16">
+                    <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No offices listed</p>
+                    <p class="text-gray-400 text-sm">This building's office information is being updated</p>
+                </div>
+            `;
+        } else {
+            html = `<div class="space-y-4">`;
+            offices.forEach((office, index) => {
+                const serviceCount = office.services ? office.services.length : 0;
+                html += `
+                    <div class="office-card rounded-xl p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-bold" style="background: #248823;">${index + 1}</span>
+                                    <h4 class="font-bold text-xl text-gray-800">${office.name}</h4>
+                                </div>
                                 ${office.floor_number ? `
-                                    <div class="flex items-center gap-1 text-xs text-gray-500 mb-2">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <p class="text-gray-500 text-sm flex items-center gap-2 ml-11">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                         </svg>
                                         Floor ${office.floor_number}
-                                    </div>
+                                    </p>
                                 ` : ''}
-                                ${office.head_name ? `
-                                    <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-3 mb-3">
-                                        <div class="flex items-start gap-2">
-                                            <div class="bg-white p-1.5 rounded-full">
-                                                <svg class="w-4 h-4" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                                </svg>
-                                            </div>
-                                            <div class="flex-1">
-                                                <div class="text-sm font-semibold text-gray-800">${office.head_name}</div>
-                                                ${office.head_title ? `<div class="text-xs text-gray-600 mt-0.5">${office.head_title}</div>` : ''}
-                                            </div>
-                                        </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    ${serviceCount} ${serviceCount === 1 ? 'Service' : 'Services'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        ${office.head_name ? `
+                            <div class="ml-11 mb-3 p-3 bg-white rounded-lg border border-gray-200">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Office Head</p>
+                                <p class="font-semibold text-gray-800">${office.head_name}</p>
+                                ${office.head_title ? `<p class="text-sm text-gray-500">${office.head_title}</p>` : ''}
+                            </div>
+                        ` : ''}
+                        
+                        ${serviceCount > 0 ? `
+                            <div class="ml-11 mt-3">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Services Offered</p>
+                                <div class="flex flex-wrap gap-2">
+                                    ${office.services.slice(0, 4).map(s => `
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                                            <span class="text-green-500">✓</span> ${s.description.substring(0, 30)}${s.description.length > 30 ? '...' : ''}
+                                        </span>
+                                    `).join('')}
+                                    ${serviceCount > 4 ? `<span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">+${serviceCount - 4} more</span>` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+        }
+        
+        document.getElementById('panel-offices').innerHTML = html;
+    }
+    
+    function buildServicesTab(services) {
+        let html = '';
+        
+        if (services.length === 0) {
+            html = `
+                <div class="text-center py-16">
+                    <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No services listed</p>
+                    <p class="text-gray-400 text-sm">Service information is being updated</p>
+                </div>
+            `;
+        } else {
+            // Group services by office
+            const grouped = {};
+            services.forEach(s => {
+                if (!grouped[s.officeName]) grouped[s.officeName] = [];
+                grouped[s.officeName].push(s);
+            });
+            
+            html = `
+                <div class="mb-4 p-4 bg-green-50 rounded-xl">
+                    <p class="text-green-700 text-sm">
+                        <strong>${services.length}</strong> services available across <strong>${Object.keys(grouped).length}</strong> offices
+                    </p>
+                </div>
+            `;
+            
+            Object.keys(grouped).forEach(officeName => {
+                html += `
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
+                            </svg>
+                            ${officeName}
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${grouped[officeName].map(s => `
+                                <div class="service-card rounded-lg p-4">
+                                    <div class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm">✓</span>
+                                        <p class="text-gray-700 text-sm">${s.description}</p>
                                     </div>
-                                ` : ''}
-                                ${office.services && office.services.length > 0 ? `
-                                    <div class="mt-3">
-                                        <div class="flex items-center gap-1 text-xs font-semibold text-gray-700 mb-2">
-                                            <svg class="w-4 h-4" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                                            </svg>
-                                            Services Offered:
-                                        </div>
-                                        <div class="space-y-1.5 pl-2">
-                                            ${office.services.map((service, idx) => `
-                                                <div class="flex items-start gap-2 text-sm text-gray-700 bg-gray-50 p-2 rounded">
-                                                    <span class="font-bold text-green-600 min-w-[20px]">${idx + 1}.</span>
-                                                    <span class="flex-1">${service.description || service.name || 'Service'}</span>
-                                                </div>
-                                            `).join('')}
-                                        </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        document.getElementById('panel-services').innerHTML = html;
+    }
+    
+    function buildHeadsTab(heads) {
+        let html = '';
+        
+        if (heads.length === 0) {
+            html = `
+                <div class="text-center py-16">
+                    <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No office heads listed</p>
+                    <p class="text-gray-400 text-sm">Personnel information is being updated</p>
+                </div>
+            `;
+        } else {
+            html = `
+                <div class="mb-4 p-4 bg-purple-50 rounded-xl">
+                    <p class="text-purple-700 text-sm">
+                        <strong>${heads.length}</strong> office heads in this building
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            `;
+            
+            heads.forEach(head => {
+                html += `
+                    <div class="head-card rounded-xl p-5">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
+                                ${head.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-lg">${head.name}</h4>
+                                ${head.title ? `<p class="text-green-600 text-sm font-medium">${head.title}</p>` : ''}
+                                <div class="mt-2 flex items-center gap-2 text-gray-500 text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
+                                    </svg>
+                                    ${head.officeName}
+                                </div>
+                                ${head.floor ? `
+                                    <div class="flex items-center gap-2 text-gray-400 text-xs mt-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        </svg>
+                                        Floor ${head.floor}
                                     </div>
                                 ` : ''}
                             </div>
-                        `).join('')}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            });
+            
+            html += `</div>`;
         }
         
-        // Close details scroll container
-        content += `</div>`;
-        
-            document.getElementById('buildingDetailTitle').textContent = building.name;
-            document.getElementById('buildingDetailContent').innerHTML = content;
-            
-            // Initialize Swiper immediately (images load asynchronously)
-            if (allImages.length > 1) {
-                setTimeout(() => {
-                    new Swiper('.buildingGallerySwiper', {
-                        loop: true,
-                        lazy: {
-                            loadPrevNext: true,
-                            loadPrevNextAmount: 2,
-                        },
-                        preloadImages: false,
-                        navigation: {
-                            nextEl: '.swiper-button-next',
-                            prevEl: '.swiper-button-prev',
-                        },
-                        pagination: {
-                            el: '.swiper-pagination',
-                            clickable: true,
-                        },
-                        on: {
-                            slideChange: function() {
-                                const current = document.querySelector('.swiper-current');
-                                if (current) {
-                                    current.textContent = this.realIndex + 1;
-                                }
-                            }
-                        }
-                    });
-                }, 100);
+        document.getElementById('panel-heads').innerHTML = html;
+    }
+    
+    function switchDetailsTab(tabName) {
+        const index = tabNames.indexOf(tabName);
+        if (index !== -1) {
+            currentDetailsTab = index;
+            updateTabUI();
+        }
+    }
+    
+    function updateTabUI() {
+        // Show/hide panels (simple approach - no sliding, guaranteed scrolling)
+        tabNames.forEach((name, index) => {
+            const panel = document.getElementById(`panel-${name}`);
+            if (index === currentDetailsTab) {
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
             }
-            
-            // Check if all images failed after giving them time to load
-            setTimeout(() => {
-                const allSlides = document.querySelectorAll('.swiper-slide');
-                const visibleSlides = Array.from(allSlides).filter(slide => slide.style.display !== 'none');
-                
-                if (visibleSlides.length === 0) {
-                    // All images failed, show placeholder
-                    document.getElementById('image-container-0').style.display = 'none';
-                    document.getElementById('placeholder-container').style.display = 'flex';
-                }
-            }, 2000);
-        } catch (error) {
-            console.error('Error loading building:', error);
-            document.getElementById('buildingDetailTitle').textContent = 'Error';
-            document.getElementById('buildingDetailContent').innerHTML = `
-                <div class="text-center py-12">
-                    <p class="text-red-500 text-lg font-semibold mb-2">⚠️ Failed to load building information</p>
-                    <p class="text-gray-600">${error.message}</p>
-                </div>
-            `;
+        });
+        
+        // Update tab buttons
+        tabNames.forEach((name, index) => {
+            const tab = document.getElementById(`tab-${name}`);
+            if (index === currentDetailsTab) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        // Update swipe dots
+        document.querySelectorAll('.swipe-dot').forEach((dot, index) => {
+            if (index === currentDetailsTab) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+        
+        // Update current tab label
+        document.getElementById('currentTabLabel').textContent = tabLabels[currentDetailsTab];
+        
+        // Update prev/next buttons
+        const prevBtn = document.getElementById('prevTabBtn');
+        const nextBtn = document.getElementById('nextTabBtn');
+        
+        if (currentDetailsTab === 0) {
+            prevBtn.disabled = true;
+            prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            prevBtn.disabled = false;
+            prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
+        
+        if (currentDetailsTab === tabNames.length - 1) {
+            nextBtn.innerHTML = `Close <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            nextBtn.onclick = closeBuildingDetailsModal;
+        } else {
+            nextBtn.innerHTML = `Next <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+            nextBtn.onclick = nextDetailsTab;
+        }
+    }
+    
+    function prevDetailsTab() {
+        if (currentDetailsTab > 0) {
+            currentDetailsTab--;
+            updateTabUI();
+        }
+    }
+    
+    function nextDetailsTab() {
+        if (currentDetailsTab < tabNames.length - 1) {
+            currentDetailsTab++;
+            updateTabUI();
+        }
+    }
+    
+    function setupSwipeGestures() {
+        // ONLY attach swipe detection to the tab slider header area, NOT the content
+        // This allows normal scrolling in the content panels
+        
+        // Swipe dot clicks
+        document.querySelectorAll('.swipe-dot').forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentDetailsTab = index;
+                updateTabUI();
+            });
+        });
+        
+        // Keyboard navigation for accessibility
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('buildingDetailsModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                if (e.key === 'ArrowLeft') {
+                    prevDetailsTab();
+                } else if (e.key === 'ArrowRight') {
+                    nextDetailsTab();
+                }
+            }
+        });
+    }
+    
+    function closeBuildingDetailsModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('buildingDetailsModal').classList.add('hidden');
+        currentBuildingData = null;
     }
     
     function clearNavigationPath() {
@@ -1838,128 +2823,6 @@
         const navMarkers = document.getElementById('navMarkers');
         if (navMarkers) navMarkers.remove();
     }
-    
-    function closeBuildingDetails() {
-        // If cabinet is expanded, collapse it first
-        if (cabinetExpanded) {
-            toggleCabinet();
-        }
-        
-        // Reset cabinet toggle to hidden position
-        const cabinetToggle = document.getElementById('cabinetToggle');
-        if (cabinetToggle) {
-            cabinetToggle.style.left = '40px';
-            cabinetToggle.style.opacity = '1';
-        }
-        
-        // Clear navigation path and reset selected building
-        clearNavigationPath();
-        
-        document.getElementById('buildingDetailsView').style.display = 'none';
-        document.getElementById('legendView').style.display = 'flex';
-    }
-    
-    // Toggle expandable cabinet
-    let cabinetExpanded = false;
-    function toggleCabinet() {
-        const chevron = document.getElementById('cabinetChevron');
-        const toggle = document.getElementById('cabinetToggle');
-        const wrapper = toggle.parentElement;
-        const mapContainer = document.getElementById('mapContainer');
-        const sidebarContainer = document.getElementById('sidebarContainer');
-        const officesSection = document.getElementById('officesSection');
-        const imageContainer = document.getElementById('image-container-0');
-        const placeholderContainer = document.getElementById('placeholder-container');
-        const detailsScroll = document.getElementById('detailsScrollContainer');
-        const contentArea = document.getElementById('buildingDetailContent');
-        cabinetExpanded = !cabinetExpanded;
-        
-        if (cabinetExpanded) {
-            // Rotate chevron to point right
-            chevron.style.transform = 'rotate(180deg)';
-            // Remove wrapper clipping so chevron is visible
-            wrapper.style.overflow = 'visible';
-            // Move chevron to the right (now visible since no clipping)
-            toggle.style.left = '40px';
-            // Shift border radius to right side
-            toggle.style.borderRadius = '0 12px 12px 0';
-            // Expand sidebar to full width
-            mapContainer.style.flex = '0 0 0%';
-            sidebarContainer.style.flex = '0 0 100%';
-            
-            // Expand image to take more vertical space
-            if (imageContainer) {
-                imageContainer.style.height = '59vh';
-            }
-            if (placeholderContainer) {
-                placeholderContainer.style.height = '59vh';
-            }
-            
-            // Change image object-fit to fill (stretch) when expanded
-            const detailImages = document.querySelectorAll('.building-detail-image');
-            detailImages.forEach(img => {
-                img.style.objectFit = 'fill';
-            });
-            
-            // Set max height for scrollable details area
-            if (detailsScroll) {
-                const headerHeight = 80; // Approximate header height
-                const imageHeight = imageContainer ? imageContainer.offsetHeight : 0;
-                detailsScroll.style.maxHeight = `calc(100vh - ${headerHeight + imageHeight + 80}px)`;
-            }
-            
-            // Show offices/services section with animation
-            if (officesSection) {
-                officesSection.style.display = 'block';
-                setTimeout(() => {
-                    officesSection.style.opacity = '1';
-                    officesSection.style.transform = 'translateY(0)';
-                }, 10);
-            }
-        } else {
-            // Rotate chevron back to point left
-            chevron.style.transform = 'rotate(0deg)';
-            // Restore wrapper clipping
-            wrapper.style.overflow = 'hidden';
-            // Move chevron back to visible position (on map)
-            toggle.style.left = '0px';
-            // Restore border radius to left side
-            toggle.style.borderRadius = '12px 0 0 12px';
-            // Restore original 60/40 distribution
-            mapContainer.style.flex = '0 0 60%';
-            sidebarContainer.style.flex = '0 0 40%';
-            
-            // Restore image to normal size
-            if (imageContainer) {
-                imageContainer.style.height = '12rem';
-            }
-            if (placeholderContainer) {
-                placeholderContainer.style.height = '12rem';
-            }
-            
-            // Change image object-fit back to cover when collapsed
-            const detailImages = document.querySelectorAll('.building-detail-image');
-            detailImages.forEach(img => {
-                img.style.objectFit = 'cover';
-            });
-            
-            // Remove max height constraint
-            if (detailsScroll) {
-                detailsScroll.style.maxHeight = 'none';
-            }
-            
-            // Hide offices/services section with animation
-            if (officesSection) {
-                officesSection.style.opacity = '0';
-                officesSection.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    officesSection.style.display = 'none';
-                }, 500);
-            }
-        }
-    }
-    
-    // Show message for buildings not yet in database
     function showBuildingNotAvailable(buildingName) {
         // Hide legend, show details view
         document.getElementById('legendView').style.display = 'none';
@@ -2032,8 +2895,9 @@
         }
     });
     
-    function navigateTo(buildingName) {
+    function navigateTo(buildingName, showPopup = false) {
         closeModal();
+        closeBuildingPreview();
         
         // Map building name to navigation point key
         // Try the name as-is first, then check if it exists in navigationPoints
@@ -2098,18 +2962,20 @@
         
         drawNavigationPath(navKey);
         
-        // Show building details in sidebar when clicking legend item
-        const svgId = Object.keys(svgToDisplayName).find(key => 
-            svgToDisplayName[key] === buildingName || key === navKey
-        );
-        
-        if (svgId) {
-            // Use building code (from fullinfo.json building_id) to match
-            const building = buildings.find(b => b.code === svgId);
-            if (building) {
-                showBuildingModal(building.id);
-            } else {
-                showBuildingNotAvailable(svgToDisplayName[svgId] || buildingName);
+        // Show building preview popup only if showPopup is true (when clicking on map)
+        if (showPopup) {
+            const svgId = Object.keys(svgToDisplayName).find(key => 
+                svgToDisplayName[key] === buildingName || key === navKey
+            );
+            
+            if (svgId) {
+                // Use building code (from fullinfo.json building_id) to match
+                const building = buildings.find(b => b.code === svgId);
+                if (building) {
+                    showBuildingModal(building.id);
+                } else {
+                    showBuildingNotAvailable(svgToDisplayName[svgId] || buildingName);
+                }
             }
         }
     }
@@ -2117,6 +2983,8 @@
     // Enhanced interactivity: Keyboard shortcuts and click-outside-to-close
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+            closeBuildingDetailsModal();
+            closeBuildingPreview();
             closeModal();
         }
     });
@@ -2949,13 +3817,14 @@
         svg.appendChild(labelText);
         const bbox = labelText.getBBox();
         
-        labelBg.setAttribute('x', bbox.x - 3);
-        labelBg.setAttribute('y', bbox.y - 1);
-        labelBg.setAttribute('width', bbox.width + 6);
-        labelBg.setAttribute('height', bbox.height + 2);
-        labelBg.setAttribute('fill', '#ef4444');
-        labelBg.setAttribute('rx', '3');
-        labelBg.setAttribute('opacity', '0.9');
+        labelBg.setAttribute('x', bbox.x - 5);
+        labelBg.setAttribute('y', bbox.y - 2);
+        labelBg.setAttribute('width', bbox.width + 10);
+        labelBg.setAttribute('height', bbox.height + 4);
+        labelBg.setAttribute('fill', '#248823');
+        labelBg.setAttribute('rx', '4');
+        labelBg.setAttribute('opacity', '0.95');
+        labelBg.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(36, 136, 35, 0.4))');
         
         markersGroup.appendChild(labelBg);
         markersGroup.appendChild(labelText);

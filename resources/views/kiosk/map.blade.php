@@ -1049,7 +1049,7 @@
     }
     
     /* ============================================
-       3D MAP MODE
+       3D MAP MODE - FIXED PERSPECTIVE
        ============================================ */
     
     /* 3D perspective container */
@@ -1059,22 +1059,51 @@
         transform-style: preserve-3d;
     }
     
-    /* 3D map transform */
+    /* 3D map transform - fixed angles */
     .map-3d-mode #campusMap {
-        transform: rotateX(45deg) rotateZ(-10deg) scale(0.85);
+        transform: rotateX(50deg) rotateZ(-10deg) scale(0.75);
         transform-style: preserve-3d;
         transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.25));
     }
     
     /* Building 3D extrusion effect */
     .map-3d-mode #campusMap path[id] {
-        filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.3));
         transition: all 0.3s ease;
+        transform-origin: center;
     }
     
+    /* Major buildings - taller shadows */
+    .map-3d-mode #campusMap path[id="Administration"],
+    .map-3d-mode #campusMap path[id="CTE"],
+    .map-3d-mode #campusMap path[id="ULRC"],
+    .map-3d-mode #campusMap path[id="UG"] {
+        filter: drop-shadow(0 6px 3px rgba(0, 0, 0, 0.2))
+                drop-shadow(0 10px 6px rgba(0, 0, 0, 0.12));
+        transform: translateY(-3px);
+    }
+    
+    /* Medium buildings */
+    .map-3d-mode #campusMap path[id="CHS"],
+    .map-3d-mode #campusMap path[id="CCJE"],
+    .map-3d-mode #campusMap path[id="CoM"],
+    .map-3d-mode #campusMap path[id="GS"],
+    .map-3d-mode #campusMap path[id="Function"] {
+        filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.18))
+                drop-shadow(0 6px 4px rgba(0, 0, 0, 0.1));
+        transform: translateY(-2px);
+    }
+    
+    /* All other buildings - base shadow */
+    .map-3d-mode #campusMap path[id]:not([id="Premises"]):not([id="Outline"]) {
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+    }
+    
+    /* Hover effect in 3D */
     .map-3d-mode #campusMap path[id]:hover {
-        filter: drop-shadow(4px 8px 6px rgba(0, 0, 0, 0.4)) brightness(1.15);
-        transform: translateY(-3px) scale(1.02);
+        filter: drop-shadow(0 12px 8px rgba(0, 0, 0, 0.3))
+                brightness(1.15) !important;
+        transform: translateY(-6px) scale(1.02) !important;
     }
     
     /* 3D Toggle Button */
@@ -1097,6 +1126,8 @@
         box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
         transition: all 0.3s ease;
         font-family: var(--font-display);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .toggle-3d-btn:hover {
@@ -1121,13 +1152,14 @@
     /* 3D mode label adjustments */
     .map-3d-mode .building-label-enhanced,
     .map-3d-mode .you-are-here-marker text {
-        transform: rotateX(-45deg) rotateZ(10deg);
+        transform: rotateX(-50deg) rotateZ(15deg);
         transform-origin: center;
     }
     
     /* Smooth transition back to 2D */
     #campusMap {
-        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                    filter 0.5s ease;
     }
     
     /* ============================================
@@ -1688,7 +1720,7 @@
                         <path d="M2 17l10 6 10-6"/>
                         <path d="M2 13l10 6 10-6"/>
                     </svg>
-                    <span id="toggle3DText">3D View</span>
+                    <span id="toggle3DText">3D VIEW</span>
                 </button>
                 
                 <!-- Walking Time Badge - Compact top-left position -->
@@ -4062,18 +4094,11 @@
         if (is3DMode) {
             mapContainer.classList.add('map-3d-mode');
             toggleBtn.classList.add('active');
-            toggleText.textContent = '2D View';
-            
-            // Add a subtle bounce animation
-            const campusMap = document.getElementById('campusMap');
-            campusMap.style.animation = 'none';
-            setTimeout(() => {
-                campusMap.style.animation = '';
-            }, 10);
+            toggleText.textContent = '2D VIEW';
         } else {
             mapContainer.classList.remove('map-3d-mode');
             toggleBtn.classList.remove('active');
-            toggleText.textContent = '3D View';
+            toggleText.textContent = '3D VIEW';
         }
         
         // Reset idle timer on interaction

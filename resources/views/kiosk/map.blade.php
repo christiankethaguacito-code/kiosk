@@ -673,58 +673,61 @@
         color: var(--text-muted);
     }
     
-    /* Walking time display */
+    /* Walking time display - positioned at top-left corner */
     .walking-time-badge {
         position: absolute;
-        bottom: 16px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(135deg, rgba(36, 136, 35, 0.95) 0%, rgba(26, 102, 25, 0.98) 100%);
         color: white;
-        padding: 12px 24px;
-        border-radius: var(--radius-lg);
+        padding: 8px 14px;
+        border-radius: var(--radius-md);
         display: none;
         align-items: center;
-        gap: 12px;
-        box-shadow: var(--shadow-xl);
+        gap: 8px;
+        box-shadow: var(--shadow-lg);
         backdrop-filter: blur(10px);
         z-index: 100;
-        animation: slideUp 0.3s ease-out;
+        animation: fadeSlideIn 0.3s ease-out;
+        font-size: 0.9rem;
     }
     
     .walking-time-badge.active {
         display: flex;
     }
     
-    @keyframes slideUp {
+    @keyframes fadeSlideIn {
         from {
             opacity: 0;
-            transform: translateX(-50%) translateY(20px);
+            transform: translateY(-10px);
         }
         to {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            transform: translateY(0);
         }
     }
     
     .walking-time-icon {
-        font-size: 1.5rem;
+        font-size: 1.1rem;
     }
     
     .walking-time-text {
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        gap: 6px;
     }
     
     .walking-time-value {
-        font-size: 1.25rem;
+        font-size: 0.95rem;
         font-weight: 700;
-        color: var(--primary-light);
+        color: #fff;
     }
     
     .walking-time-distance {
         font-size: 0.85rem;
-        color: var(--text-muted);
+        color: rgba(255, 255, 255, 0.8);
+        padding-left: 6px;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     /* Accessibility panel */
@@ -1235,12 +1238,12 @@
                     </span>
                 </div>
                 
-                <!-- Walking Time Badge -->
+                <!-- Walking Time Badge - Compact top-left position -->
                 <div class="walking-time-badge" id="walkingTimeBadge">
                     <span class="walking-time-icon">🚶</span>
                     <div class="walking-time-text">
                         <span class="walking-time-value" id="walkingTimeValue">~2 min</span>
-                        <span class="walking-time-distance" id="walkingDistance">~150m walk</span>
+                        <span class="walking-time-distance" id="walkingDistance">~150m</span>
                     </div>
                 </div>
                 
@@ -2768,7 +2771,7 @@
         const distanceEl = document.getElementById('walkingDistance');
         
         timeValue.textContent = `~${minutes} min`;
-        distanceEl.textContent = `~${distance}m walk`;
+        distanceEl.textContent = `~${distance}m`;
         
         badge.classList.add('active');
     }

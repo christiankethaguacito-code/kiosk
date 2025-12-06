@@ -647,6 +647,75 @@
         transition: all 0.1s ease;
     }
     
+    /* ============================================
+       ENHANCED BUILDING INTERACTIVE STYLES
+       ============================================ */
+    
+    /* Individual clickable buildings with 3D effects */
+    .building-interactive {
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform-origin: center;
+        transform-style: preserve-3d;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+    }
+    
+    /* Hover state with 3D lift and glow */
+    .building-interactive:hover {
+        filter: brightness(1.25) 
+                drop-shadow(0 8px 20px rgba(16, 185, 129, 0.7)) 
+                drop-shadow(0 0 30px rgba(34, 197, 94, 0.5))
+                drop-shadow(0 4px 12px rgba(34, 197, 94, 0.4));
+        transform: translateY(-2px) translateZ(15px) scale(1.05);
+        stroke-width: 1.5 !important;
+        stroke: #10b981 !important;
+    }
+    
+    /* Active/Click state */
+    .building-interactive:active {
+        filter: brightness(1.35) 
+                drop-shadow(0 10px 24px rgba(16, 185, 129, 0.9)) 
+                drop-shadow(0 0 40px rgba(34, 197, 94, 0.7));
+        transform: translateY(-1px) translateZ(8px) scale(1.02);
+        transition: all 0.15s ease;
+    }
+    
+    /* Pulse animation for clickable buildings */
+    @keyframes buildingGlow {
+        0%, 100% {
+            filter: brightness(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+        }
+        50% {
+            filter: brightness(1.12) drop-shadow(0 4px 10px rgba(34, 197, 94, 0.3));
+        }
+    }
+    
+    /* Subtle idle animation for buildings */
+    .building-interactive {
+        animation: buildingGlow 4s ease-in-out infinite;
+    }
+    
+    /* Stop animation on hover (let manual hover effects take over) */
+    .building-interactive:hover {
+        animation: none;
+    }
+    
+    /* Special highlight for main buildings */
+    #Administration.building-interactive:hover,
+    #ULRC.building-interactive:hover,
+    #CCJE.building-interactive:hover,
+    #CTE.building-interactive:hover,
+    #CHS.building-interactive:hover,
+    #GS.building-interactive:hover,
+    #CoM.building-interactive:hover {
+        filter: brightness(1.3) 
+                drop-shadow(0 10px 28px rgba(16, 185, 129, 0.8)) 
+                drop-shadow(0 0 40px rgba(34, 197, 94, 0.6))
+                drop-shadow(0 6px 16px rgba(34, 197, 94, 0.5));
+        transform: translateY(-3px) translateZ(20px) scale(1.08);
+        stroke-width: 2 !important;
+    }
+    
     /* Enhanced 3D building tooltip with glass morphism */
     .building-tooltip {
         position: fixed;
@@ -2092,67 +2161,71 @@
                 </g>
                 <g>
                     <g id="Main_Entrance">
-                        <rect width="18.5" height="10" x="165.5" y="255" ry=".117" style="fill:#0b660b;fill-opacity:1;fill-rule:evenodd;stroke-width:.184374"/>
-                        <rect width="18.058" height="10" x="206.942" y="255" ry=".117" style="fill:#0b660b;fill-opacity:1;fill-rule:evenodd;stroke-width:.18216"/>
-                        <rect width="23.5" height="12" x="183.442" y="254" ry=".14" style="fill:#0b650b;fill-opacity:1;fill-rule:evenodd;stroke-width:.227636"/>
+                        <rect id="CB_1" width="18.5" height="10" x="165.5" y="255" ry=".117" style="fill:#0b660b;fill-opacity:1;fill-rule:evenodd;stroke-width:.184374"/>
+                        <rect id="CB_2" width="18.058" height="10" x="206.942" y="255" ry=".117" style="fill:#0b660b;fill-opacity:1;fill-rule:evenodd;stroke-width:.18216"/>
+                        <rect id="main_gate" width="23.5" height="12" x="183.442" y="254" ry=".14" style="fill:#0b650b;fill-opacity:1;fill-rule:evenodd;stroke-width:.227636"/>
                     </g>
                     <g id="Side_Entrance">
-                        <rect width="8" height="8" x="291" y="157" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.52832"/>
-                        <rect width="6" height="14" x="292" y="165" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.511471"/>
+                        <rect id="GH" width="8" height="8" x="291" y="157" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.52832"/>
+                        <rect id="Second_Gate" width="6" height="14" x="292" y="165" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.511471"/>
                     </g>
-                    <rect id="CCJE" width="46.097" height="13.013" x="236.915" y="240.297" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.957872;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;" transform="matrix(1 -.00284 -.01038 .99995 0 0)"/>
-                    <rect id="BCSF" width="9.046" height="16.065" x="171.386" y="235.367" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.929139;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;" transform="rotate(.033)skewX(-.188)"/>
-                    <path id="ULRC" d="M139.5 192.49h26.028v9.728h3.003v16.537h-3.003v8.755H139.5v-13.619h8.009v-7.782H139.5z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.986819;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;"/>
-                    <path id="DOST" d="M60.499 214.021h19.002V225H60.499z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:1.02132;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;"/>
-                    <rect id="FC" width="54.857" height="14.959" x="232.682" y="192.935" ry=".623" style="fill:#0b6616;fill-rule:evenodd;stroke-width:.413595;fill-opacity:1"/>
-                    <path id="CHS" d="M118.454 102.818h-6.735v14.843h6.735l.058 23.707 11.43.085.058-20.823h15.395l.058 20.738h11.546V80.016l-10.642.042v20.78H130V80h-11.546z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0a5c12;stroke-width:.975771;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;"/>
-                    <path id="CTE" d="M285.583 84.352v-9.857l-29.089-.003.226 68.016 27.675-.003v-9.857h-17.318V115.89l7.923.003V101.11l-7.923-.003V84.349c5.782.037 12.733.003 18.506.003z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.973814;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;"/>
-                    <rect id="Field" width="67.264" height="112.993" x="36" y="49" rx="33.632" ry="30.959" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:1.076;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Bleacher" width="9.508" height="28.112" x="106.176" y="69.999" rx="0" ry=".567" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.303066"/>
+                    <rect id="CCJE" class="building-interactive" width="46.097" height="13.013" x="236.915" y="240.297" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.957872;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="matrix(1 -.00284 -.01038 .99995 0 0)" onclick="navigateTo('CCJE')"/>
+                    <rect id="BCSF" class="building-interactive" width="9.046" height="16.065" x="171.386" y="235.367" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.929139;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="matrix(1 .00058 -.00386 1 0 0)" onclick="navigateTo('BCSF')"/>
+                    <path id="ULRC" class="building-interactive" d="M139.5 192.49h26.028v9.728h3.003v16.537h-3.003v8.755H139.5v-13.619h8.009v-7.782H139.5z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.986819;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('ULRC')"/>
+                    <path id="DOST" class="building-interactive" d="M60.499 214.021h19.002V225H60.499z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:1.02132;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('DOST')"/>
+                    <rect id="Halal_Building" class="building-interactive" width="54.857" height="11.591" x="232.682" y="196.302" ry=".482" style="fill:#0b6616;fill-opacity:1;fill-rule:evenodd;stroke-width:.364074;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Halal_Building')"/>
+                    <rect id="Food_Center_1" class="building-interactive" width="5.624" height="19.094" x="218.376" y="176.453" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.671702;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Food_Center')"/>
+                    <rect id="Food_Center_2" class="building-interactive" width="5.624" height="19.094" x="262.376" y="175.453" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.671702;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Food_Center')"/>
+                    <path id="CHS" class="building-interactive" d="M118.454 102.818h-6.735v14.843h6.735l.058 23.707 11.43.085.058-20.823h15.395l.058 20.738h11.546V80.016l-10.642.042v20.78H130V80h-11.546z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0a5c12;stroke-width:.975771;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('CHS')"/>
+                    <path id="CTE" class="building-interactive" d="M285.583 84.352v-9.857l-29.089-.003.226 68.016 27.675-.003v-9.857h-17.318V115.89l7.923.003V101.11l-7.923-.003V84.349c5.782.037 12.733.003 18.506.003z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.973814;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('CTE')"/>
+                    <rect id="Field" class="building-interactive" width="67.264" height="112.993" x="36" y="49" rx="33.632" ry="30.959" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:1.076;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Field')"/>
+                    <rect id="Bleacher" class="building-interactive" width="9.508" height="28.112" x="106.176" y="69.999" rx="0" ry=".567" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.303066;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Bleacher')"/>
                     <g id="Parking_Space" transform="matrix(1.2623 0 0 1.51228 -30.436 -55.826)">
-                        <rect width="25.351" height="22.17" x="195.227" y="85.5" ry=".446" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.264583"/>
-                        <rect width="21.646" height="4.674" x="197.015" y="86.717" ry=".094" style="fill:#609f60;fill-opacity:1;fill-rule:evenodd;stroke-width:.112265"/>
-                        <rect width="21.646" height="4.674" x="197.181" y="94.357" ry=".094" style="fill:#609f60;fill-opacity:1;fill-rule:evenodd;stroke-width:.112265"/>
-                        <rect width="21.646" height="4.674" x="197.148" y="101.732" ry=".094" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.112265"/>
+                        <rect id="Space" class="building-interactive" width="25.351" height="22.17" x="195.227" y="85.5" ry=".446" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.264583;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Parking_Space')"/>
+                        <rect id="Park_1" class="building-interactive" width="21.646" height="4.674" x="197.015" y="86.717" ry=".094" style="fill:#609f60;fill-opacity:1;fill-rule:evenodd;stroke-width:.112265;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Parking_Space')"/>
+                        <rect id="Park_2" class="building-interactive" width="21.646" height="4.674" x="197.181" y="94.357" ry=".094" style="fill:#609f60;fill-opacity:1;fill-rule:evenodd;stroke-width:.112265;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Parking_Space')"/>
+                        <rect id="Park_3" class="building-interactive" width="21.646" height="4.674" x="197.148" y="101.732" ry=".094" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.112265;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Parking_Space')"/>
                     </g>
-                    <path id="LHS_ext" d="M271.217 19.998h7.685v17.009h-7.685z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6614;stroke-width:1;stroke-opacity:1;stroke-dasharray:none"/>
-                    <rect id="LHS" width="11.988" height="45.349" x="257" y="25.452" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6611;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"/>
-                    <path id="CoM" d="M275.674 4.977h18.774v61.03H286V51h-1.877v-3.002h-1.878v-8.004h1.878v-3.001H286v-20.01s-2.843-.113-2.816-3.002h-7.51z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6614;stroke-width:.969114;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Restroom" width="7" height="6" x="267" y="7" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.353521;stroke:#0b6615;stroke-opacity:1"/>
-                    <path id="SKSU-MPC" d="M256.5 12.62a4.5 4.38 0 0 1-4.486 4.38 4.5 4.38 0 0 1-4.514-4.353 4.5 4.38 0 0 1 4.457-4.408 4.5 4.38 0 0 1 4.543 4.324" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1.12;stroke:#0b6615;stroke-opacity:1;stroke-dasharray:none"/>
-                    <rect id="MPC-Dorm" width="8" height="8.001" x="257.998" y="7.037" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.88900001;stroke-dasharray:none;stroke:#0b6615;stroke-opacity:1" transform="rotate(-.01)skewY(.001)"/>
-                    <path id="ULD" d="M230.481 16.518h4.684v1.006h6.645v-1.006h4.702V7.48h-16.03z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.977153;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="QMS" width="14.067" height="12.067" x="214.466" y="5.467" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.933003;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Function" width="35.945" height="5.778" x="117.514" y="58.493" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.473359"/>
-                    <path id="UG" d="M118.19 24.217h39.819v33.706S119 58 118 58v-1l-9.18-.2V28.71h9.37z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.986189;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Reg_Office" width="46" height="4" x="167" y="21" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.322645"/>
-                    <path id="Administration" d="M188 50v-4h-21V25h55l.005 20.953-20.967-.052L201 50z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1;stroke:#0b6614;stroke-opacity:1;stroke-dasharray:none;cursor:pointer;"/>
-                    <rect id="CCJE_ext" width="69.085" height="9.094" x="225.474" y="255.395" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.947361;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="BCSF" width="9.046" height="16.065" x="171.386" y="235.367" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.929139;stroke-dasharray:none;stroke-opacity:1" transform="rotate(.033)skewX(-.188)"/>
-                    <path id="UPP" d="m266.739 230.387 2.421-.002.034 6.564 19.612.102-.008-20.171-19.643-.005.008 6.381-2.423.005z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1;stroke-dasharray:none;stroke:#0b6615;stroke-opacity:1"/>
-                    <path id="AMTC" d="M234.987 228.671 235 231l-4.653.005.006 6.314h21.96L252.3 231l-3.71.005v-16.511l-18.241.012.006 6.32 4.624-.005.013 1.853h-2.44l-.006 5.984z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1;stroke-dasharray:none;stroke:#0b6615;stroke-opacity:1"/>
-                    <path id="TCL" d="M115.062 208.476h4.793v2.842h7.669v14.206h-20.13v-4.736h-1.918v-4.735h1.918v-4.735h7.668z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.952803;stroke-dasharray:none;stroke-opacity:1"/>
+                    <path id="LHS_ext" class="building-interactive" d="M271.217 19.998h7.685v17.009h-7.685z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6614;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('LHS_ext')"/>
+                    <rect id="LHS" class="building-interactive" width="11.988" height="45.349" x="257" y="25.452" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6611;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('LHS')"/>
+                    <path id="CoM" class="building-interactive" d="M275.674 4.977h18.774v61.03H286V51h-1.877v-3.002h-1.878v-8.004h1.878v-3.001H286v-20.01s-2.843-.113-2.816-3.002h-7.51z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6614;stroke-width:.969114;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('CoM')"/>
+                    <rect id="Restroom" class="building-interactive" width="7" height="6" x="267" y="7" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.353521;stroke:#0b6615;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Restroom')"/>
+                    <path id="SKSU-MPC" class="building-interactive" d="M256.5 12.62a4.5 4.38 0 0 1-4.486 4.38 4.5 4.38 0 0 1-4.514-4.353 4.5 4.38 0 0 1 4.457-4.408 4.5 4.38 0 0 1 4.543 4.324" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1.12;stroke:#0b6615;stroke-opacity:1;stroke-dasharray:none;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('SKSU-MPC')"/>
+                    <rect id="MPC-Dorm" class="building-interactive" width="8" height="8.001" x="257.998" y="7.037" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.88900001;stroke-dasharray:none;stroke:#0b6615;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="rotate(-.011)skewX(.001)" onclick="navigateTo('MPC-Dorm')"/>
+                    <path id="ULD" class="building-interactive" d="M229.423 16.518h4.683v1.006h6.645v-1.006h4.702V7.48h-16.03z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.977153;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('ULD')"/>
+                    <rect id="QMS" class="building-interactive" width="14.067" height="12.067" x="213.408" y="5.467" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.933003;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('QMS')"/>
+                    <rect id="Function" class="building-interactive" width="35.945" height="5.778" x="117.514" y="58.493" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.473359;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Function')"/>
+                    <path id="UG" class="building-interactive" d="M118.19 24.217h39.819v33.706S119 58 118 58v-1l-9.18-.2V28.71h9.37z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.986189;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('UG')"/>
+                    <rect id="Reg_Office" class="building-interactive" width="46" height="4" x="167" y="21" ry="0" style="fill:#0b6515;fill-opacity:1;fill-rule:evenodd;stroke-width:.322645;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Reg_Office')"/>
+                    <path id="Admin" class="building-interactive" d="M188 50v-4h-21V25h55l.005 20.953-20.967-.052L201 50z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1;stroke:#0b6614;stroke-opacity:1;stroke-dasharray:none;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Administration')"/>
+                    <rect id="CCJE_ext" class="building-interactive" width="69.085" height="9.094" x="225.474" y="255.395" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.947361;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('CCJE_ext')"/>
+                    <path id="UPP" class="building-interactive" d="m266.739 230.387 2.421-.002.034 6.564 19.612.102-.008-20.171-19.643-.005.008 6.381-2.423.005z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1;stroke-dasharray:none;stroke:#0b6615;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('UPP')"/>
+                    <path id="AMTC" class="building-interactive" d="M234.987 228.671 235 231l-4.653.005.006 6.314h21.96L252.3 231l-3.71.005v-16.511l-18.241.012.006 6.32 4.624-.005.013 1.853h-2.44l-.006 5.984z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:1;stroke-dasharray:none;stroke:#0b6615;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('AMTC')"/>
+                    <path id="TCL" class="building-interactive" d="M115.062 208.476h4.793v2.842h7.669v14.206h-20.13v-4.736h-1.918v-4.735h1.918v-4.735h7.668z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.952803;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('TCL')"/>
                     <g id="Motorpool">
-                        <path d="M35 208h21.5v17H35z" style="fill:#0b6516;fill-rule:evenodd;stroke-width:.197316;fill-opacity:1"/>
-                        <path d="M36 219h16v5H36z" style="fill:#53ac53;fill-rule:evenodd;stroke-width:.0923133;fill-opacity:1"/>
-                        <path d="M50.316 209H55v14.975h-4.684z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.0619257"/>
+                        <path id="MP_PS" d="M35 208h21.5v17H35z" style="fill:#0b6516;fill-rule:evenodd;stroke-width:.197316;fill-opacity:1"/>
+                        <path id="MP_Shed" d="M36 219h16v5H36z" style="fill:#53ac53;fill-rule:evenodd;stroke-width:.0923133;fill-opacity:1"/>
+                        <path id="MP_Office" d="M50.316 209H55v14.975h-4.684z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke-width:.0619257"/>
                     </g>
-                    <rect id="mosque" width="4.956" height="11.33" x="-6.247" y="230.701" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.577552;stroke-dasharray:none;stroke-opacity:1" transform="rotate(-39.394)skewX(-.212)"/>
-                    <rect id="TIP_center" width="16.061" height="13.061" x="113.469" y="172.469" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.938838;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Climate" width="19.079" height="14.079" x="90.46" y="172.46" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.920669;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Agri_bldg_1" width="25.023" height="12.048" x="52.486" y="172.483" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.966673;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Agri_bldg_2" width="25.069" height="11.977" x="24.466" y="172.4" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.931364;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="ROTC" width="13.066" height="14.066" x="12.467" y="145.467" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.93382;stroke-dasharray:none;stroke-opacity:1"/>
-                    <path id="OSAS" d="M116.158 153.119h15.367v9.406h-23.05v-15.05h7.683z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0a5c12;stroke-width:.950446;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="UC" width="17.065" height="11.065" x="140.467" y="151.467" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.93498;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="GS-SBO" width="16.045" height="8.069" x="269.067" y="155.58" rx="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.920099;stroke-dasharray:none;stroke-opacity:1" transform="rotate(.211)skewY(-.235)"/>
-                    <rect id="Alumni_Office" width="9.161" height="8.133" x="257.405" y="155.434" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.867483;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="Univesity_AVR" width="24.542" height="9.014" x="258.421" y="144.994" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.938589;stroke-dasharray:none;stroke-opacity:1" transform="matrix(1 -.00185 -.00299 1 0 0)"/>
-                    <rect id="GS-ext" width="12.06" height="10.479" x="236.47" y="153.077" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.940078;stroke-dasharray:none;stroke-opacity:1"/>
-                    <path id="GS" d="m211.143 132.964-1.745.009-.077 3.893c-2.172 2.1-1.816 5.54-1.816 5.54.025-1.169-.401 2.59 1.77 5.023v4.814l1.81.08.025 11.203h23.54v-10.513h-11.3v-21.025h16.007v-10.489l-28.129-.024z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"/>
-                    <rect id="CHS_Labs" width="15.561" height="46.321" x="166.969" y="116.832" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:1;stroke-dasharray:none;stroke-opacity:1" transform="rotate(.018)skewY(-.229)"/>
-                    <path id="MD_2" d="M13.022 83.001h11.957V93H13.022z" style="fill:#53ac53;fill-rule:evenodd;stroke:#0b6113;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"/>
-                    <path id="MD_1" d="M13.002 71.001h11.957V81H13.002z" style="fill:#53ac53;fill-rule:evenodd;stroke:#0b6614;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"/>
+                    <rect id="Mosque" class="building-interactive" width="4.956" height="11.33" x="-6.247" y="230.701" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.577552;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="matrix(.7728 -.63465 .63179 .77514 0 0)" onclick="navigateTo('Mosque')"/>
+                    <rect id="TIP_center" class="building-interactive" width="16.061" height="13.061" x="113.469" y="172.469" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.938838;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('TIP_center')"/>
+                    <rect id="Climate" class="building-interactive" width="19.079" height="14.079" x="90.46" y="172.46" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.920669;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Climate')"/>
+                    <rect id="Agri_bldg_1" class="building-interactive" width="25.023" height="12.048" x="52.486" y="172.483" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.966673;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Agri_bldg_1')"/>
+                    <rect id="Agri_bldg_2" class="building-interactive" width="25.069" height="11.977" x="24.466" y="172.4" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.931364;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Agri_bldg_2')"/>
+                    <rect id="ROTC" class="building-interactive" width="13.066" height="14.066" x="12.467" y="145.467" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:.93382;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('ROTC')"/>
+                    <rect id="AREC_Bldg" class="building-interactive" width="15.965" height="13.971" x="14.04" y="210.123" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6516;stroke-width:1.02872;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('AREC_Bldg')"/>
+                    <path id="OSAS" class="building-interactive" d="M116.158 153.119h15.367v9.406h-23.05v-15.05h7.683z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0a5c12;stroke-width:.950446;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('OSAS')"/>
+                    <rect id="UC" class="building-interactive" width="17.065" height="11.065" x="140.467" y="151.467" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6113;stroke-width:.93498;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('UC')"/>
+                    <rect id="GS-SBO" class="building-interactive" width="16.045" height="8.069" x="269.067" y="155.58" rx="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.920099;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="matrix(1 -.0004 -.00369 1 0 0)" onclick="navigateTo('GS-SBO')"/>
+                    <rect id="Alumni_Office" class="building-interactive" width="9.161" height="8.133" x="257.405" y="155.434" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.867483;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('Alumni_Office')"/>
+                    <rect id="Univesity_AVR" class="building-interactive" width="24.542" height="9.014" x="258.421" y="144.994" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.938589;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="matrix(1 -.00185 -.00299 1 0 0)" onclick="navigateTo('Univesity_AVR')"/>
+                    <rect id="GS-ext" class="building-interactive" width="12.06" height="10.479" x="236.47" y="153.077" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.940078;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('GS-ext')"/>
+                    <path id="GS" class="building-interactive" d="m211.143 132.964-1.745.009-.077 3.893c-2.172 2.1-1.816 5.54-1.816 5.54.025-1.169-.401 2.59 1.77 5.023v4.814l1.81.08.025 11.203h23.54v-10.513h-11.3v-21.025h16.007v-10.489l-28.129-.024z" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('GS')"/>
+                    <rect id="CHS_Labs" class="building-interactive" width="15.561" height="46.321" x="166.969" y="116.832" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:1;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="matrix(1 -.00369 -.0003 1 0 0)" onclick="navigateTo('CHS_Labs')"/>
+                    <rect id="Underconstruction1" class="building-interactive" width="11.996" height="21.702" x="13.04" y="98.026" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.600969;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="rotate(-.129)skewX(-.157)" onclick="navigateTo('Underconstruction1')"/>
+                    <rect id="Underconstruction2" class="building-interactive" width="11.996" height="21.702" x="13.071" y="121.851" rx="0" ry="0" style="fill:#53ac53;fill-opacity:1;fill-rule:evenodd;stroke:#0b6615;stroke-width:.600969;stroke-dasharray:none;stroke-opacity:1;cursor:pointer;transition:all 0.3s ease;" transform="rotate(-.129)skewX(-.157)" onclick="navigateTo('Underconstruction2')"/>
+                    <path id="MD_2" class="building-interactive" d="M13.022 83.001h11.957V93H13.022z" style="fill:#53ac53;fill-rule:evenodd;stroke:#0b6113;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('MD_2')"/>
+                    <path id="MD_1" class="building-interactive" d="M13.002 71.001h11.957V81H13.002z" style="fill:#53ac53;fill-rule:evenodd;stroke:#0b6614;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1;cursor:pointer;transition:all 0.3s ease;" onclick="navigateTo('MD_1')"/>
                 </g>
                 <g id="BuildingLabels">
                     <!-- ========================================
@@ -2230,6 +2303,14 @@
                     <rect x="6" y="82" width="24" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
                     <text x="18" y="86" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Men's Dorm 2</text>
                     
+                    <!-- Under Construction 1 -->
+                    <rect x="6" y="103" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="17" y="107" text-anchor="middle" font-size="2.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Under Const. 1</text>
+                    
+                    <!-- Under Construction 2 -->
+                    <rect x="6" y="127" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="17" y="131" text-anchor="middle" font-size="2.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Under Const. 2</text>
+                    
                     <!-- === CTE AREA (Right Side) === -->
                     
                     <!-- CTE -->
@@ -2288,6 +2369,10 @@
                     <rect x="6" y="145" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
                     <text x="17" y="149" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">ROTC</text>
                     
+                    <!-- AREC Building -->
+                    <rect x="10" y="215" width="20" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="20" y="219" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">AREC</text>
+                    
                     <!-- === RESEARCH & AGRICULTURE AREA === -->
                     
                     <!-- TIP -->
@@ -2308,9 +2393,17 @@
                     
                     <!-- === FOOD CENTER AREA === -->
                     
-                    <!-- Food Center -->
+                    <!-- Halal Building -->
                     <rect x="244" y="194" width="32" height="8" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
-                    <text x="260" y="199.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Food Center</text>
+                    <text x="260" y="199.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Halal Building</text>
+                    
+                    <!-- Food Center 1 -->
+                    <rect x="213" y="180" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="222" y="184.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Food 1</text>
+                    
+                    <!-- Food Center 2 -->
+                    <rect x="257" y="180" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="266" y="184.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Food 2</text>
                     
                     <!-- === LIBRARY AREA === -->
                     
@@ -2450,14 +2543,6 @@
                     </div>
                     <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Field')"><span class="legend-item-dot"></span>University Athletic Field</div>
                     <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Bleacher')"><span class="legend-item-dot"></span>Field Bleachers</div>
-                    
-                    <div class="legend-category" style="margin-top: 1rem;">
-                        <div class="legend-category-title">
-                            <span class="legend-category-icon">🕌</span>
-                            Religious Facility
-                        </div>
-                    </div>
-                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('mosque')"><span class="legend-item-dot"></span>University Mosque</div>
                 </div>
             </div>
         </div>
@@ -3371,7 +3456,37 @@
         
         // Religious
         'mosque': {x: 149, y: 184, roadConnection: 'conn_134_185'},
-        'Mosque': {x: 149, y: 184, roadConnection: 'conn_134_185'}
+        'Mosque': {x: 149, y: 184, roadConnection: 'conn_134_185'},
+        
+        // New Buildings - Food & Dining
+        'Halal_Building': {x: 260, y: 202, roadConnection: 'spine_south_210'},
+        'Food_Center_1': {x: 221, y: 186, roadConnection: 'spine_south_210'},
+        'Food_Center_2': {x: 265, y: 185, roadConnection: 'spine_south_210'},
+        
+        // New Buildings - Research & Extension
+        'AREC_Bldg': {x: 22, y: 217, roadConnection: 'south_30'},
+        
+        // New Buildings - Under Construction
+        'Underconstruction1': {x: 19, y: 109, roadConnection: 'far_west_80'},
+        'Underconstruction2': {x: 19, y: 132, roadConnection: 'horiz_30'},
+        
+        // New Buildings - Campus Infrastructure
+        'CB_1': {x: 268, y: 167, roadConnection: 'horiz_east_end'},
+        'CB_2': {x: 250, y: 169, roadConnection: 'east_south'},
+        'main_gate': {x: 147, y: 265, roadConnection: 'gate'},
+        'GH': {x: 150, y: 267, roadConnection: 'gate'},
+        'Second_Gate': {x: 294, y: 172, roadConnection: 'east_gate'},
+        
+        // New Buildings - Motorpool Facilities
+        'MP_PS': {x: 38, y: 211, roadConnection: 'south_46'},
+        'MP_Shed': {x: 44, y: 215, roadConnection: 'south_46'},
+        'MP_Office': {x: 51, y: 215, roadConnection: 'south_46'},
+        
+        // New Buildings - Parking Areas
+        'Park_1': {x: 230, y: 93, roadConnection: 'north_220'},
+        'Park_2': {x: 230, y: 98, roadConnection: 'north_220'},
+        'Park_3': {x: 230, y: 103, roadConnection: 'north_220'},
+        'Space': {x: 230, y: 96, roadConnection: 'north_220'}
     };
     
     // Merge database endpoints with defaults (database values take priority)
@@ -3727,11 +3842,30 @@
         'QMS': 'Quality Management Services',
         'UG': 'University Gym',
         'Administration': 'Administration Building',
+        'Admin': 'Administration Building',
         'CTE': 'College of Teacher Education',
         'CHS': 'College of Health Sciences',
         'CCJE': 'College of Criminal Justice Education',
         'CCJE_ext': 'CCJE Extension Building',
-        'ULRC': 'University Library Resource Center'
+        'ULRC': 'University Library Resource Center',
+        'Halal_Building': 'Halal Food Center Building',
+        'Food_Center_1': 'Food Center 1',
+        'Food_Center_2': 'Food Center 2',
+        'AREC_Bldg': 'Agricultural Research & Extension Center',
+        'Underconstruction1': 'Under Construction Site 1',
+        'Underconstruction2': 'Under Construction Site 2',
+        'CB_1': 'Campus Building 1',
+        'CB_2': 'Campus Building 2',
+        'main_gate': 'Main Campus Gate',
+        'GH': 'Guard House',
+        'Second_Gate': 'Secondary Gate',
+        'MP_PS': 'Motorpool Parking Shed',
+        'MP_Shed': 'Motorpool Storage Shed',
+        'MP_Office': 'Motorpool Office',
+        'Park_1': 'Parking Area 1',
+        'Park_2': 'Parking Area 2',
+        'Park_3': 'Parking Area 3',
+        'Space': 'Parking Space'
     };
     
     // Note: Building matching now uses the 'code' field from database
@@ -3746,10 +3880,13 @@
         preloadAllBuildingImages();
         
         const clickableBuildings = ['Administration', 'CTE', 'CHS', 'CCJE', 'BCSF', 'UPP', 'AMTC', 'ULRC', 'TCL', 'DOST', 
-                                   'Motorpool', 'FC', 'mosque', 'TIP_center', 'Climate', 'Agri_bldg_1', 'Agri_bldg_2', 
+                                   'Motorpool', 'FC', 'TIP_center', 'Climate', 'Agri_bldg_1', 'Agri_bldg_2', 
                                    'ROTC', 'OSAS', 'UC', 'GS-SBO', 'Alumni_Office', 'Univesity_AVR', 'GS-ext', 'GS', 
                                    'CHS_Labs', 'Field', 'Bleacher', 'Parking_Space', 'LHS_ext', 'LHS', 'CoM', 'Restroom', 
-                                   'SKSU-MPC', 'MPC-Dorm', 'ULD', 'QMS', 'Function', 'UG', 'Reg_Office', 'MD_1', 'MD_2'];
+                                   'SKSU-MPC', 'MPC-Dorm', 'ULD', 'QMS', 'Function', 'UG', 'Reg_Office', 'MD_1', 'MD_2',
+                                   'Halal_Building', 'Food_Center_1', 'Food_Center_2', 'AREC_Bldg', 'Underconstruction1', 'Underconstruction2',
+                                   'Admin', 'CB_1', 'CB_2', 'main_gate', 'GH', 'Second_Gate', 'MP_PS', 'MP_Shed', 'MP_Office',
+                                   'Park_1', 'Park_2', 'Park_3', 'Space', 'CCJE_ext'];
         
         clickableBuildings.forEach(buildingId => {
             const element = document.getElementById(buildingId);
@@ -3773,7 +3910,10 @@
                     
                     // Get display name for navigation and show popup when clicking on map
                     const displayName = svgToDisplayName[buildingId] || buildingId;
-                    navigateTo(displayName, true); // true = show popup
+                    
+                    // Handle special case: Admin SVG ID maps to Administration in navigation
+                    const navName = (buildingId === 'Admin') ? 'Administration' : displayName;
+                    navigateTo(navName, true); // true = show popup
                 });
                 
                 // Add hover tooltip functionality
@@ -5202,7 +5342,11 @@
             
             if (svgId) {
                 // Use building code (from fullinfo.json building_id) to match
-                const building = buildings.find(b => b.code === svgId);
+                // Handle special case: Admin SVG ID maps to Administration code in database
+                let buildingCode = svgId;
+                if (svgId === 'Admin') buildingCode = 'Administration';
+                
+                const building = buildings.find(b => b.code === buildingCode || b.code === svgId);
                 if (building) {
                     showBuildingModal(building.id);
                 } else {
@@ -6111,8 +6255,8 @@
         labelText.setAttribute('x', labelX);
         labelText.setAttribute('y', labelY);
         labelText.setAttribute('text-anchor', 'middle');
-        labelText.setAttribute('font-size', '9');
-        labelText.setAttribute('font-weight', 'bold');
+        labelText.setAttribute('font-size', '5.5');
+        labelText.setAttribute('font-weight', '600');
         labelText.setAttribute('fill', '#fff');
         labelText.setAttribute('class', 'endpoint-label');
         labelText.setAttribute('style', 'pointer-events: none;');
@@ -6121,14 +6265,14 @@
         svg.appendChild(labelText);
         const bbox = labelText.getBBox();
         
-        labelBg.setAttribute('x', bbox.x - 5);
-        labelBg.setAttribute('y', bbox.y - 2);
-        labelBg.setAttribute('width', bbox.width + 10);
-        labelBg.setAttribute('height', bbox.height + 4);
+        labelBg.setAttribute('x', bbox.x - 3);
+        labelBg.setAttribute('y', bbox.y - 1.5);
+        labelBg.setAttribute('width', bbox.width + 6);
+        labelBg.setAttribute('height', bbox.height + 3);
         labelBg.setAttribute('fill', '#248823');
-        labelBg.setAttribute('rx', '4');
-        labelBg.setAttribute('opacity', '0.95');
-        labelBg.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(36, 136, 35, 0.4))');
+        labelBg.setAttribute('rx', '2.5');
+        labelBg.setAttribute('opacity', '0.92');
+        labelBg.setAttribute('filter', 'drop-shadow(0 1px 2px rgba(36, 136, 35, 0.35))');
         
         markersGroup.appendChild(labelBg);
         markersGroup.appendChild(labelText);

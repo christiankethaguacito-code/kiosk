@@ -2,8 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
     
     <!-- Performance: DNS Prefetch & Preconnect -->
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
@@ -102,12 +104,15 @@
             align-items: flex-start;
             gap: 1rem;
             padding: 1rem;
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             will-change: transform;
         }
         
         .map-container.panel-open {
+            -webkit-transform: translateX(-175px);
             transform: translateX(-175px);
         }
 

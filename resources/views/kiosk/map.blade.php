@@ -15,7 +15,7 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
 <!-- Viewport meta for touch devices -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
     /* ============================================
@@ -84,8 +84,11 @@
     /* Enable hardware acceleration for animated elements */
     .gpu-accelerated {
         transform: translateZ(0);
+        -webkit-transform: translateZ(0);
         backface-visibility: hidden;
         perspective: 1000px;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
     }
     
     /* Will-change hints for animated elements */
@@ -385,12 +388,14 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(8px);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(15, 23, 42, 0.75) 100%);
+        -webkit-backdrop-filter: blur(12px) saturate(120%);
+        backdrop-filter: blur(12px) saturate(120%);
         z-index: 50;
         align-items: center;
         justify-content: center;
-        animation: fadeIn 0.3s ease;
+        animation: fadeInOverlay 0.3s ease;
+        perspective: 1200px;
     }
     
     .modal-overlay.active {
@@ -398,12 +403,25 @@
     }
     
     .modal-overlay.active > div {
-        animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        animation: modalSlideIn3D 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
+    }
+    
+    @keyframes fadeInOverlay {
+        from { 
+            opacity: 0; 
+            -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+        }
+        to { 
+            opacity: 1; 
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
     }
     
     @keyframes modalSlideIn {
@@ -414,6 +432,50 @@
         to {
             transform: translate3d(0, 0, 0) scale(1);
             opacity: 1;
+        }
+    }
+    
+    @keyframes slideDown {
+        from {
+            transform: translate(-50%, -100%);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideDown3D {
+        0% {
+            opacity: 0;
+            transform: translateY(-50px) translateZ(-40px) rotateX(15deg) scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) translateZ(0) rotateX(0deg) scale(1);
+        }
+    }
+    
+    @keyframes modalSlideIn3D {
+        0% {
+            transform: translateY(-60px) translateZ(-50px) rotateX(20deg) scale(0.85);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0) translateZ(0) rotateX(0deg) scale(1);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideUp {
+        from {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+        to {
+            transform: translate(-50%, -100%);
+            opacity: 0;
         }
     }
     
@@ -570,44 +632,56 @@
         overflow: visible;
     }
     
-    /* Interactive building hover effects */
+    /* Enhanced 3D interactive building hover effects */
     svg [id]:hover:not(#Premises):not(#Outline):not(#Main_Road):not(#Side_Entrance):not(#Main_Entrance):not(#BuildingLabels):not(path):not(g) {
-        filter: brightness(1.15) drop-shadow(0 0 12px rgba(16, 185, 129, 0.7));
-        transition: all var(--transition-normal);
+        filter: brightness(1.2) drop-shadow(0 4px 16px rgba(16, 185, 129, 0.6)) drop-shadow(0 0 24px rgba(34, 197, 94, 0.4));
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         cursor: pointer;
+        transform: translateZ(10px) scale(1.02);
+        transform-style: preserve-3d;
     }
     
     svg [id]:active:not(#Premises):not(#Outline):not(#Main_Road):not(#Side_Entrance):not(#Main_Entrance):not(#BuildingLabels):not(path):not(g) {
-        filter: brightness(1.25) drop-shadow(0 0 16px rgba(16, 185, 129, 0.9));
-        transform: scale(0.98);
+        filter: brightness(1.3) drop-shadow(0 6px 20px rgba(16, 185, 129, 0.8)) drop-shadow(0 0 32px rgba(34, 197, 94, 0.6));
+        transform: translateZ(5px) scale(0.99);
+        transition: all 0.1s ease;
     }
     
-    /* Enhanced building tooltip */
+    /* Enhanced 3D building tooltip with glass morphism */
     .building-tooltip {
         position: fixed;
-        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(16, 185, 129, 0.3) 50%, rgba(5, 150, 105, 0.35) 100%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        backdrop-filter: blur(16px) saturate(180%);
         color: white;
-        padding: 12px 18px;
-        border-radius: var(--radius-md);
-        font-size: 0.9rem;
-        font-weight: 600;
+        padding: 14px 22px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        font-weight: 700;
         pointer-events: none;
         z-index: 9999;
         opacity: 0;
-        transition: all var(--transition-fast);
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         white-space: nowrap;
-        box-shadow: var(--shadow-xl);
-        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
+                    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+                    0 4px 12px rgba(34, 197, 94, 0.3);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        transform-style: preserve-3d;
+        letter-spacing: 0.3px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
     }
     
     .building-tooltip::before {
-        content: '🏛️';
-        margin-right: 8px;
+        content: '📍';
+        margin-right: 10px;
+        font-size: 1.1em;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
     
     .building-tooltip.show {
         opacity: 1;
-        transform: translateY(-5px);
+        transform: translateY(-8px) translateZ(20px) scale(1.05);
     }
     
     /* ============================================
@@ -901,6 +975,7 @@
         align-items: center;
         gap: 10px;
         box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.1);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
         z-index: 100;
         animation: walkingBadgeEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1526,6 +1601,7 @@
         align-items: center;
         gap: 12px;
         background: rgba(255, 255, 255, 0.1);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
         padding: 16px 32px;
         border-radius: var(--radius-full);
@@ -1600,6 +1676,7 @@
     
     .glass-effect {
         background: rgba(255, 255, 255, 0.95);
+        -webkit-backdrop-filter: blur(10px);
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
@@ -1627,9 +1704,75 @@
     </div>
 </div>
 
+<!-- Location Selector Modal -->
+<div id="locationSelectorModal" class="modal-overlay" onclick="closeLocationSelector(event)" style="z-index: 9999; perspective: 1500px;">
+    <div class="bg-white rounded-2xl max-w-2xl w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 2px rgba(34, 197, 94, 0.2) inset, 0 0 32px rgba(34, 197, 94, 0.15); max-height: 85vh; display: flex; flex-direction: column; margin-top: 2rem; background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); animation: slideDown3D 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: preserve-3d;">
+        <!-- Modal Header -->
+        <div class="px-6 py-5" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); border-bottom: 2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-white bg-opacity-20 flex items-center justify-center backdrop-blur-sm" style="box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white" style="text-shadow: 0 2px 8px rgba(0,0,0,0.2);">Set Your Current Location</h2>
+                        <p class="text-green-100 text-sm" style="text-shadow: 0 1px 4px rgba(0,0,0,0.15);">Select the building where you are now</p>
+                    </div>
+                </div>
+                <button onclick="closeLocationSelector()" class="touch-target p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition" style="transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);" onmouseover="this.style.transform='scale(1.1) translateZ(5px)'" onmouseout="this.style.transform='scale(1) translateZ(0)'" aria-label="Close location selector">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto" style="flex: 1;">
+            <!-- Reset to Main Gate -->
+            <div class="mb-4">
+                <button onclick="resetToMainGate()" class="w-full flex items-center justify-between p-4 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]" aria-label="Reset navigation starting point to main gate entrance" title="Reset to main gate">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-lg bg-white bg-opacity-20 flex items-center justify-center backdrop-blur-sm">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-white text-base">Main Gate (Default)</div>
+                            <div class="text-sm text-blue-100">Reset to main entrance</div>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Search Filter -->
+            <div class="mb-4">
+                <div class="relative">
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" id="locationSearch" placeholder="Search buildings..." class="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none transition-all text-base" oninput="filterLocationList()" autocomplete="off" aria-label="Search for buildings to set as current location">
+                </div>
+            </div>
+
+            <!-- Building List -->
+            <div id="locationBuildingList" class="space-y-2">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="h-screen flex flex-col overflow-hidden" style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);">
     <!-- Enhanced Header -->
-    <header class="text-white px-6 py-4 flex justify-between items-center relative" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1); z-index: 50;">
+    <header class="text-white px-6 py-4 flex justify-between items-center relative" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 40%, #15803d 80%, #166534 100%); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 4px 16px rgba(34, 197, 94, 0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; z-index: 50; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 2px solid rgba(255, 255, 255, 0.1);">
         <!-- Decorative background elements -->
         <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%); pointer-events: none;"></div>
         <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); pointer-events: none;"></div>
@@ -1651,11 +1794,11 @@
                     id="searchInput" 
                     placeholder="Search buildings, offices, services..." 
                     class="w-full px-5 py-3.5 pl-12 rounded-2xl text-gray-800 text-base font-medium focus:outline-none focus:ring-4 allow-select transition-all duration-300"
-                    style="background: rgba(255,255,255,0.98); --tw-ring-color: rgba(74, 222, 128, 0.5); box-shadow: 0 4px 20px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,1);"
+                    style="background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%); --tw-ring-color: rgba(34, 197, 94, 0.6); box-shadow: 0 8px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(34, 197, 94, 0.1); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transform-style: preserve-3d;"
                     autocomplete="off"
                     autocorrect="off"
-                    autocapitalize="off"
                     spellcheck="false"
+                    aria-label="Search for buildings, offices, or services"
                 />
                 <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1668,17 +1811,38 @@
         </div>
         
         <div class="flex items-center gap-4 relative z-10">
+            <!-- Set Current Location Button -->
+            <button onclick="openLocationSelector()" 
+                    class="touch-target touch-feedback flex items-center gap-2 px-4 py-2.5 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-xl transition-all duration-300 relative"
+                    title="Set your current location"
+                    style="box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; backdrop-filter: blur(10px); transform-style: preserve-3d;"
+                    onmouseover="this.style.transform='translateZ(5px) scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.2) inset'"
+                    onmouseout="this.style.transform='translateZ(0) scale(1)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset'">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span class="font-semibold text-sm" id="currentLocationText" style="text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Set Location</span>
+                <!-- Active Location Badge -->
+                <span id="currentLocationBadge" 
+                      class="absolute -top-1 -right-1 w-3 h-3 rounded-full transition-opacity duration-300"
+                      style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 3px 8px rgba(34, 197, 94, 0.6), 0 0 0 2px rgba(255,255,255,0.3); opacity: 0; transform-style: preserve-3d;">
+                </span>
+            </button>
+            
             <!-- Clock with enhanced styling -->
-            <div id="clock" class="text-xl font-bold px-4 py-2.5 rounded-xl bg-white bg-opacity-15" style="font-variant-numeric: tabular-nums; text-shadow: 0 1px 4px rgba(0,0,0,0.2); font-family: var(--font-display); letter-spacing: 0.02em;"></div>
+            <div id="clock" class="text-xl font-bold px-4 py-2.5 rounded-xl bg-white bg-opacity-15" style="font-variant-numeric: tabular-nums; text-shadow: 0 2px 6px rgba(0,0,0,0.3); font-family: var(--font-display); letter-spacing: 0.02em; box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);"></div>
             
             <!-- Admin Menu Toggle -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" 
                         class="touch-target touch-feedback p-3.5 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-xl transition-all duration-300"
                         title="Menu"
-                        style="box-shadow: 0 2px 12px rgba(0,0,0,0.15);"
-                        style="backdrop-filter: blur(10px);">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        aria-label="Open navigation menu"
+                        style="box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transform-style: preserve-3d;"
+                        onmouseover="this.style.transform='translateZ(5px) scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.2) inset'"
+                        onmouseout="this.style.transform='translateZ(0) scale(1)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset'">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
@@ -2301,7 +2465,7 @@
 </div>
 
 <!-- Building Preview Popup (shows when clicking a building on the map) -->
-<div id="buildingPreviewPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center" onclick="closeBuildingPreview(event)" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);">
+<div id="buildingPreviewPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center" onclick="closeBuildingPreview(event)" style="background: rgba(0,0,0,0.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);">
     <div class="bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);">
         <!-- Decorative top bar -->
         <div style="height: 5px; background: linear-gradient(90deg, #22c55e, #10b981, #059669);"></div>
@@ -2360,7 +2524,7 @@
 </div>
 
 <!-- Building Details Modal (full details view with tabs) -->
-<div id="buildingDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center" style="background: rgba(0,0,0,0.65); backdrop-filter: blur(12px);" onclick="closeBuildingDetailsModal(event)">
+<div id="buildingDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center" style="background: rgba(0,0,0,0.65); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);" onclick="closeBuildingDetailsModal(event)">
     <div class="bg-white rounded-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col relative" onclick="event.stopPropagation()" style="animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 60px rgba(34,197,94,0.12);">
         <!-- Decorative gradient bar -->
         <div style="height: 4px; background: linear-gradient(90deg, #22c55e, #10b981, #059669, #10b981, #22c55e);"></div>
@@ -2573,7 +2737,7 @@
 </div>
 
 <!-- Admin Login Modal -->
-<div class="modal-overlay" id="adminLoginModal" style="backdrop-filter: blur(10px);">
+<div class="modal-overlay" id="adminLoginModal" style="-webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);">
     <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
         <div class="flex justify-between items-start mb-5">
             <div class="flex items-center gap-3">
@@ -2631,7 +2795,7 @@
 </div>
 
 <!-- About Modal -->
-<div class="modal-overlay" id="aboutModal" style="backdrop-filter: blur(10px);">
+<div class="modal-overlay" id="aboutModal" style="-webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);">
     <div class="bg-white rounded-xl p-6 max-w-4xl w-full shadow-2xl overflow-y-auto" style="animation: modalSlideIn 0.3s ease-out; max-height: 90vh;">
         <div class="flex justify-between items-start mb-5">
             <div class="flex items-center gap-3">
@@ -2963,8 +3127,17 @@
             clearTimeout(idleTimer);
         }
         
-        // Set new timer
-        idleTimer = setTimeout(showIdleScreen, IDLE_TIMEOUT);
+        // Set new timer for idle screen
+        idleTimer = setTimeout(() => {
+            showIdleScreen();
+            // Also reset custom location when idle screen shows
+            if (customStartLocation) {
+                resetToMainGate();
+                setTimeout(() => {
+                    showToast('🏠 Returned to Main Gate (idle timeout)', 'info');
+                }, 500);
+            }
+        }, IDLE_TIMEOUT);
     }
     
     function showIdleScreen() {
@@ -2990,6 +3163,9 @@
         
         // Start initial timer
         resetIdleTimer();
+        
+        // Load saved custom location
+        loadSavedLocation();
     });
 
     const buildings = @json($buildings);
@@ -3415,21 +3591,21 @@
         const toggle = document.getElementById('toggleLargeText');
         toggle.classList.toggle('active');
         document.body.classList.toggle('large-text');
-        localStorage.setItem('largeText', toggle.classList.contains('active'));
+        safeLocalStorage.setItem('largeText', toggle.classList.contains('active'));
     }
     
     function toggleHighContrast() {
         const toggle = document.getElementById('toggleHighContrast');
         toggle.classList.toggle('active');
         document.body.classList.toggle('high-contrast');
-        localStorage.setItem('highContrast', toggle.classList.contains('active'));
+        safeLocalStorage.setItem('highContrast', toggle.classList.contains('active'));
     }
     
     function toggleReducedMotion() {
         const toggle = document.getElementById('toggleReducedMotion');
         toggle.classList.toggle('active');
         window.reducedMotion = toggle.classList.contains('active');
-        localStorage.setItem('reducedMotion', toggle.classList.contains('active'));
+        safeLocalStorage.setItem('reducedMotion', toggle.classList.contains('active'));
     }
     
     function resetAccessibility() {
@@ -3438,22 +3614,22 @@
         document.getElementById('toggleLargeText').classList.remove('active');
         document.getElementById('toggleHighContrast').classList.remove('active');
         document.getElementById('toggleReducedMotion').classList.remove('active');
-        localStorage.removeItem('largeText');
-        localStorage.removeItem('highContrast');
-        localStorage.removeItem('reducedMotion');
+        safeLocalStorage.removeItem('largeText');
+        safeLocalStorage.removeItem('highContrast');
+        safeLocalStorage.removeItem('reducedMotion');
     }
     
     // Load saved accessibility settings
     function loadAccessibilitySettings() {
-        if (localStorage.getItem('largeText') === 'true') {
+        if (safeLocalStorage.getItem('largeText') === 'true') {
             document.getElementById('toggleLargeText').classList.add('active');
             document.body.classList.add('large-text');
         }
-        if (localStorage.getItem('highContrast') === 'true') {
+        if (safeLocalStorage.getItem('highContrast') === 'true') {
             document.getElementById('toggleHighContrast').classList.add('active');
             document.body.classList.add('high-contrast');
         }
-        if (localStorage.getItem('reducedMotion') === 'true') {
+        if (safeLocalStorage.getItem('reducedMotion') === 'true') {
             document.getElementById('toggleReducedMotion').classList.add('active');
             window.reducedMotion = true;
         }
@@ -4272,6 +4448,608 @@
         document.getElementById('aboutModal').classList.remove('active');
     }
 
+    // Location Selector Functions
+    let customStartLocation = null;
+
+    // Utility: Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Path cache for navigation
+    let pathCache = {};
+
+    function findNearestIntersection(x, y) {
+        let nearest = 'gate';
+        let minDistance = Infinity;
+        
+        for (const [name, coords] of Object.entries(roadNetwork.intersections)) {
+            const dx = coords.x - x;
+            const dy = coords.y - y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = name;
+            }
+        }
+        
+        return nearest;
+    }
+
+    function openLocationSelector() {
+        console.log('Opening location selector...');
+        const modal = document.getElementById('locationSelectorModal');
+        if (!modal) {
+            console.error('Location selector modal not found!');
+            return;
+        }
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        
+        try {
+            populateLocationList();
+        } catch (error) {
+            console.error('Error populating location list:', error);
+        }
+        
+        const searchInput = document.getElementById('locationSearch');
+        if (searchInput) {
+            searchInput.value = '';
+            setTimeout(() => searchInput.focus(), 100);
+        }
+    }
+
+    function closeLocationSelector(event) {
+        if (event && event.target !== event.currentTarget) return;
+        console.log('Closing location selector...');
+        const modal = document.getElementById('locationSelectorModal');
+        if (!modal) return;
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    }
+
+    function populateLocationList() {
+        const listContainer = document.getElementById('locationBuildingList');
+        listContainer.innerHTML = '';
+
+        console.log('Total buildings:', buildings.length);
+        
+        // Filter buildings that have entries in navigationPoints
+        const navigableBuildings = buildings.filter(b => {
+            // Try to find the building in navigationPoints using code or name
+            const navPoint = navigationPoints[b.code] || navigationPoints[b.name];
+            const hasNavPoint = !!navPoint;
+            if (!hasNavPoint) {
+                console.log(`Building ${b.name} (${b.code}): No navigationPoint found`);
+            }
+            return hasNavPoint;
+        });
+        console.log('Buildings with navigation points:', navigableBuildings.length);
+
+        if (navigableBuildings.length === 0) {
+            listContainer.innerHTML = `
+                <div class="text-center py-8">
+                    <p class="text-gray-500">No buildings available for location selection.</p>
+                    <p class="text-xs text-gray-400 mt-2">Buildings need endpoint or map coordinates.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Group buildings by category
+        const categories = {};
+        navigableBuildings.forEach(building => {
+            const category = building.category || 'Other';
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push(building);
+        });
+
+        console.log('Categories:', Object.keys(categories));
+
+        // Render each category
+        Object.keys(categories).sort().forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'mb-4';
+            
+            const categoryHeader = document.createElement('h3');
+            categoryHeader.className = 'text-sm font-bold text-gray-600 uppercase tracking-wide mb-2 px-2';
+            categoryHeader.textContent = category;
+            categoryDiv.appendChild(categoryHeader);
+
+            const buildingsInCategory = categories[category].sort((a, b) => 
+                a.name.localeCompare(b.name)
+            );
+
+            buildingsInCategory.forEach(building => {
+                // Get navigation point for this building
+                const navPoint = navigationPoints[building.code] || navigationPoints[building.name];
+                if (!navPoint) return;
+
+                const button = document.createElement('button');
+                button.className = 'location-item w-full flex items-center justify-between p-3.5 bg-white hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 rounded-xl transition-all duration-300 border-2 border-gray-100 hover:border-green-400 hover:shadow-lg mb-2.5 group relative';
+                button.style.transformStyle = 'preserve-3d';
+                button.dataset.buildingName = building.name;
+                button.dataset.buildingCode = building.code;
+                button.dataset.buildingX = navPoint.x;
+                button.dataset.buildingY = navPoint.y;
+                button.onclick = () => selectCustomLocation(building, navPoint);
+                button.onmouseenter = function() {
+                    this.style.transform = 'translateZ(8px) scale(1.02)';
+                    this.style.boxShadow = '0 12px 32px rgba(34, 197, 94, 0.25), 0 0 0 3px rgba(34, 197, 94, 0.15) inset';
+                    previewLocation(building.code, navPoint.x, navPoint.y);
+                };
+                button.onmouseleave = function() {
+                    this.style.transform = 'translateZ(0) scale(1)';
+                    this.style.boxShadow = '';
+                    clearPreview();
+                };
+
+                // Check if building has image
+                const imagePath = building.image || `/images/buildings/${building.code}.jpg`;
+
+                button.innerHTML = `
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-green-400/0 via-green-400/0 to-green-400/0 group-hover:from-green-400/10 group-hover:via-green-400/20 group-hover:to-green-400/10 transition-all duration-300 pointer-events-none" style="box-shadow: inset 0 0 30px rgba(34, 197, 94, 0);"></div>
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                            <img src="${imagePath}" alt="${building.name}" class="w-full h-full object-cover building-thumbnail" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="display:block;">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <div class="text-left flex-1">
+                            <div class="font-bold text-gray-800 text-base group-hover:text-green-700 transition-colors">${building.name}</div>
+                            ${building.description ? `<div class="text-xs text-gray-500 mt-0.5">${building.description.substring(0, 45)}${building.description.length > 45 ? '...' : ''}</div>` : '<div class="text-xs text-gray-400 mt-0.5">Tap to set as starting point</div>'}
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                `;
+
+                categoryDiv.appendChild(button);
+            });
+
+            listContainer.appendChild(categoryDiv);
+        });
+    }
+
+    // Debounced filter function
+    const filterLocationList = debounce(function() {
+        const searchTerm = document.getElementById('locationSearch').value.toLowerCase();
+        const items = document.querySelectorAll('.location-item');
+        
+        items.forEach(item => {
+            const buildingName = item.dataset.buildingName.toLowerCase();
+            if (buildingName.includes(searchTerm)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }, 300);
+
+    function previewLocation(buildingCode, x, y) {
+        const svg = document.getElementById('campusMap');
+        
+        // Remove existing preview
+        const existingPreview = document.getElementById('locationPreview');
+        if (existingPreview) existingPreview.remove();
+
+        // Create preview highlight
+        const previewGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        previewGroup.setAttribute('id', 'locationPreview');
+
+        // Pulsing glow circle with enhanced 3D depth
+        const glowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        glowCircle.setAttribute('cx', x);
+        glowCircle.setAttribute('cy', y);
+        glowCircle.setAttribute('r', '15');
+        glowCircle.setAttribute('fill', 'none');
+        glowCircle.setAttribute('stroke', '#22c55e');
+        glowCircle.setAttribute('stroke-width', '3');
+        glowCircle.setAttribute('opacity', '0.8');
+        glowCircle.setAttribute('filter', 'drop-shadow(0 0 12px rgba(34, 197, 94, 0.8)) drop-shadow(0 0 24px rgba(34, 197, 94, 0.5))');
+        glowCircle.innerHTML = '<animate attributeName="r" from="12" to="25" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.8" to="0" dur="1.5s" repeatCount="indefinite"/>';
+        previewGroup.appendChild(glowCircle);
+
+        // Center dot with enhanced glow
+        const centerDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        centerDot.setAttribute('cx', x);
+        centerDot.setAttribute('cy', y);
+        centerDot.setAttribute('r', '6');
+        centerDot.setAttribute('fill', '#22c55e');
+        centerDot.setAttribute('stroke', '#ffffff');
+        centerDot.setAttribute('stroke-width', '2.5');
+        centerDot.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(34, 197, 94, 0.6)) drop-shadow(0 0 16px rgba(34, 197, 94, 0.4))');
+        centerDot.style.transform = 'translateZ(10px)';
+        centerDot.setAttribute('filter', 'drop-shadow(0 2px 6px rgba(34, 197, 94, 0.4))');
+        previewGroup.appendChild(centerDot);
+
+        svg.appendChild(previewGroup);
+
+        // Highlight building polygon if exists
+        const buildingPoly = document.querySelector(`[data-code="${buildingCode}"]`);
+        if (buildingPoly) {
+            buildingPoly.style.filter = 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.8))';
+            buildingPoly.style.stroke = '#22c55e';
+            buildingPoly.style.strokeWidth = '3';
+        }
+    }
+
+    function clearPreview() {
+        const preview = document.getElementById('locationPreview');
+        if (preview) preview.remove();
+
+        // Remove building highlight
+        document.querySelectorAll('[data-code]').forEach(poly => {
+            poly.style.filter = '';
+            poly.style.stroke = '';
+            poly.style.strokeWidth = '';
+        });
+    }
+
+    function selectCustomLocation(building, navPoint) {
+        // Validate inputs
+        if (!building || !navPoint) {
+            console.error('Invalid building or navigation point');
+            showToast('❌ Error setting location', 'error');
+            return;
+        }
+        
+        if (!navPoint.x || !navPoint.y || !navPoint.roadConnection) {
+            console.error('Invalid navigation point data:', navPoint);
+            showToast('❌ Invalid location data', 'error');
+            return;
+        }
+        
+        // Verify road connection exists
+        if (!roadNetwork.intersections[navPoint.roadConnection]) {
+            console.error('Road connection not found:', navPoint.roadConnection);
+            showToast('❌ Invalid road connection', 'error');
+            return;
+        }
+
+        // Set custom start location
+        customStartLocation = {
+            name: building.name,
+            code: building.code,
+            x: parseFloat(navPoint.x),
+            y: parseFloat(navPoint.y),
+            roadConnection: navPoint.roadConnection
+        };
+
+        // Update button text with animation and change badge color
+        const locationText = document.getElementById('currentLocationText');
+        const locationBadge = document.getElementById('currentLocationBadge');
+        
+        if (!locationText || !locationBadge) {
+            console.error('Location UI elements not found');
+            return;
+        }
+        
+        locationText.style.opacity = '0';
+        setTimeout(() => {
+            locationText.textContent = building.name;
+            locationText.style.opacity = '1';
+            locationBadge.style.opacity = '1';
+            // Change badge to blue/orange gradient
+            locationBadge.style.background = 'linear-gradient(135deg, #3b82f6 0%, #f97316 100%)';
+        }, 150);
+
+        // Save to localStorage first (before animations)
+        safeLocalStorage.setItem('customStartLocation', JSON.stringify(customStartLocation));
+
+        // Clear any existing navigation path
+        const existingPath = document.getElementById('navPath');
+        if (existingPath) existingPath.remove();
+        const existingMarkers = document.getElementById('navMarkers');
+        if (existingMarkers) existingMarkers.remove();
+        const existingDebugPath = document.getElementById('debugRoadPath');
+        if (existingDebugPath) existingDebugPath.remove();
+
+        // Show custom location marker on map (with pulse effect for visibility)
+        try {
+            showCustomLocationMarker();
+            
+            // Temporarily highlight the area with enhanced 3D expanding circle
+            const svg = document.getElementById('campusMap');
+            const highlightCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            highlightCircle.setAttribute('cx', customStartLocation.x);
+            highlightCircle.setAttribute('cy', customStartLocation.y);
+            highlightCircle.setAttribute('r', '15');
+            highlightCircle.setAttribute('fill', 'none');
+            highlightCircle.setAttribute('stroke', '#3b82f6');
+            highlightCircle.setAttribute('stroke-width', '4');
+            highlightCircle.setAttribute('opacity', '0.9');
+            highlightCircle.setAttribute('filter', 'drop-shadow(0 0 16px rgba(59, 130, 246, 0.8)) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.5))');
+            highlightCircle.setAttribute('id', 'locationHighlight');
+            highlightCircle.style.transform = 'translateZ(15px)';
+            
+            // Animate the highlight circle with smooth expansion
+            const animation = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+            animation.setAttribute('attributeName', 'r');
+            animation.setAttribute('from', '15');
+            animation.setAttribute('to', '40');
+            animation.setAttribute('dur', '1.8s');
+            animation.setAttribute('fill', 'freeze');
+            
+            const opacityAnim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+            opacityAnim.setAttribute('attributeName', 'opacity');
+            opacityAnim.setAttribute('from', '0.9');
+            opacityAnim.setAttribute('to', '0');
+            opacityAnim.setAttribute('dur', '1.5s');
+            opacityAnim.setAttribute('fill', 'freeze');
+            
+            highlightCircle.appendChild(animation);
+            highlightCircle.appendChild(opacityAnim);
+            svg.appendChild(highlightCircle);
+            
+            // Remove highlight after animation
+            setTimeout(() => {
+                const highlight = document.getElementById('locationHighlight');
+                if (highlight) highlight.remove();
+            }, 1500);
+            
+        } catch (e) {
+            console.error('Error showing location marker:', e);
+        }
+
+        // Reset idle timer
+        resetIdleTimer();
+
+        // Close modal with success animation
+        closeLocationSelector();
+
+        // Show toast notification
+        showToast(`📍 Starting location set to ${building.name}`, 'success');
+
+        console.log('✓ Custom start location set:', customStartLocation);
+    }
+
+    function resetToMainGate() {
+        customStartLocation = null;
+        const locationBadge = document.getElementById('currentLocationBadge');
+        const locationText = document.getElementById('currentLocationText');
+        
+        if (locationText) locationText.textContent = 'Set Location';
+        if (locationBadge) {
+            locationBadge.style.opacity = '0';
+            // Reset badge to original green
+            locationBadge.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        }
+        
+        // Clear idle timer
+        clearTimeout(idleTimer);
+        
+        // Remove custom location marker
+        const marker = document.getElementById('customLocationMarker');
+        if (marker) marker.remove();
+        
+        // Reset map view to full
+        const svg = document.getElementById('campusMap');
+        if (svg) {
+            svg.setAttribute('viewBox', '0 0 302.596 275.484');
+        }
+        
+        // Save to localStorage
+        safeLocalStorage.removeItem('customStartLocation');
+
+        // Clear any existing navigation path
+        const existingPath = document.getElementById('navPath');
+        if (existingPath) existingPath.remove();
+        const existingMarkers = document.getElementById('navMarkers');
+        if (existingMarkers) existingMarkers.remove();
+        const existingDebugPath = document.getElementById('debugRoadPath');
+        if (existingDebugPath) existingDebugPath.remove();
+        
+        // Close modal
+        closeLocationSelector();
+        
+        showToast('🏠 Reset to Main Gate', 'info');
+        console.log('✓ Reset to Main Gate');
+    }
+
+    // Load saved location on page load
+    function loadSavedLocation() {
+        try {
+            const saved = safeLocalStorage.getItem('customStartLocation');
+            if (saved) {
+                customStartLocation = JSON.parse(saved);
+                document.getElementById('currentLocationText').textContent = customStartLocation.name;
+                document.getElementById('currentLocationBadge').style.opacity = '1';
+                showCustomLocationMarker();
+                console.log('Loaded saved location:', customStartLocation);
+            }
+        } catch (e) {
+            console.warn('Could not load saved location:', e);
+            safeLocalStorage.removeItem('customStartLocation');
+        }
+    }
+
+    // Toast notification system
+    function showToast(message, type = 'info') {
+        const existingToast = document.getElementById('customToast');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.id = 'customToast';
+        toast.className = 'fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-4 rounded-xl shadow-2xl z-[100] flex items-center gap-3 animate-slideDown';
+        
+        const colors = {
+            success: 'bg-gradient-to-r from-green-500 to-green-600',
+            info: 'bg-gradient-to-r from-blue-500 to-blue-600',
+            warning: 'bg-gradient-to-r from-yellow-500 to-yellow-600'
+        };
+        
+        toast.className += ' ' + (colors[type] || colors.info);
+        toast.innerHTML = `
+            <span class="text-white font-semibold text-lg">${message}</span>
+        `;
+        toast.style.cssText = 'animation: slideDown 0.3s ease-out;';
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideUp 0.3s ease-in';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    function animateMapToLocation(targetX, targetY) {
+        const svg = document.getElementById('campusMap');
+        if (!svg) return;
+        
+        const currentViewBox = svg.getAttribute('viewBox').split(' ').map(Number);
+        const [currentX, currentY, currentWidth, currentHeight] = currentViewBox;
+
+        // Calculate zoom while keeping the point visible and map edges in view
+        const zoomFactor = 0.6; // Zoom to 60% (more moderate zoom)
+        const targetWidth = 302.596 * zoomFactor; // Use base width
+        const targetHeight = 275.484 * zoomFactor; // Use base height
+        
+        // Center on target with padding
+        let newX = targetX - targetWidth / 2;
+        let newY = targetY - targetHeight / 2;
+        
+        // Constrain to map boundaries with padding
+        const padding = 10;
+        newX = Math.max(padding, Math.min(newX, 302.596 - targetWidth - padding));
+        newY = Math.max(padding, Math.min(newY, 275.484 - targetHeight - padding));
+
+        // Smooth animation
+        let frame = 0;
+        const totalFrames = 45; // Slightly faster (0.75s at 60fps)
+        
+        function animate() {
+            frame++;
+            const progress = frame / totalFrames;
+            const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+
+            const x = currentX + (newX - currentX) * easeProgress;
+            const y = currentY + (newY - currentY) * easeProgress;
+            const w = currentWidth + (targetWidth - currentWidth) * easeProgress;
+            const h = currentHeight + (targetHeight - currentHeight) * easeProgress;
+
+            svg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+
+            if (frame < totalFrames) {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        requestAnimationFrame(animate);
+    }
+
+    function showCustomLocationMarker() {
+        if (!customStartLocation) {
+            console.warn('No custom start location set');
+            return;
+        }
+        
+        const svg = document.getElementById('campusMap');
+        if (!svg) {
+            console.error('Campus map SVG not found');
+            return;
+        }
+        
+        // Remove existing marker
+        const existingMarker = document.getElementById('customLocationMarker');
+        if (existingMarker) existingMarker.remove();
+
+        // Create marker group with animated drop effect
+        const markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        markerGroup.setAttribute('id', 'customLocationMarker');
+        markerGroup.style.transformOrigin = `${customStartLocation.x}px ${customStartLocation.y}px`;
+        markerGroup.style.animation = 'pinDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
+        // Add CSS animation for pin drop with 3D effects
+        if (!document.getElementById('pinDropAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'pinDropAnimation';
+            style.textContent = `
+                @keyframes pinDrop {
+                    0% { 
+                        transform: translateY(-40px) translateZ(30px) scale(0) rotateX(20deg); 
+                        opacity: 0; 
+                        filter: drop-shadow(0 0 0 rgba(239, 68, 68, 0));
+                    }
+                    40% { 
+                        transform: translateY(-6px) translateZ(8px) scale(1.15) rotateX(-8deg); 
+                        opacity: 1; 
+                        filter: drop-shadow(0 10px 20px rgba(239, 68, 68, 0.7));
+                    }
+                    60% { 
+                        transform: translateY(3px) translateZ(3px) scale(0.92) rotateX(4deg); 
+                        filter: drop-shadow(0 6px 12px rgba(239, 68, 68, 0.5));
+                    }
+                    80% { 
+                        transform: translateY(-1px) translateZ(1px) scale(1.05) rotateX(-2deg); 
+                    }
+                    100% { 
+                        transform: translateY(0) translateZ(0) scale(1) rotateX(0deg); 
+                        opacity: 1; 
+                        filter: drop-shadow(0 4px 8px rgba(239, 68, 68, 0.5));
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Single pulsing circle - red
+        const pulseCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pulseCircle.setAttribute('cx', customStartLocation.x);
+        pulseCircle.setAttribute('cy', customStartLocation.y);
+        pulseCircle.setAttribute('r', '4');
+        pulseCircle.setAttribute('fill', '#ef4444');
+        pulseCircle.setAttribute('opacity', '0.5');
+        pulseCircle.innerHTML = '<animate attributeName="r" from="4" to="10" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.5" to="0" dur="1.5s" repeatCount="indefinite"/>';
+        markerGroup.appendChild(pulseCircle);
+
+        // Location pin icon - sleeker design
+        const pin = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pin.setAttribute('d', `M ${customStartLocation.x} ${customStartLocation.y} 
+                              C ${customStartLocation.x - 4} ${customStartLocation.y}, 
+                                ${customStartLocation.x - 7} ${customStartLocation.y - 2.5}, 
+                                ${customStartLocation.x - 7} ${customStartLocation.y - 5.5} 
+                              C ${customStartLocation.x - 7} ${customStartLocation.y - 8.5}, 
+                                ${customStartLocation.x} ${customStartLocation.y - 13}, 
+                                ${customStartLocation.x} ${customStartLocation.y - 13} 
+                              C ${customStartLocation.x} ${customStartLocation.y - 13}, 
+                                ${customStartLocation.x + 7} ${customStartLocation.y - 8.5}, 
+                                ${customStartLocation.x + 7} ${customStartLocation.y - 5.5} 
+                              C ${customStartLocation.x + 7} ${customStartLocation.y - 2.5}, 
+                                ${customStartLocation.x + 4} ${customStartLocation.y}, 
+                                ${customStartLocation.x} ${customStartLocation.y} Z`);
+        pin.setAttribute('fill', '#ef4444');
+        pin.setAttribute('stroke', '#ffffff');
+        pin.setAttribute('stroke-width', '1.5');
+        pin.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(239, 68, 68, 0.5)) drop-shadow(0 2px 4px rgba(0,0,0,0.6)) drop-shadow(0 0 12px rgba(239, 68, 68, 0.3))');
+        pin.style.transform = 'translateZ(10px)';
+        markerGroup.appendChild(pin);
+
+        // Inner circle on pin
+        const pinDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pinDot.setAttribute('cx', customStartLocation.x);
+        pinDot.setAttribute('cy', customStartLocation.y - 5.5);
+        pinDot.setAttribute('r', '2');
+        pinDot.setAttribute('fill', '#ffffff');
+        markerGroup.appendChild(pinDot);
+
+        svg.appendChild(markerGroup);
+        console.log('✓ Location marker added at:', customStartLocation.x, customStartLocation.y);
+    }
+
     function toggleEditMode() {
         editMode = !editMode;
         if (editMode) {
@@ -4318,7 +5096,38 @@
         resetIdleTimer();
     }
     
-    function navigateTo(buildingName, showPopup = false) {
+    // Safe localStorage wrapper to prevent tracking prevention errors
+    const safeLocalStorage = {
+        getItem: (key) => {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn('localStorage.getItem blocked:', e);
+                return null;
+            }
+        },
+        setItem: (key, value) => {
+            try {
+                localStorage.setItem(key, value);
+                return true;
+            } catch (e) {
+                console.warn('localStorage.setItem blocked:', e);
+                return false;
+            }
+        },
+        removeItem: (key) => {
+            try {
+                localStorage.removeItem(key);
+                return true;
+            } catch (e) {
+                console.warn('localStorage.removeItem blocked:', e);
+                return false;
+            }
+        }
+    };
+    
+    // Make navigateTo globally accessible for onclick handlers
+    window.navigateTo = function(buildingName, showPopup = false) {
         closeModal();
         closeBuildingPreview();
         
@@ -4776,6 +5585,13 @@
     }
 
     function findPath(startIntersection, endIntersection) {
+        // Check cache first
+        const cacheKey = `${startIntersection}->${endIntersection}`;
+        if (pathCache[cacheKey]) {
+            console.log('Using cached path:', cacheKey);
+            return pathCache[cacheKey];
+        }
+
         // Dijkstra's algorithm to find shortest DISTANCE path (not just hop count)
         
         // Calculate actual distance between two intersections
@@ -4835,7 +5651,13 @@
             current = previous[current];
         }
         
-        return path.length > 0 ? path : [startIntersection, endIntersection];
+        const result = path.length > 0 ? path : [startIntersection, endIntersection];
+        
+        // Cache the result
+        pathCache[cacheKey] = result;
+        console.log('Cached new path:', cacheKey);
+        
+        return result;
     }
 
     // Simplify path by removing collinear points (points on same straight line)
@@ -4996,8 +5818,19 @@
             return;
         }
         
-        // Use pre-defined road connection
-        const startIntersection = 'gate';
+        // Determine starting point - use custom location if set, otherwise use main gate
+        let startIntersection = 'gate';
+        let startX = kioskX;
+        let startY = kioskY;
+        
+        if (customStartLocation && customStartLocation.roadConnection) {
+            // Use the custom location's road connection point
+            startIntersection = customStartLocation.roadConnection;
+            startX = customStartLocation.x;
+            startY = customStartLocation.y;
+            console.log('Using custom start location:', customStartLocation.name, 'at intersection:', startIntersection);
+        }
+        
         const endIntersection = point.roadConnection;
         
         // Get path through road network using Dijkstra's algorithm
@@ -5043,19 +5876,19 @@
         // Build clean orthogonal path segments
         const segments = [];
         
-        // Start from kiosk
-        const kioskNode = roadNetwork.intersections['gate'];
-        segments.push({x: kioskX, y: kioskY});
+        // Start from custom location or kiosk
+        const startNode = roadNetwork.intersections[startIntersection];
+        segments.push({x: startX, y: startY});
         
-        // Only add kiosk node if it's different from actual kiosk position
-        if (kioskNode && (kioskNode.x !== kioskX || kioskNode.y !== kioskY)) {
-            segments.push({x: kioskNode.x, y: kioskNode.y});
+        // Only add start node if it's different from actual start position
+        if (startNode && (startNode.x !== startX || startNode.y !== startY)) {
+            segments.push({x: startNode.x, y: startNode.y});
         }
         
-        // Add all intersection points from the path (skip first if it's gate)
+        // Add all intersection points from the path (skip first if it's the start intersection)
         for (let i = 0; i < intersectionPath.length; i++) {
             const intersectionName = intersectionPath[i];
-            if (intersectionName === 'gate' && i === 0) continue; // Skip gate as we already added it
+            if (intersectionName === startIntersection && i === 0) continue; // Skip start as we already added it
             
             const intersection = roadNetwork.intersections[intersectionName];
             if (intersection) {
@@ -5158,18 +5991,18 @@
             totalPathLength += Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2));
         }
         
-        // Create navigation path - thin smooth red line
+        // Create navigation path - enhanced 3D style with depth
         const navPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         navPath.setAttribute('id', 'navPath');
         navPath.setAttribute('d', pathData);
         navPath.setAttribute('fill', 'none');
         navPath.setAttribute('stroke', '#ef4444');
-        navPath.setAttribute('stroke-width', '2.5');
+        navPath.setAttribute('stroke-width', '3.5');
         navPath.setAttribute('stroke-linecap', 'round');
         navPath.setAttribute('stroke-linejoin', 'round');
-        navPath.setAttribute('opacity', '0.9');
-        navPath.setAttribute('filter', 'drop-shadow(0 1px 2px rgba(239, 68, 68, 0.3))');
-        navPath.setAttribute('style', 'pointer-events: none;');
+        navPath.setAttribute('opacity', '0.95');
+        navPath.setAttribute('filter', 'drop-shadow(0 0 12px rgba(239, 68, 68, 0.8)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 24px rgba(239, 68, 68, 0.5))');
+        navPath.setAttribute('style', 'pointer-events: none; transform: translateZ(12px); transform-style: preserve-3d;');
         
         // Add path animation (unless reduced motion is enabled)
         if (!window.reducedMotion) {
@@ -5189,53 +6022,55 @@
         const markersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         markersGroup.setAttribute('id', 'navMarkers');
         
-        // Start marker (main gate) - smaller refined green dot
+        // Start marker (main gate) - enhanced 3D green dot with depth
         const startMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         startMarker.setAttribute('cx', kioskX);
         startMarker.setAttribute('cy', kioskY);
-        startMarker.setAttribute('r', '5');
+        startMarker.setAttribute('r', '6');
         startMarker.setAttribute('fill', '#10b981');
         startMarker.setAttribute('stroke', '#fff');
-        startMarker.setAttribute('stroke-width', '2');
-        startMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(16, 185, 129, 0.4))');
+        startMarker.setAttribute('stroke-width', '2.5');
+        startMarker.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(16, 185, 129, 0.6)) drop-shadow(0 0 16px rgba(16, 185, 129, 0.4))');
+        startMarker.style.transform = 'translateZ(10px)';
         markersGroup.appendChild(startMarker);
         
-        // Destination marker - smaller refined red circle with pulsing animation
+        // Destination marker - enhanced 3D red circle with stronger glow
         const destMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         destMarker.setAttribute('cx', point.x);
         destMarker.setAttribute('cy', point.y);
-        destMarker.setAttribute('r', '4');
+        destMarker.setAttribute('r', '5');
         destMarker.setAttribute('fill', '#ef4444');
         destMarker.setAttribute('stroke', '#fff');
-        destMarker.setAttribute('stroke-width', '1.5');
-        destMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(239, 68, 68, 0.4))');
+        destMarker.setAttribute('stroke-width', '2');
+        destMarker.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(239, 68, 68, 0.6)) drop-shadow(0 0 16px rgba(239, 68, 68, 0.4))');
         destMarker.setAttribute('class', 'endpoint-marker');
         destMarker.dataset.buildingName = buildingName; // Store building name for drag functionality
+        destMarker.style.transform = 'translateZ(10px)';
         markersGroup.appendChild(destMarker);
         
-        // Pulsing outer ring for destination
+        // Pulsing outer ring for destination - enhanced visibility
         const pulseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         pulseRing.setAttribute('cx', point.x);
         pulseRing.setAttribute('cy', point.y);
-        pulseRing.setAttribute('r', '4');
+        pulseRing.setAttribute('r', '5');
         pulseRing.setAttribute('fill', 'none');
         pulseRing.setAttribute('stroke', '#ef4444');
-        pulseRing.setAttribute('stroke-width', '1');
-        pulseRing.setAttribute('opacity', '0.6');
+        pulseRing.setAttribute('stroke-width', '2');
+        pulseRing.setAttribute('opacity', '0.8');
         markersGroup.appendChild(pulseRing);
         
-        // Animate the pulse ring
+        // Animate the pulse ring with enhanced effect
         const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animate.setAttribute('attributeName', 'r');
-        animate.setAttribute('from', '6');
-        animate.setAttribute('to', '12');
+        animate.setAttribute('from', '7');
+        animate.setAttribute('to', '16');
         animate.setAttribute('dur', '1.5s');
         animate.setAttribute('repeatCount', 'indefinite');
         pulseRing.appendChild(animate);
         
         const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animateOpacity.setAttribute('attributeName', 'opacity');
-        animateOpacity.setAttribute('from', '0.6');
+        animateOpacity.setAttribute('from', '0.8');
         animateOpacity.setAttribute('to', '0');
         animateOpacity.setAttribute('dur', '1.5s');
         animateOpacity.setAttribute('repeatCount', 'indefinite');

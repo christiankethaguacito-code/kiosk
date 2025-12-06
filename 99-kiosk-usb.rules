@@ -1,0 +1,6 @@
+# SKSU Campus Kiosk - USB Auto-Run Rule
+# This udev rule automatically runs the installer when USB is plugged in
+# Place this file in /etc/udev/rules.d/
+
+# Trigger on USB storage device insertion
+ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", RUN+="/usr/local/bin/kiosk-usb-handler.sh %k"

@@ -1,0 +1,488 @@
+# InvalidArgumentException - Internal Server Error
+
+View [layouts.dual-mode] not found.
+
+PHP 8.2.29
+Laravel 12.40.2
+localhost
+
+## Stack Trace
+
+0 - vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php:138
+1 - vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php:78
+2 - vendor/laravel/framework/src/Illuminate/View/Factory.php:150
+3 - resources/views/admin/dashboard.blade.php:269
+4 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:123
+5 - vendor/laravel/framework/src/Illuminate/Filesystem/Filesystem.php:124
+6 - vendor/laravel/framework/src/Illuminate/View/Engines/PhpEngine.php:57
+7 - vendor/laravel/framework/src/Illuminate/View/Engines/CompilerEngine.php:76
+8 - vendor/laravel/framework/src/Illuminate/View/View.php:208
+9 - vendor/laravel/framework/src/Illuminate/View/View.php:191
+10 - vendor/laravel/framework/src/Illuminate/View/View.php:160
+11 - vendor/laravel/framework/src/Illuminate/Http/Response.php:78
+12 - vendor/laravel/framework/src/Illuminate/Http/Response.php:34
+13 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:939
+14 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:906
+15 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+16 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+17 - vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php:50
+18 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+19 - vendor/laravel/framework/src/Illuminate/Auth/Middleware/Authenticate.php:63
+20 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+21 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/VerifyCsrfToken.php:87
+22 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+23 - vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php:48
+24 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+25 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:120
+26 - vendor/laravel/framework/src/Illuminate/Session/Middleware/StartSession.php:63
+27 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+28 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php:36
+29 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+30 - vendor/laravel/framework/src/Illuminate/Cookie/Middleware/EncryptCookies.php:74
+31 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+32 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+33 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:821
+34 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:800
+35 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:764
+36 - vendor/laravel/framework/src/Illuminate/Routing/Router.php:753
+37 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:200
+38 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:180
+39 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+40 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php:31
+41 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+42 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php:21
+43 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php:51
+44 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+45 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePostSize.php:27
+46 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+47 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php:109
+48 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+49 - vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php:48
+50 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+51 - vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php:58
+52 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+53 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/InvokeDeferredCallbacks.php:22
+54 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+55 - vendor/laravel/framework/src/Illuminate/Http/Middleware/ValidatePathEncoding.php:26
+56 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:219
+57 - vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php:137
+58 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:175
+59 - vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php:144
+60 - vendor/laravel/framework/src/Illuminate/Foundation/Application.php:1220
+61 - public/index.php:20
+
+## Request
+
+GET /admin/dashboard
+
+## Headers
+
+* **cookie**: XSRF-TOKEN=eyJpdiI6IitnMnRFZlNTWUQ3aGY3UG5oQnpPZVE9PSIsInZhbHVlIjoiRTBCNWd1NXc4UWVSMU1kVE8zK2R6TUVTcGE3Um9hQmNNSVBPektpbFlWcG5zeUFseDNTMlNnSU1kc0xIZWdNSDR3RVUvOWJPZHpSeWMzTDM4K0F3YkhtQnNLUjdCMFpQWFRPSVYwaWgyZitEeDIvbmVpNENCSXBlYUROVnFiTnoiLCJtYWMiOiIxNWI5NWVjYjRlZGIwOTU5ZmRhNzBiZmMzYjE1N2FkNjZmNjBlNDA0ZmJlMzliMzA5ZTU5OGQ5MWMyMmY5OTY5IiwidGFnIjoiIn0%3D; laravel-session=eyJpdiI6Ijl0aGZiNm4rVDdYV2JpYjVrekYyc3c9PSIsInZhbHVlIjoib2VGMGpMU2wrSUdKMTI3eWxmK2xST1U0bUMxRk1YMTVnUGlmUDRRTWFRR3NVYWRPb0tLSXBONUtBS0RmQnhwZXp4SU1Ha2JIN1hkNkpPNUp4alp1cTdHY1Y2VlBXMVdlUHA2SFp3N2diaWZYUjMrNmg0WkxSS0NuMXBsa1k1TGEiLCJtYWMiOiJlNjMwOGNiY2UzZmQyZjNiODhmNDYxMmIxZjMyYzY2MTJjNTc5NjQ5ODdiYmFlY2U5YWQ3ZjFiOTAwZTc5ODhkIiwidGFnIjoiIn0%3D
+* **accept-language**: en-US,en;q=0.9
+* **accept-encoding**: gzip, deflate, br, zstd
+* **referer**: http://localhost/map
+* **sec-fetch-dest**: document
+* **sec-fetch-user**: ?1
+* **sec-fetch-mode**: navigate
+* **sec-fetch-site**: same-origin
+* **accept**: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+* **user-agent**: Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+* **upgrade-insecure-requests**: 1
+* **sec-ch-ua-platform**: "Linux"
+* **sec-ch-ua-mobile**: ?0
+* **sec-ch-ua**: "Not_A Brand";v="99", "Chromium";v="142"
+* **connection**: keep-alive
+* **host**: localhost
+
+## Route Context
+
+controller: App\Http\Controllers\Admin\DashboardController@index
+route name: admin.dashboard
+middleware: web, auth
+
+## Route Parameters
+
+No route parameter data available.
+
+## Database Queries
+
+* sqlite - select * from "admins" where "id" = 1 limit 1 (0.54 ms)
+* sqlite - select count(*) as aggregate from "buildings" (0.08 ms)
+* sqlite - select count(*) as aggregate from "offices" (0.06 ms)
+* sqlite - select count(*) as aggregate from "services" (0.06 ms)
+* sqlite - select count(*) as aggregate from "announcements" (0.04 ms)
+* sqlite - select * from "announcements" order by "created_at" desc limit 5 (0.12 ms)
+
+
+
+
+
+
+
+sho@raspberrypi:/media/sho/BEC9-464E/Navi $ bash update-kiosk.sh
+
+============================================
+   Quick Update from USB
+============================================
+
+USB Source: /media/sho/BEC9-464E/Navi
+Target: /home/pi/sksu-kiosk
+
+ℹ️  Stopping kiosk browser...
+✅ Browser stopped
+ℹ️  Backing up .env and database...
+✅ Backup created
+ℹ️  Updating application files...
+sending incremental file list
+./
+Console/
+Console/Commands/
+Http/
+Http/Controllers/
+Http/Controllers/Admin/
+Http/Controllers/Api/
+Http/Controllers/Auth/
+Http/Middleware/
+Models/
+Models/Announcement.php
+Providers/
+
+sent 2,802 bytes  received 166 bytes  5,936.00 bytes/sec
+total size is 54,000  speedup is 18.19
+sending incremental file list
+./
+css/
+js/
+views/
+views/admin/
+views/admin/announcements/
+views/admin/buildings/
+views/admin/offices/
+views/admin/services/
+views/auth/
+views/components/
+views/kiosk/
+views/kiosk/components/
+views/layouts/
+views/partials/
+
+sent 1,612 bytes  received 195 bytes  3,614.00 bytes/sec
+total size is 510,777  speedup is 282.67
+sending incremental file list
+./
+
+sent 144 bytes  received 31 bytes  350.00 bytes/sec
+total size is 6,215  speedup is 35.51
+sending incremental file list
+./
+
+sent 257 bytes  received 49 bytes  612.00 bytes/sec
+total size is 42,362  speedup is 138.44
+sending incremental file list
+./
+build/
+build/assets/
+images/
+images/buildings/
+images/buildings/not id'ed/
+images/slideshow/
+
+sent 1,365 bytes  received 187 bytes  3,104.00 bytes/sec
+total size is 177,617,762  speedup is 114,444.43
+sending incremental file list
+./
+factories/
+migrations/
+seeders/
+
+sent 1,350 bytes  received 121 bytes  2,942.00 bytes/sec
+total size is 62,215  speedup is 42.29
+✅ Files updated
+ℹ️  Restoring .env and database...
+✅ Restored
+ℹ️  Fixing case-sensitive folders...
+ℹ️  Fixing permissions...
+✅ Permissions fixed
+ℹ️  Checking if dependencies need update...
+ℹ️  Dependencies unchanged - skipping composer install
+ℹ️  Checking for new migrations...
+⚠️  Migration check: 
+   INFO  Running migrations.  
+
+  2025_11_17_062506_create_heads_table ........................... 2.60ms FAIL
+
+In Connection.php line 824:
+                                                                               
+  SQLSTATE[HY000]: General error: 1 table "heads" already exists (Connection:  
+   sqlite, SQL: create table "heads" ("id" integer primary key autoincrement   
+  not null, "name" varchar not null, "title" varchar not null, "credentials"   
+  text, "created_at" datetime, "updated_at" datetime))                         
+                                                                               
+
+In Connection.php line 564:
+                                                                  
+  SQLSTATE[HY000]: General error: 1 table "heads" already exists  
+                                                                  
+ℹ️  Clearing caches...
+
+   INFO  Configuration cache cleared successfully.  
+
+
+In Connection.php line 824:
+                                                                               
+  SQLSTATE[HY000]: General error: 1 no such table: cache (Connection: sqlite,  
+   SQL: delete from "cache")                                                   
+                                                                               
+
+In Connection.php line 591:
+                                                          
+  SQLSTATE[HY000]: General error: 1 no such table: cache  
+                                                          
+
+
+   INFO  Compiled views cleared successfully.  
+
+
+   INFO  Route cache cleared successfully.  
+
+✅ Caches cleared
+ℹ️  Restarting services...
+✅ Services restarted
+ℹ️  Testing system...
+⚠️  System returned HTTP 500
+ℹ️  Restarting kiosk...
+✅ Kiosk browser started
+
+============================================
+   ✅ Update Complete!
+============================================
+
+Updated:
+  • Application code (app/, resources/, routes/)
+  • Views and layouts
+  • Public assets
+  • Configuration files
+
+Preserved:
+  • Database (.env and database.sqlite)
+  • Storage files
+  • Vendor directory (unless composer.json changed)
+
+Test the system now!
+============================================
+sho@raspberrypi:/media/sho/BEC9-464E/Navi $ [7518:7557:1202/165844.875258:ERROR:google_apis/gcm/engine/registration_request.cc:292] Registration response error message: QUOTA_EXCEEDED
+
+
+
+
+
+
+============================================
+   Complete System Check & Fix
+============================================
+
+ℹ️  Stopping services...
+ℹ️  Checking project structure...
+✅ Project structure OK
+ℹ️  Checking views folder case...
+✅ Views folder already lowercase
+✅ All view files present
+ℹ️  Checking database...
+✅ Database OK
+ℹ️  Checking .env configuration...
+✅ .env configured
+ℹ️  Fixing permissions...
+✅ Permissions fixed
+ℹ️  Testing PHP files syntax...
+✅ Announcement.php syntax OK
+✅ KioskController.php syntax OK
+ℹ️  Clearing all caches...
+
+   INFO  Configuration cache cleared successfully.  
+
+
+In Connection.php line 824:
+                                                                               
+  SQLSTATE[HY000]: General error: 1 no such table: cache (Connection: sqlite,  
+   SQL: delete from "cache")                                                   
+                                                                               
+
+In Connection.php line 591:
+                                                          
+  SQLSTATE[HY000]: General error: 1 no such table: cache  
+                                                          
+
+
+   INFO  Compiled views cleared successfully.  
+
+
+   INFO  Route cache cleared successfully.  
+
+
+   INFO  Configuration cache cleared successfully.  
+
+
+In Connection.php line 824:
+                                                                               
+  SQLSTATE[HY000]: General error: 1 no such table: cache (Connection: sqlite,  
+   SQL: delete from "cache")                                                   
+                                                                               
+
+In Connection.php line 591:
+                                                          
+  SQLSTATE[HY000]: General error: 1 no such table: cache  
+                                                          
+
+
+   INFO  Compiled views cleared successfully.  
+
+
+   INFO  Route cache cleared successfully.  
+
+✅ Caches cleared
+ℹ️  Checking PHP-FPM...
+✅ PHP-FPM running
+✅ PHP-FPM socket exists
+ℹ️  Checking Nginx...
+✅ Nginx running
+ℹ️  Testing all routes...
+ℹ️  Testing homepage...
+❌ Homepage: HTTP 500
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>Laravel</title>
+
+    <link
+        rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg viewBox='0 -.11376601 49.74245785 51.31690859' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m49.626 11.564a.809.809 0 0 1 .028.209v10.972a.8.8 0 0 1 -.402.694l-9.209 5.302v10.509c0 .286-.152.55-.4.694l-19.223 11.066c-.044.025-.092.041-.14.058-.018.006-.035.017-.054.022a.805.805 0 0 1 -.41 0c-.022-.006-.042-.018-.063-.026-.044-.016-.09-.03-.132-.054l-19.219-11.066a.801.801 0 0 1 -.402-.694v-32.916c0-.072.01-.142.028-.21.006-.023.02-.044.028-.067.015-.042.029-.085.051-.124.015-.026.037-.047.055-.071.023-.032.044-.065.071-.093.023-.023.053-.04.079-.06.029-.024.055-.05.088-.069h.001l9.61-5.533a.802.802 0 0 1 .8 0l9.61 5.533h.002c.032.02.059.045.088.068.026.02.055.038.078.06.028.029.048.062.072.094.017.024.04.045.054.071.023.04.036.082.052.124.008.023.022.044.028.068a.809.809 0 0 1 .028.209v20.559l8.008-4.611v-10.51c0-.07.01-.141.028-.208.007-.024.02-.045.028-.068.016-.042.03-.085.052-.124.015-.026.037-.047.054-.071.024-.032.044-.065.072-.093.023-.023.052-.04.078-.06.03-.024.056-.05.088-.069h.001l9.611-5.533a.801.801 0 0 1 .8 0l9.61 5.533c.034.02.06.045.09.068.025.02.054.038.077.06.028.029.048.062.072.094.018.024.04.045.054.071.023.039.036.082.052.124.009.023.022.044.028.068zm-1.574 10.718v-9.124l-3.363 1.936-4.646 2.675v9.124l8.01-4.611zm-9.61 16.505v-9.13l-4.57 2.61-13.05 7.448v9.216zm-36.84-31.068v31.068l17.618 10.143v-9.214l-9.204-5.209-.003-.002-.004-.002c-.031-.018-.057-.044-.086-.066-.025-.02-.054-.036-.076-.058l-.002-.003c-.026-.025-.044-.056-.066-.084-.02-.027-.044-.05-.06-.078l-.001-.003c-.018-.03-.029-.066-.042-.1-.013-.03-.03-.058-.038-.09v-.001c-.01-.038-.012-.078-.016-.117-.004-.03-.012-.06-.012-.09v-21.483l-4.645-2.676-3.363-1.934zm8.81-5.994-8.007 4.609 8.005 4.609 8.006-4.61-8.006-4.608zm4.164 28.764 4.645-2.674v-20.096l-3.363 1.936-4.646 2.675v20.096zm24.667-23.325-8.006 4.609 8.006 4.609 8.005-4.61zm-.801 10.605-4.646-2.675-3.363-1.936v9.124l4.645 2.674 3.364 1.937zm-18.422 20.561 11.743-6.704 5.87-3.35-8-4.606-9.211 5.303-8.395 4.833z' fill='%23ff2d20'/%3E%3C/svg%3E"
+    />
+
+    <style>/*! tailwindcss v4.1.12 | MIT License | https://tailwindcss.com */@layer properties{@supports (((-webkit-hyphens:none)) and (not (margin-trim:inline))) or ((-moz-orient:inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-rotate-x:initial;--tw-rotate-y:initial;--tw-rotate-z:initial;--tw-skew-x:initial;--tw-skew-y:initial;--tw-divide-x-reverse:0;--tw-border-style:solid;--tw-divide-y-reverse:0;--tw-leading:initial;--tw-font-weight:initial;--tw-shadow:0 0 #0000;--tw-shadow-color:initial;--tw-shadow-alpha:100%;--tw-inset-shadow:0 0 #0000;--tw-inset-shadow-color:initial;--tw-inset-shadow-alpha:100%;--tw-ring-color:initial;--tw-ring-shadow:0 0 #0000;--tw-inset-ring-color:initial;--tw-inset-ring-shadow:0 0 #0000;--tw-ring-inset:initial;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-offset-shadow:0 0 #0000;--tw-blur:initial;--tw-brightness:initial;--tw-contrast:initial;--tw-grayscale:initial;--tw-hue-rotate:initial;--tw-invert:initial;--tw-opacity:initial;--tw-saturate:initial;--tw-sepia:initial;--tw-drop-shadow:initial;--tw-drop-shadow-color:initial;--tw-drop-shadow-alpha:100%;--tw-drop-shadow-size:initial;--tw-duration:initial;--tw-ease:initial;--tw-animation-delay:0s;--tw-animation-direction:normal;--tw-animation-duration:initial;--tw-animation-fill-mode:none;--tw-animation-iteration-count:1;--tw-enter-blur:0;--tw-enter-opacity:1;--tw-enter-rotate:0;--tw-enter-scale:1;--tw-enter-translate-x:0;--tw-enter-translate-y:0;--tw-exit-blur:0;--tw-exit-opacity:1;--tw-exit-rotate:0;--tw-exit-scale:1;--tw-exit-translate-x:0;--tw-exit-translate-y:0;--tw-backdrop-blur:initial;--tw-backdrop-brightness:initial;--tw-backdrop-contrast:initial;--tw-backdrop-grayscale:initial;--tw-backdrop-hue-rotate:initial;--tw-backdrop-invert:initial;--tw-backdrop-opacity:initial;--tw-backdrop-saturate:initial;--tw-backdrop-sepia:initial}}}@layer theme{:root,:host{--font-sans:ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";--font-mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--color-amber-200:oklch(92.4% .12 95.746);--color-amber-300:oklch(87.9% .169 91.605);--color-amber-500:oklch(76.9% .188 70.08);--color-amber-600:oklch(66.6% .179 58.318);--color-amber-800:oklch(47.3% .137 46.201);--color-amber-900:oklch(41.4% .112 45.904);--color-amber-950:oklch(27.9% .077 45.635);--color-emerald-200:oklch(90.5% .093 164.15);--color-emerald-400:oklch(76.5% .177 163.223);--color-emerald-500:oklch(69.6% .17 162.48);--color-emerald-600:oklch(59.6% .145 163.225);--color-emerald-900:oklch(37.8% .077 168.94);--color-blue-100:oklch(93.2% .032 255.585);--color-blue-300:oklch(80.9% .105 251.813);--color-blue-500:oklch(62.3% .214 259.815);--color-blue-600:oklch(54.6% .245 262.881);--color-blue-700:oklch(48.8% .243 264.376);--color-blue-800:oklch(42.4% .199 265.638);--color-blue-900:oklch(37.9% .146 265.522);--color-blue-950:oklch(28.2% .091 267.935);--color-rose-100:oklch(94.1% .03 12.58);--color-rose-200:oklch(89.2% .058 10.001);--color-rose-500:oklch(64.5% .246 16.439);--color-rose-600:oklch(58.6% .253 17.585);--color-rose-900:oklch(41% .159 10.272);--color-rose-950:oklch(27.1% .105 12.094);--color-neutral-50:oklch(98.5% 0 0);--color-neutral-100:oklch(97% 0 0);--color-neutral-200:oklch(92.2% 0 0);--color-neutral-300:oklch(87% 0 0);--color-neutral-400:oklch(70.8% 0 0);--color-neutral-500:oklch(55.6% 0 0);--color-neutral-600:oklch(43.9% 0 0);--color-neutral-700:oklch(37.1% 0 0);--color-neutral-800:oklch(26.9% 0 0);--color-neutral-900:oklch(20.5% 0 0);--color-neutral-950:oklch(14.5% 0 0);--color-black:#000;--color-white:#fff;--spacing:.25rem;--container-7xl:80rem;--text-xs:.75rem;--text-xs--line-height:calc(1/.75);--text-sm:.875rem;--text-sm--line-height:calc(1.25/.875);--text-base:1rem;--text-base--line-height: 1.5 ;--text-lg:1.125rem;--text-lg--line-height:calc(1.75/1.125);--text-xl:1.25rem;--text-xl--line-height:calc(1.75/1.25);--text-3xl:1.875rem;--text-3xl--line-height: 1.2 ;--font-weight-light:300;--font-weight-medium:500;--font-weight-semibold:600;--radius-md:.375rem;--radius-lg:.5rem;--radius-xl:.75rem;--ease-in-out:cubic-bezier(.4,0,.2,1);--blur-md:12px;--default-transition-duration:.15s;--default-transition-timing-function:cubic-bezier(.4,0,.2,1);--default-font-family:var(--font-sans);--default-mono-font-family:var(--font-mono)}}@layer base{*,:after,:before,::backdrop{box-sizing:border-box;border:0 solid;margin:0;padding:0}::file-selector-button{box-sizing:border-box;border:0 solid;margin:0;padding:0}html,:host{-webkit-text-size-adjust:100%;tab-size:4;line-height:1.5;font-family:var(--default-font-family,ui-sans-serif,system-ui,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji");font-feature-settings:var(--default-font-feature-settings,normal);font-variation-settings:var(--default-font-variation-settings,normal);-webkit-tap-highlight-color:transparent}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;-webkit-text-decoration:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:var(--default-mono-font-family,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace);font-feature-settings:var(--default-mono-font-feature-settings,normal);font-variation-settings:var(--default-mono-font-variation-settings,normal);font-size:1em}small{font-size:80%}sub,sup{vertical-align:baseline;font-size:75%;line-height:0;position:relative}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}:-moz-focusring{outline:auto}progress{vertical-align:baseline}summary{display:list-item}ol,ul,menu{list-style:none}img,svg,video,canvas,audio,iframe,embed,object{vertical-align:middle;display:block}img,video{max-width:100%;height:auto}button,input,select,optgroup,textarea{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}::file-selector-button{font:inherit;font-feature-settings:inherit;font-variation-settings:inherit;letter-spacing:inherit;color:inherit;opacity:1;background-color:#0000;border-radius:0}:where(select:is([multiple],[size])) optgroup{font-weight:bolder}:where(select:is([multiple],[size])) optgroup option{padding-inline-start:20px}::file-selector-button{margin-inline-end:4px}::placeholder{opacity:1}@supports (not ((-webkit-appearance:-apple-pay-button))) or (contain-intrinsic-size:1px){::placeholder{color:currentColor}@supports (color:color-mix(in lab,red,red)){::placeholder{color:color-mix(in oklab,currentcolor 50%,transparent)}}}textarea{resize:vertical}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-date-and-time-value{min-height:1lh;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-datetime-edit{padding-block:0}::-webkit-datetime-edit-year-field{padding-block:0}::-webkit-datetime-edit-month-field{padding-block:0}::-webkit-datetime-edit-day-field{padding-block:0}::-webkit-datetime-edit-hour-field{padding-block:0}::-webkit-datetime-edit-minute-field{padding-block:0}::-webkit-datetime-edit-second-field{padding-block:0}::-webkit-datetime-edit-millisecond-field{padding-block:0}::-webkit-datetime-edit-meridiem-field{padding-block:0}::-webkit-calendar-picker-indicator{line-height:1}:-moz-ui-invalid{box-shadow:none}button,input:where([type=button],[type=reset],[type=submit]){appearance:button}::file-selector-button{appearance:button}::-webkit-inner-spin-button{height:auto}::-webkit-outer-spin-button{height:auto}[hidden]:where(:not([hidden=until-found])){display:none!important}}@layer components;@layer utilities{.collapse{visibility:collapse}.visible{visibility:visible}.absolute{position:absolute}.fixed{position:fixed}.relative{position:relative}.static{position:static}.sticky{position:sticky}.top-\[-1px\]{top:-1px}.right-0{right:calc(var(--spacing)*0)}.bottom-0{bottom:calc(var(--spacing)*0)}.left-0{left:calc(var(--spacing)*0)}.-z-10{z-index:-10}.z-50{z-index:50}.mx-auto{margin-inline:auto}.-mt-3{margin-top:calc(var(--spacing)*-3)}.-mt-5{margin-top:calc(var(--spacing)*-5)}.mr-6{margin-right:calc(var(--spacing)*6)}.mb-8{margin-bottom:calc(var(--spacing)*8)}.block{display:block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.inline{display:inline}.inline-block{display:inline-block}.inline-flex{display:inline-flex}.table{display:table}.size-2{width:calc(var(--spacing)*2);height:calc(var(--spacing)*2)}.size-3{width:calc(var(--spacing)*3);height:calc(var(--spacing)*3)}.h-0{height:calc(var(--spacing)*0)}.h-2\.5{height:calc(var(--spacing)*2.5)}.h-3{height:calc(var(--spacing)*3)}.h-6{height:calc(var(--spacing)*6)}.h-7{height:calc(var(--spacing)*7)}.h-8{height:calc(var(--spacing)*8)}.h-10{height:calc(var(--spacing)*10)}.h-11{height:calc(var(--spacing)*11)}.h-\[18px\]{height:18px}.h-\[56px\]{height:56px}.min-h-dvh{min-height:100dvh}.w-2\.5{width:calc(var(--spacing)*2.5)}.w-3{width:calc(var(--spacing)*3)}.w-6{width:calc(var(--spacing)*6)}.w-8{width:calc(var(--spacing)*8)}.w-\[18px\]{width:18px}.w-fit{width:fit-content}.w-full{width:100%}.max-w-7xl{max-width:var(--container-7xl)}.max-w-full{max-width:100%}.min-w-0{min-width:calc(var(--spacing)*0)}.min-w-5{min-width:calc(var(--spacing)*5)}.min-w-6{min-width:calc(var(--spacing)*6)}.min-w-full{min-width:100%}.flex-1{flex:1}.flex-shrink-0,.shrink-0{flex-shrink:0}.grow{flex-grow:1}.transform{transform:var(--tw-rotate-x,)var(--tw-rotate-y,)var(--tw-rotate-z,)var(--tw-skew-x,)var(--tw-skew-y,)}.transform\!{transform:var(--tw-rotate-x,)var(--tw-rotate-y,)var(--tw-rotate-z,)var(--tw-skew-x,)var(--tw-skew-y,)!important}.cursor-not-allowed\!{cursor:not-allowed!important}.cursor-pointer{cursor:pointer}.resize{resize:both}.flex-col{flex-direction:column}.items-baseline{align-items:baseline}.items-center{align-items:center}.items-start{align-items:flex-start}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-0\.5{gap:calc(var(--spacing)*.5)}.gap-1{gap:calc(var(--spacing)*1)}.gap-1\.5{gap:calc(var(--spacing)*1.5)}.gap-2{gap:calc(var(--spacing)*2)}.gap-2\.5{gap:calc(var(--spacing)*2.5)}.gap-3{gap:calc(var(--spacing)*3)}.gap-4{gap:calc(var(--spacing)*4)}.gap-5{gap:calc(var(--spacing)*5)}.gap-6{gap:calc(var(--spacing)*6)}.gap-8{gap:calc(var(--spacing)*8)}.gap-12{gap:calc(var(--spacing)*12)}:where(.divide-x>:not(:last-child)){--tw-divide-x-reverse:0;border-inline-style:var(--tw-border-style);border-inline-start-width:calc(1px*var(--tw-divide-x-reverse));border-inline-end-width:calc(1px*calc(1 - var(--tw-divide-x-reverse)))}:where(.divide-y>:not(:last-child)){--tw-divide-y-reverse:0;border-bottom-style:var(--tw-border-style);border-top-style:var(--tw-border-style);border-top-width:calc(1px*var(--tw-divide-y-reverse));border-bottom-width:calc(1px*calc(1 - var(--tw-divide-y-reverse)))}:where(.divide-neutral-200>:not(:last-child)){border-color:var(--color-neutral-200)}.truncate{text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-x-hidden{overflow-x:hidden}.rounded-full{border-radius:3.40282e38px}.rounded-lg{border-radius:var(--radius-lg)}.rounded-md{border-radius:var(--radius-md)}.rounded-xl{border-radius:var(--radius-xl)}.rounded-t-lg{border-top-left-radius:var(--radius-lg);border-top-right-radius:var(--radius-lg)}.rounded-b-lg{border-bottom-right-radius:var(--radius-lg);border-bottom-left-radius:var(--radius-lg)}.border{border-style:var(--tw-border-style);border-width:1px}.border-x{border-inline-style:var(--tw-border-style);border-inline-width:1px}.border-t{border-top-style:var(--tw-border-style);border-top-width:1px}.border-b-2{border-bottom-style:var(--tw-border-style);border-bottom-width:2px}.border-dashed{--tw-border-style:dashed;border-style:dashed}.border-dotted{--tw-border-style:dotted;border-style:dotted}.border-neutral-100{border-color:var(--color-neutral-100)}.border-neutral-200{border-color:var(--color-neutral-200)}.border-neutral-300{border-color:var(--color-neutral-300)}.bg-amber-200{background-color:var(--color-amber-200)}.bg-amber-600{background-color:var(--color-amber-600)}.bg-black\/8{background-color:#00000014}@supports (color:color-mix(in lab,red,red)){.bg-black\/8{background-color:color-mix(in oklab,var(--color-black)8%,transparent)}}.bg-black\/10{background-color:#0000001a}@supports (color:color-mix(in lab,red,red)){.bg-black\/10{background-color:color-mix(in oklab,var(--color-black)10%,transparent)}}.bg-blue-100{background-color:var(--color-blue-100)}.bg-blue-600{background-color:var(--color-blue-600)}.bg-blue-700{background-color:var(--color-blue-700)}.bg-emerald-200{background-color:var(--color-emerald-200)}.bg-emerald-600{background-color:var(--color-emerald-600)}.bg-neutral-50{background-color:var(--color-neutral-50)}.bg-neutral-600{background-color:var(--color-neutral-600)}.bg-rose-200{background-color:var(--color-rose-200)}.bg-rose-200\!{background-color:var(--color-rose-200)!important}.bg-rose-500{background-color:var(--color-rose-500)}.bg-rose-600{background-color:var(--color-rose-600)}.bg-transparent\!{background-color:#0000!important}.bg-white{background-color:var(--color-white)}.bg-white\/5{background-color:#ffffff0d}@supports (color:color-mix(in lab,red,red)){.bg-white\/5{background-color:color-mix(in oklab,var(--color-white)5%,transparent)}}.bg-white\/\[2\%\]{background-color:#ffffff05}@supports (color:color-mix(in lab,red,red)){.bg-white\/\[2\%\]{background-color:color-mix(in oklab,var(--color-white)2%,transparent)}}.p-1{padding:calc(var(--spacing)*1)}.p-2{padding:calc(var(--spacing)*2)}.p-2\.5{padding:calc(var(--spacing)*2.5)}.p-4{padding:calc(var(--spacing)*4)}.p-5{padding:calc(var(--spacing)*5)}.px-1\.5{padding-inline:calc(var(--spacing)*1.5)}.px-2{padding-inline:calc(var(--spacing)*2)}.px-3{padding-inline:calc(var(--spacing)*3)}.px-4{padding-inline:calc(var(--spacing)*4)}.px-6{padding-inline:calc(var(--spacing)*6)}.px-\[6px\]{padding-inline:6px}.py-0{padding-block:calc(var(--spacing)*0)}.py-1{padding-block:calc(var(--spacing)*1)}.py-4{padding-block:calc(var(--spacing)*4)}.pt-8{padding-top:calc(var(--spacing)*8)}.pt-14{padding-top:calc(var(--spacing)*14)}.pr-2\.5{padding-right:calc(var(--spacing)*2.5)}.pb-0{padding-bottom:calc(var(--spacing)*0)}.pl-4{padding-left:calc(var(--spacing)*4)}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:var(--font-mono)}.font-sans{font-family:var(--font-sans)}.text-3xl{font-size:var(--text-3xl);line-height:var(--tw-leading,var(--text-3xl--line-height))}.text-base{font-size:var(--text-base);line-height:var(--tw-leading,var(--text-base--line-height))}.text-lg{font-size:var(--text-lg);line-height:var(--tw-leading,var(--text-lg--line-height))}.text-sm{font-size:var(--text-sm);line-height:var(--tw-leading,var(--text-sm--line-height))}.text-xl{font-size:var(--text-xl);line-height:var(--tw-leading,var(--text-xl--line-height))}.text-xs{font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height))}.text-xs\/none{font-size:var(--text-xs);line-height:1}.text-\[13px\]{font-size:13px}.leading-3{--tw-leading:calc(var(--spacing)*3);line-height:calc(var(--spacing)*3)}.font-light{--tw-font-weight:var(--font-weight-light);font-weight:var(--font-weight-light)}.font-medium{--tw-font-weight:var(--font-weight-medium);font-weight:var(--font-weight-medium)}.font-semibold{--tw-font-weight:var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.text-amber-900{color:var(--color-amber-900)}.text-blue-500{color:var(--color-blue-500)}.text-blue-900{color:var(--color-blue-900)}.text-emerald-500{color:var(--color-emerald-500)}.text-emerald-900{color:var(--color-emerald-900)}.text-neutral-100{color:var(--color-neutral-100)}.text-neutral-400{color:var(--color-neutral-400)}.text-neutral-500{color:var(--color-neutral-500)}.text-neutral-500\!{color:var(--color-neutral-500)!important}.text-neutral-600{color:var(--color-neutral-600)}.text-neutral-800{color:var(--color-neutral-800)}.text-neutral-900{color:var(--color-neutral-900)}.text-neutral-950{color:var(--color-neutral-950)}.text-rose-900{color:var(--color-rose-900)}.text-white{color:var(--color-white)}.uppercase{text-transform:uppercase}.italic{font-style:italic}.line-through{text-decoration-line:line-through}.overline{text-decoration-line:overline}.underline{text-decoration-line:underline}.decoration-neutral-400{-webkit-text-decoration-color:var(--color-neutral-400);text-decoration-color:var(--color-neutral-400)}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.scheme-light-dark{color-scheme:light dark}.opacity-90{opacity:.9}.shadow-xs{--tw-shadow:0 1px 2px 0 var(--tw-shadow-color,#0000000d);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)}.blur{--tw-blur:blur(8px);filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}.filter{filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)}.filter\!{filter:var(--tw-blur,)var(--tw-brightness,)var(--tw-contrast,)var(--tw-grayscale,)var(--tw-hue-rotate,)var(--tw-invert,)var(--tw-saturate,)var(--tw-sepia,)var(--tw-drop-shadow,)!important}.transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to,opacity,box-shadow,transform,translate,scale,rotate,filter,-webkit-backdrop-filter,backdrop-filter,display,visibility,content-visibility,overlay,pointer-events;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.transition-colors{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,--tw-gradient-from,--tw-gradient-via,--tw-gradient-to;transition-timing-function:var(--tw-ease,var(--default-transition-timing-function));transition-duration:var(--tw-duration,var(--default-transition-duration))}.duration-200{--tw-duration:.2s;transition-duration:.2s}.ease-in-out{--tw-ease:var(--ease-in-out);transition-timing-function:var(--ease-in-out)}@media (hover:hover){.group-hover\:text-blue-500:is(:where(.group):hover *){color:var(--color-blue-500)}}.odd\:bg-white\/2:nth-child(odd){background-color:#ffffff05}@supports (color:color-mix(in lab,red,red)){.odd\:bg-white\/2:nth-child(odd){background-color:color-mix(in oklab,var(--color-white)2%,transparent)}}.even\:bg-white:nth-child(2n){background-color:var(--color-white)}@media (hover:hover){.hover\:bg-neutral-100:hover{background-color:var(--color-neutral-100)}.hover\:bg-neutral-200:hover{background-color:var(--color-neutral-200)}.hover\:bg-white\/50:hover{background-color:#ffffff80}@supports (color:color-mix(in lab,red,red)){.hover\:bg-white\/50:hover{background-color:color-mix(in oklab,var(--color-white)50%,transparent)}}.hover\:underline:hover{text-decoration-line:underline}}@media (min-width:40rem){.sm\:mb-16{margin-bottom:calc(var(--spacing)*16)}.sm\:p-14{padding:calc(var(--spacing)*14)}.sm\:py-0{padding-block:calc(var(--spacing)*0)}.sm\:pt-16{padding-top:calc(var(--spacing)*16)}.sm\:pb-0{padding-bottom:calc(var(--spacing)*0)}}@media (prefers-color-scheme:dark){:where(.dark\:divide-white\/5>:not(:last-child)){border-color:#ffffff0d}@supports (color:color-mix(in lab,red,red)){:where(.dark\:divide-white\/5>:not(:last-child)){border-color:color-mix(in oklab,var(--color-white)5%,transparent)}}:where(.dark\:divide-white\/10>:not(:last-child)){border-color:#ffffff1a}@supports (color:color-mix(in lab,red,red)){:where(.dark\:divide-white\/10>:not(:last-child)){border-color:color-mix(in oklab,var(--color-white)10%,transparent)}}.dark\:border{border-style:var(--tw-border-style);border-width:1px}.dark\:border-none{--tw-border-style:none;border-style:none}.dark\:border-amber-500{border-color:var(--color-amber-500)}.dark\:border-amber-800{border-color:var(--color-amber-800)}.dark\:border-blue-600{border-color:var(--color-blue-600)}.dark\:border-blue-800{border-color:var(--color-blue-800)}.dark\:border-emerald-500{border-color:var(--color-emerald-500)}.dark\:border-emerald-600{border-color:var(--color-emerald-600)}.dark\:border-neutral-500{border-color:var(--color-neutral-500)}.dark\:border-neutral-700{border-color:var(--color-neutral-700)}.dark\:border-neutral-800{border-color:var(--color-neutral-800)}.dark\:border-rose-500{border-color:var(--color-rose-500)}.dark\:border-rose-900{border-color:var(--color-rose-900)}.dark\:border-white\/5{border-color:#ffffff0d}@supports (color:color-mix(in lab,red,red)){.dark\:border-white\/5{border-color:color-mix(in oklab,var(--color-white)5%,transparent)}}.dark\:border-white\/8{border-color:#ffffff14}@supports (color:color-mix(in lab,red,red)){.dark\:border-white\/8{border-color:color-mix(in oklab,var(--color-white)8%,transparent)}}.dark\:border-white\/10{border-color:#ffffff1a}@supports (color:color-mix(in lab,red,red)){.dark\:border-white\/10{border-color:color-mix(in oklab,var(--color-white)10%,transparent)}}.dark\:border-white\/20{border-color:#fff3}@supports (color:color-mix(in lab,red,red)){.dark\:border-white\/20{border-color:color-mix(in oklab,var(--color-white)20%,transparent)}}.dark\:border-white\/\[9\%\]{border-color:#ffffff17}@supports (color:color-mix(in lab,red,red)){.dark\:border-white\/\[9\%\]{border-color:color-mix(in oklab,var(--color-white)9%,transparent)}}.dark\:bg-\[\#1a1a1a\]{background-color:#1a1a1a}.dark\:bg-amber-600{background-color:var(--color-amber-600)}.dark\:bg-amber-950{background-color:var(--color-amber-950)}.dark\:bg-blue-700{background-color:var(--color-blue-700)}.dark\:bg-blue-950{background-color:var(--color-blue-950)}.dark\:bg-emerald-600{background-color:var(--color-emerald-600)}.dark\:bg-emerald-900\/70{background-color:#004e3bb3}@supports (color:color-mix(in lab,red,red)){.dark\:bg-emerald-900\/70{background-color:color-mix(in oklab,var(--color-emerald-900)70%,transparent)}}.dark\:bg-neutral-400{background-color:var(--color-neutral-400)}.dark\:bg-neutral-600{background-color:var(--color-neutral-600)}.dark\:bg-neutral-700{background-color:var(--color-neutral-700)}.dark\:bg-neutral-800{background-color:var(--color-neutral-800)}.dark\:bg-neutral-900{background-color:var(--color-neutral-900)}.dark\:bg-rose-600{background-color:var(--color-rose-600)}.dark\:bg-rose-900\!{background-color:var(--color-rose-900)!important}.dark\:bg-rose-950{background-color:var(--color-rose-950)}.dark\:bg-transparent{background-color:#0000}.dark\:bg-white{background-color:var(--color-white)}.dark\:bg-white\/1{background-color:#ffffff03}@supports (color:color-mix(in lab,red,red)){.dark\:bg-white\/1{background-color:color-mix(in oklab,var(--color-white)1%,transparent)}}.dark\:bg-white\/3{background-color:#ffffff08}@supports (color:color-mix(in lab,red,red)){.dark\:bg-white\/3{background-color:color-mix(in oklab,var(--color-white)3%,transparent)}}.dark\:bg-white\/5{background-color:#ffffff0d}@supports (color:color-mix(in lab,red,red)){.dark\:bg-white\/5{background-color:color-mix(in oklab,var(--color-white)5%,transparent)}}.dark\:bg-white\/10{background-color:#ffffff1a}@supports (color:color-mix(in lab,red,red)){.dark\:bg-white\/10{background-color:color-mix(in oklab,var(--color-white)10%,transparent)}}.dark\:bg-white\/\[2\%\]{background-color:#ffffff05}@supports (color:color-mix(in lab,red,red)){.dark\:bg-white\/\[2\%\]{background-color:color-mix(in oklab,var(--color-white)2%,transparent)}}.dark\:bg-white\/\[3\%\]{background-color:#ffffff08}@supports (color:color-mix(in lab,red,red)){.dark\:bg-white\/\[3\%\]{background-color:color-mix(in oklab,var(--color-white)3%,transparent)}}.dark\:text-amber-300{color:var(--color-amber-300)}.dark\:text-blue-300{color:var(--color-blue-300)}.dark\:text-emerald-400{color:var(--color-emerald-400)}.dark\:text-emerald-500{color:var(--color-emerald-500)}.dark\:text-neutral-100{color:var(--color-neutral-100)}.dark\:text-neutral-200{color:var(--color-neutral-200)}.dark\:text-neutral-300{color:var(--color-neutral-300)}.dark\:text-neutral-400{color:var(--color-neutral-400)}.dark\:text-neutral-500{color:var(--color-neutral-500)}.dark\:text-neutral-600{color:var(--color-neutral-600)}.dark\:text-neutral-600\!{color:var(--color-neutral-600)!important}.dark\:text-neutral-900{color:var(--color-neutral-900)}.dark\:text-rose-100{color:var(--color-rose-100)}.dark\:text-white{color:var(--color-white)}.dark\:text-white\!{color:var(--color-white)!important}}@media (hover:hover){@media (prefers-color-scheme:dark){.group-hover\:dark\:text-emerald-500:is(:where(.group):hover *){color:var(--color-emerald-500)}}}@media (prefers-color-scheme:dark){.odd\:dark\:bg-white\/4:nth-child(odd){background-color:#ffffff0a}@supports (color:color-mix(in lab,red,red)){.odd\:dark\:bg-white\/4:nth-child(odd){background-color:color-mix(in oklab,var(--color-white)4%,transparent)}}.even\:dark\:bg-white\/2:nth-child(2n){background-color:#ffffff05}@supports (color:color-mix(in lab,red,red)){.even\:dark\:bg-white\/2:nth-child(2n){background-color:color-mix(in oklab,var(--color-white)2%,transparent)}}@media (hover:hover){.dark\:hover\:bg-white\/2:hover{background-color:#ffffff05}@supports (color:color-mix(in lab,red,red)){.dark\:hover\:bg-white\/2:hover{background-color:color-mix(in oklab,var(--color-white)2%,transparent)}}.dark\:hover\:bg-white\/5:hover{background-color:#ffffff0d}@supports (color:color-mix(in lab,red,red)){.dark\:hover\:bg-white\/5:hover{background-color:color-mix(in oklab,var(--color-white)5%,transparent)}}.dark\:hover\:bg-white\/10:hover{background-color:#ffffff1a}@supports (color:color-mix(in lab,red,red)){.dark\:hover\:bg-white\/10:hover{background-color:color-mix(in oklab,var(--color-white)10%,transparent)}}}}@media (hover:hover){@media (prefers-color-scheme:dark){.hover\:dark\:bg-white\/5:hover{background-color:#ffffff0d}@supports (color:color-mix(in lab,red,red)){.hover\:dark\:bg-white\/5:hover{background-color:color-mix(in oklab,var(--color-white)5%,transparent)}}.hover\:dark\:text-white:hover{color:var(--color-white)}}}.\[\&_svg\]\:size-2\.5 svg{width:calc(var(--spacing)*2.5);height:calc(var(--spacing)*2.5)}.\[\&_svg\]\:\!text-white svg{color:var(--color-white)!important}@media (hover:hover){.hover\:\[\&_svg\]\:stroke-emerald-500:hover svg{stroke:var(--color-emerald-500)}}@media (prefers-color-scheme:dark){.dark\:\[\&_svg\]\:\!text-white svg{color:var(--color-white)!important}}}@property --tw-animation-delay{syntax:"*";inherits:false;initial-value:0s}@property --tw-animation-direction{syntax:"*";inherits:false;initial-value:normal}@property --tw-animation-duration{syntax:"*";inherits:false}@property --tw-animation-fill-mode{syntax:"*";inherits:false;initial-value:none}@property --tw-animation-iteration-count{syntax:"*";inherits:false;initial-value:1}@property --tw-enter-blur{syntax:"*";inherits:false;initial-value:0}@property --tw-enter-opacity{syntax:"*";inherits:false;initial-value:1}@property --tw-enter-rotate{syntax:"*";inherits:false;initial-value:0}@property --tw-enter-scale{syntax:"*";inherits:false;initial-value:1}@property --tw-enter-translate-x{syntax:"*";inherits:false;initial-value:0}@property --tw-enter-translate-y{syntax:"*";inherits:false;initial-value:0}@property --tw-exit-blur{syntax:"*";inherits:false;initial-value:0}@property --tw-exit-opacity{syntax:"*";inherits:false;initial-value:1}@property --tw-exit-rotate{syntax:"*";inherits:false;initial-value:0}@property --tw-exit-scale{syntax:"*";inherits:false;initial-value:1}@property --tw-exit-translate-x{syntax:"*";inherits:false;initial-value:0}@property --tw-exit-translate-y{syntax:"*";inherits:false;initial-value:0}.tippy-box[data-animation=fade][data-state=hidden]{opacity:0}[data-tippy-root]{max-width:calc(100vw - 10px)}.tippy-box{color:#fff;white-space:normal;background-color:#333;border-radius:4px;outline:0;font-size:14px;line-height:1.4;transition-property:transform,visibility,opacity;position:relative}.tippy-box[data-placement^=top]>.tippy-arrow{bottom:0}.tippy-box[data-placement^=top]>.tippy-arrow:before{border-width:8px 8px 0;border-top-color:initial;transform-origin:top;bottom:-7px;left:0}.tippy-box[data-placement^=bottom]>.tippy-arrow{top:0}.tippy-box[data-placement^=bottom]>.tippy-arrow:before{border-width:0 8px 8px;border-bottom-color:initial;transform-origin:bottom;top:-7px;left:0}.tippy-box[data-placement^=left]>.tippy-arrow{right:0}.tippy-box[data-placement^=left]>.tippy-arrow:before{border-width:8px 0 8px 8px;border-left-color:initial;transform-origin:0;right:-7px}.tippy-box[data-placement^=right]>.tippy-arrow{left:0}.tippy-box[data-placement^=right]>.tippy-arrow:before{border-width:8px 8px 8px 0;border-right-color:initial;transform-origin:100%;left:-7px}.tippy-box[data-inertia][data-state=visible]{transition-timing-function:cubic-bezier(.54,1.5,.38,1.11)}.tippy-arrow{color:#333;width:16px;height:16px}.tippy-arrow:before{content:"";border-style:solid;border-color:#0000;position:absolute}.tippy-content{z-index:1;padding:5px 9px;position:relative}.tippy-box[data-animation=shift-away][data-state=hidden]{opacity:0}.tippy-box[data-animation=shift-away][data-state=hidden][data-placement^=top]{transform:translateY(10px)}.tippy-box[data-animation=shift-away][data-state=hidden][data-placement^=bottom]{transform:translateY(-10px)}.tippy-box[data-animation=shift-away][data-state=hidden][data-placement^=left]{transform:translate(10px)}.tippy-box[data-animation=shift-away][data-state=hidden][data-placement^=right]{transform:translate(-10px)}[x-cloak]{display:none!important}.tippy-box[data-theme~=laravel]{border-radius:var(--radius-md);border-style:var(--tw-border-style);font-size:var(--text-xs);line-height:var(--tw-leading,var(--text-xs--line-height));--tw-shadow:0 4px 6px -1px var(--tw-shadow-color,#0000001a),0 2px 4px -2px var(--tw-shadow-color,#0000001a);box-shadow:var(--tw-inset-shadow),var(--tw-inset-ring-shadow),var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow);--tw-backdrop-blur:blur(var(--blur-md));-webkit-backdrop-filter:var(--tw-backdrop-blur,)var(--tw-backdrop-brightness,)var(--tw-backdrop-contrast,)var(--tw-backdrop-grayscale,)var(--tw-backdrop-hue-rotate,)var(--tw-backdrop-invert,)var(--tw-backdrop-opacity,)var(--tw-backdrop-saturate,)var(--tw-backdrop-sepia,);backdrop-filter:var(--tw-backdrop-blur,)var(--tw-backdrop-brightness,)var(--tw-backdrop-contrast,)var(--tw-backdrop-grayscale,)var(--tw-backdrop-hue-rotate,)var(--tw-backdrop-invert,)var(--tw-backdrop-opacity,)var(--tw-backdrop-saturate,)var(--tw-backdrop-sepia,);border-width:1px;border-color:var(--color-neutral-800);background-color:var(--color-neutral-900);color:var(--color-white);overflow-x:auto;max-width:var(--container-7xl)!important}@media (prefers-color-scheme:dark){.tippy-box[data-theme~=laravel]{border-color:var(--color-neutral-700);background-color:var(--color-neutral-800);color:var(--color-neutral-100)}}.tippy-content[data-theme~=laravel]{padding-inline:calc(var(--spacing)*2);padding-block:calc(var(--spacing)*1)}@media (prefers-color-scheme:dark){.shiki,.shiki span{color:var(--shiki-dark)!important;font-style:var(--shiki-dark-font-style)!important;font-weight:var(--shiki-dark-font-weight)!important;-webkit-text-decoration:var(--shiki-dark-text-decoration)!important;text-decoration:var(--shiki-dark-text-decoration)!important}}@property --tw-rotate-x{syntax:"*";inherits:false}@property --tw-rotate-y{syntax:"*";inherits:false}@property --tw-rotate-z{syntax:"*";inherits:false}@property --tw-skew-x{syntax:"*";inherits:false}@property --tw-skew-y{syntax:"*";inherits:false}@property --tw-divide-x-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}@property --tw-divide-y-reverse{syntax:"*";inherits:false;initial-value:0}@property --tw-leading{syntax:"*";inherits:false}@property --tw-font-weight{syntax:"*";inherits:false}@property --tw-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-shadow-color{syntax:"*";inherits:false}@property --tw-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-inset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-shadow-color{syntax:"*";inherits:false}@property --tw-inset-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-ring-color{syntax:"*";inherits:false}@property --tw-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-inset-ring-color{syntax:"*";inherits:false}@property --tw-inset-ring-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-ring-inset{syntax:"*";inherits:false}@property --tw-ring-offset-width{syntax:"<length>";inherits:false;initial-value:0}@property --tw-ring-offset-color{syntax:"*";inherits:false;initial-value:#fff}@property --tw-ring-offset-shadow{syntax:"*";inherits:false;initial-value:0 0 #0000}@property --tw-blur{syntax:"*";inherits:false}@property --tw-brightness{syntax:"*";inherits:false}@property --tw-contrast{syntax:"*";inherits:false}@property --tw-grayscale{syntax:"*";inherits:false}@property --tw-hue-rotate{syntax:"*";inherits:false}@property --tw-invert{syntax:"*";inherits:false}@property --tw-opacity{syntax:"*";inherits:false}@property --tw-saturate{syntax:"*";inherits:false}@property --tw-sepia{syntax:"*";inherits:false}@property --tw-drop-shadow{syntax:"*";inherits:false}@property --tw-drop-shadow-color{syntax:"*";inherits:false}@property --tw-drop-shadow-alpha{syntax:"<percentage>";inherits:false;initial-value:100%}@property --tw-drop-shadow-size{syntax:"*";inherits:false}@property --tw-duration{syntax:"*";inherits:false}@property --tw-ease{syntax:"*";inherits:false}@property --tw-backdrop-blur{syntax:"*";inherits:false}@property --tw-backdrop-brightness{syntax:"*";inherits:false}@property --tw-backdrop-contrast{syntax:"*";inherits:false}@property --tw-backdrop-grayscale{syntax:"*";inherits:false}@property --tw-backdrop-hue-rotate{syntax:"*";inherits:false}@property --tw-backdrop-invert{syntax:"*";inherits:false}@property --tw-backdrop-opacity{syntax:"*";inherits:false}@property --tw-backdrop-saturate{syntax:"*";inherits:false}@property --tw-backdrop-sepia{syntax:"*";inherits:false}
+</style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden bg-neutral-50 dark:bg-neutral-900 dark:text-white scheme-light-dark">
+    <div class="min-h-dvh">
+        <section
+    class="w-full max-w-7xl mx-auto p-4 sm:p-14 border-x border-dashed border-neutral-300 dark:border-white/[9%] px-6 py-0 sm:py-0"
+>
+    <script>
+    const markdown = '# InvalidArgumentException - Internal Server Error\n\nView [Layouts.app] not found.\n\nPHP 8.2.29\nLaravel 12.40.2\nlocalhost\n\n## Stack Trace\n\n0 - vendor\/laravel\/framework\/src\/Illuminate\/View\/FileViewFinder.php:138\n1 - vendor\/laravel\/framework\/src\/Illuminate\/View\/FileViewFinder.php:78\n2 - vendor\/laravel\/framework\/src\/Illuminate\/View\/Factory.php:150\n3 - resources\/views\/kiosk\/welcome.blade.php:255\n4 - vendor\/laravel\/framework\/src\/Illuminate\/Filesystem\/Filesystem.php:123\n5 - vendor\/laravel\/framework\/src\/Illuminate\/Filesystem\/Filesystem.php:124\n6 - vendor\/laravel\/framework\/src\/Illuminate\/View\/Engines\/PhpEngine.php:57\n7 - vendor\/laravel\/framework\/src\/Illuminate\/View\/Engines\/CompilerEngine.php:76\n8 - vendor\/laravel\/framework\/src\/Illuminate\/View\/View.php:208\n9 - vendor\/laravel\/framework\/src\/Illuminate\/View\/View.php:191\n10 - vendor\/laravel\/framework\/src\/Illuminate\/View\/View.php:160\n11 - vendor\/laravel\/framework\/src\/Illuminate\/Http\/Response.php:78\n12 - vendor\/laravel\/framework\/src\/Illuminate\/Http\/Response.php:34\n13 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:939\n14 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:906\n15 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:821\n16 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:180\n17 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Middleware\/SubstituteBindings.php:50\n18 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n19 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/VerifyCsrfToken.php:87\n20 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n21 - vendor\/laravel\/framework\/src\/Illuminate\/View\/Middleware\/ShareErrorsFromSession.php:48\n22 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n23 - vendor\/laravel\/framework\/src\/Illuminate\/Session\/Middleware\/StartSession.php:120\n24 - vendor\/laravel\/framework\/src\/Illuminate\/Session\/Middleware\/StartSession.php:63\n25 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n26 - vendor\/laravel\/framework\/src\/Illuminate\/Cookie\/Middleware\/AddQueuedCookiesToResponse.php:36\n27 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n28 - vendor\/laravel\/framework\/src\/Illuminate\/Cookie\/Middleware\/EncryptCookies.php:74\n29 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n30 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:137\n31 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:821\n32 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:800\n33 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:764\n34 - vendor\/laravel\/framework\/src\/Illuminate\/Routing\/Router.php:753\n35 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php:200\n36 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:180\n37 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php:21\n38 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/ConvertEmptyStringsToNull.php:31\n39 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n40 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TransformsRequest.php:21\n41 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/TrimStrings.php:51\n42 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n43 - vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/ValidatePostSize.php:27\n44 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n45 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/PreventRequestsDuringMaintenance.php:109\n46 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n47 - vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/HandleCors.php:48\n48 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n49 - vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/TrustProxies.php:58\n50 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n51 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Middleware\/InvokeDeferredCallbacks.php:22\n52 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n53 - vendor\/laravel\/framework\/src\/Illuminate\/Http\/Middleware\/ValidatePathEncoding.php:26\n54 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:219\n55 - vendor\/laravel\/framework\/src\/Illuminate\/Pipeline\/Pipeline.php:137\n56 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php:175\n57 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Http\/Kernel.php:144\n58 - vendor\/laravel\/framework\/src\/Illuminate\/Foundation\/Application.php:1220\n59 - public\/index.php:20\n\n## Request\n\nGET \/\n\n## Headers\n\n* **accept**: *\/*\n* **user-agent**: curl\/8.14.1\n* **host**: localhost\n\n## Route Context\n\ncontroller: App\\Http\\Controllers\\KioskController@idle\nroute name: kiosk.idle\nmiddleware: web\n\n## Route Parameters\n\nNo route parameter data available.\n\n## Database Queries\n\n* sqlite - select * from \u0022announcements\u0022 where \u0022is_active\u0022 = 1 order by \u0022display_order\u0022 asc (1.32 ms)\n* sqlite - select * from \u0022buildings\u0022 (0.25 ms)\n* sqlite - select * from \u0022offices\u0022 where \u0022offices\u0022.\u0022building_id\u0022 in (34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77) (0.45 ms)\n* sqlite - select * from \u0022services\u0022 where \u0022services\u0022.\u0022office_id\u0022 in (99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214) (0.68 ms)\n'
+</script>
+
+<div
+    class="flex items-center justify-between"
+    x-data="{
+        copied: false,
+        async copyToClipboard() {
+            try {
+                await window.copyToClipboard(markdown);
+                this.copied = true;
+                setTimeout(() => { this.copied = false }, 3000);
+            } catch (err) {
+                console.error('Failed to copy the markdown: ', err);
+            }
+        }
+    }"
+>
+    <div class="flex items-center gap-2 h-[56px]">
+        <div class="w-[18px] h-[18px] flex items-center justify-center bg-rose-500 rounded-md">
+            <svg width="2" height="10" class="text-white" viewBox="0 0 2 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.00006 6.3188C1.41416 6.3188 1.75006 5.98295 1.75006 5.56885V1.43115C1.75006 1.01705 1.41416 0.681152 1.00006 0.681152C0.585961 0.681152 0.250061 1.01705 0.250061 1.43115V5.56885C0.250061 5.98295 0.585961 6.3188 1.00006 6.3188Z" fill="currentColor" />
+                <path d="M1.00006 9.41699C1.55235 9.41699 2.00007 8.96929 2.00007 8.41699C2.00007 7.86469 1.55235 7.41699 1.00006 7.41699C0.447781 7.41699 6.10352e-05 7.86469 6.10352e-05 8.41699C6.10352e-05 8.96929 0.447781 9.41699 1.00006 9.41699Z" fill="currentColor "/>
+            </svg>
+        </div>
+        <div class="font-medium text-sm text-neutral-900 dark:text-white">
+            Internal Server Error
+        </div>
+    </div>
+
+    <button
+        x-cloak
+        class="text-sm rounded-md border px-3 h-8 flex items-center gap-2 transition-colors duration-200 ease-in-out cursor-pointer shadow-xs text-neutral-600 dark:text-neutral-400 bg-white/5 border-neutral-200 hover:bg-neutral-100 dark:bg-white/5 dark:border-white/10 dark:hover:bg-white/10"
+        @click="copyToClipboard()"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" class="w-3 h-3" x-show="!copied">
+  <g clip-path="url(#clip0_14732_6079)">
+    <path d="M4.25 4.25012V1.25012H10.75V7.75012H7.75M7.75 4.25012H1.25V10.7501H7.75V4.25012Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <defs>
+    <clipPath id="clip0_14732_6079">
+      <rect width="12" height="12" />
+    </clipPath>
+  </defs>
+</svg>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-3 h-3 text-emerald-500" x-show="copied">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+</svg>
+        <span x-text="copied ? 'Copied to clipboard' : 'Copy as Markdown'"></span>
+    </button>
+</div>
+</section>
+
+    <div class="h-0 w-full relative">
+    <div class="absolute top-[-1px] left-0 right-0 bottom-0 border-t border-dashed border-neutral-300 dark:border-white/[9%]"></div>
+</div>
+
+    <section
+    class="w-full max-w-7xl mx-auto p-4 sm:p-14 border-x border-dashed border-neutral-300 dark:border-white/[9%] flex flex-col gap-8 py-0 sm:py-0"
+>
+    <div class="flex flex-col pt-8 sm:pt-16 overflow-x-auto">
+    <div class="flex flex-col gap-5 mb-8">
+        <h1 class="text-3xl font-semibold text-neutral-950 dark:text-white">InvalidArgumentException</h1>
+        <div
+    class="truncate font-mono text-xs text-neutral-500 dark:text-neutral-400 -mt-3 text-xs"
+    dir="ltr"
+>
+    <span data-tippy-content="vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php:138">
+                    vendor/laravel/framework/src/Illuminate/View/FileViewFinder.php<span class="text-neutral-500">:138</span>
+            </span>
+</div>
+        <p class="text-xl font-light text-neutral-800 dark:text-neutral-300">
+            View [Layouts.app] not found.
+        </p>
+    </div>
+
+    <div class="flex items-start gap-2 mb-8 sm:mb-16">
+        <div class="bg-white dark:bg-white/[3%] border border-neutral-200 dark:border-white/10 divide-x divide-neutral-200 dark:divide-white/10 rounded-md shadow-xs flex items-center gap-0.5">
+ℹ️  Testing login page...
+✅ Login page: 200 OK
+ℹ️  Testing map page...
+❌ Map page: HTTP 500
+ℹ️  Checking for recent errors...
+⚠️  Recent errors found:
+#20 /home/pi/sksu-kiosk/vendor/laravel/framework/src/Illuminate/View/Middleware/ShareErrorsFromSession.php(48): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}()
+#21 /home/pi/sksu-kiosk/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(219): Illuminate\\View\\Middleware\\ShareErrorsFromSession->handle()
+ℹ️  Starting kiosk browser...
+✅ Kiosk browser started
+
+============================================
+   System Check Complete
+============================================
+
+Service Status:
+  ✅ PHP-FPM: Running
+  ✅ Nginx: Running
+
+HTTP Tests:
+  ❌ Homepage: 500
+  ✅ Login: 200
+  ❌ Map: 500
+
+Files:
+  ✅ Views folder: OK
+  ✅ Database: OK
+  ✅ Environment: OK
+
+⚠️  Some issues detected - check details above
+
+Quick Commands:
+  View logs: tail -f /home/pi/sksu-kiosk/storage/logs/laravel.log
+  Restart: sudo systemctl restart nginx php8.2-fpm
+  Stop kiosk: pkill -f chromium
+
+============================================
+

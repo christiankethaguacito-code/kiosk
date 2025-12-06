@@ -1,43 +1,386 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Campus Map')
 @section('body-class', 'bg-gray-900')
 
 @section('head')
+<!-- Google Fonts - Modern Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
 <!-- Swiper CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
+<!-- Viewport meta for touch devices -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-    .building-marker {
-        display: none; /* Hide database-driven markers, use SVG buildings instead */
-        position: absolute;
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(135deg, #248823 0%, #1a6619 100%);
-        border: 3px solid white;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
+    /* ============================================
+       ENHANCED KIOSK UI - MODERN DESIGN SYSTEM
+       ============================================ */
+    
+    :root {
+        /* Brand Colors */
+        --primary: #22c55e;
+        --primary-dark: #16a34a;
+        --primary-darker: #15803d;
+        --primary-light: #4ade80;
+        --primary-glow: rgba(34, 197, 94, 0.4);
+        --accent: #10b981;
+        --accent-light: #34d399;
+        
+        /* Surfaces */
+        --surface: #ffffff;
+        --surface-elevated: #f8fafc;
+        --surface-hover: #f1f5f9;
+        
+        /* Text Colors */
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+        --text-inverse: #ffffff;
+        
+        /* Borders & Dividers */
+        --border: #e2e8f0;
+        --border-light: #f1f5f9;
+        --divider: rgba(0, 0, 0, 0.06);
+        
+        /* Shadows - More refined */
+        --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+        --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+        --shadow-glow: 0 0 40px var(--primary-glow);
+        --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+        
+        /* Border Radius */
+        --radius-xs: 6px;
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-2xl: 24px;
+        --radius-full: 9999px;
+        
+        /* Transitions */
+        --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-spring: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        
+        /* Typography */
+        --font-display: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+        --font-body: 'Inter', system-ui, sans-serif;
+    }
+    
+    /* ============================================
+       PERFORMANCE OPTIMIZATIONS - GPU & RENDERING
+       ============================================ */
+    
+    /* Enable hardware acceleration for animated elements */
+    .gpu-accelerated {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+    
+    /* Will-change hints for animated elements */
+    .modal-overlay,
+    .modal-overlay > div,
+    .building-tooltip,
+    #kioskIdleOverlay,
+    .screensaver-content,
+    .idle-logo,
+    .idle-hint,
+    .animated-path,
+    .loading-spinner,
+    .you-are-here-pulse,
+    #campusMap {
+        will-change: transform, opacity;
+    }
+    
+    /* Contain for layout optimization */
+    .legend-panel,
+    .map-wrapper,
+    .modal-content {
+        contain: layout style;
+    }
+    
+    /* Optimize repaints for frequently updated elements */
+    .search-dropdown,
+    .building-tooltip {
+        contain: layout paint;
+    }
+    
+    /* Reduce animation costs when not visible */
+    .modal-overlay:not(.active) * {
+        animation: none !important;
+    }
+    
+    #kioskIdleOverlay:not(.show) * {
+        animation: none !important;
+    }
+    
+    /* Respect user motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        
+        .animated-path {
+            animation: none !important;
+            stroke-dashoffset: 0 !important;
+        }
+    }
+    
+    /* Optimize SVG rendering */
+    #campusMap {
+        shape-rendering: geometricPrecision;
+        text-rendering: optimizeLegibility;
+    }
+    
+    /* Font display optimization */
+    @font-face {
+        font-display: swap;
+    }
+    
+    /* Prevent text selection and callouts on touch - but allow scrolling */
+    * {
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+    }
+    
+    /* Disable text selection on body level, not globally */
+    body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        letter-spacing: -0.01em;
+    }
+    
+    /* Headings use display font */
+    h1, h2, h3, h4, h5, h6, .font-display {
+        font-family: var(--font-display);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+    
+    /* Allow text selection in specific areas if needed */
+    .allow-select {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+    }
+    
+    /* Minimum touch target size (44px recommended by Apple/Google) */
+    .touch-target {
+        min-height: 48px;
+        min-width: 48px;
+    }
+    
+    /* Smooth scrolling for touch and mouse */
+    .touch-scroll {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto !important;
+        scroll-behavior: smooth;
+    }
+    
+    /* Scrollable panel - ensure scrolling works */
+    .scrollable-panel {
+        overflow-y: auto !important;
+        overflow-x: hidden;
+        max-height: 100%;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Modern scrollbar styling */
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    
+    /* Elegant scrollbar - Enhanced for touch */
+    .show-scrollbar-on-hover {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(36, 136, 35, 0.4) rgba(36, 136, 35, 0.1);
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar {
+        width: 10px;
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar-track {
+        background: linear-gradient(90deg, transparent 0%, rgba(36,136,35,0.08) 50%, transparent 100%);
+        border-radius: 10px;
+        margin: 4px 0;
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: 10px;
+        border: 2px solid rgba(255,255,255,0.8);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+    }
+    .show-scrollbar-on-hover::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, var(--accent) 0%, var(--primary) 100%);
+        box-shadow: 0 0 10px var(--primary-glow);
+    }
+    
+    /* Larger fonts for touchscreen readability */
+    html {
+        font-size: 16px;
+    }
+    
+    @media (min-width: 1024px) {
+        html {
+            font-size: 18px;
+        }
+    }
+    
+    /* ============================================
+       ENHANCED BUTTON STYLES
+       ============================================ */
+    .kiosk-btn {
+        min-height: 52px;
+        padding: 14px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: var(--radius-lg);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all var(--transition-fast);
         cursor: pointer;
-        transition: all 0.3s;
-        z-index: 10;
-    }
-    .building-marker:hover {
-        background: linear-gradient(135deg, #7CC4B5 0%, #4FB86A 100%);
-        transform: translate(-50%, -50%) scale(1.2);
-    }
-    .building-marker.dragging {
-        opacity: 0.7;
-        cursor: move;
-    }
-    .map-wrapper {
+        border: none;
         position: relative;
-        width: 100%;
-        height: 100%;
-        background: #f5f5f5;
         overflow: hidden;
     }
+    
+    .kiosk-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+    
+    .kiosk-btn:hover::before {
+        left: 100%;
+    }
+    
+    .kiosk-btn:active {
+        transform: scale(0.95);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .kiosk-btn:hover {
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+        transform: translateY(-2px);
+    }
+    
+    /* Enhanced touch feedback for interactive elements */
+    .touch-feedback {
+        transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        position: relative;
+        will-change: transform;
+    }
+    
+    .touch-feedback:active {
+        transform: scale(0.97);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .touch-feedback:hover {
+        transform: translateY(-1px);
+    }
+    
+    /* Ripple effect for touch feedback */
+    .touch-ripple {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .touch-ripple::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s, height 0.3s;
+    }
+    
+    .touch-ripple:active::after {
+        width: 300%;
+        height: 300%;
+    }
+    
+    /* Focus visible styles for accessibility */
+    .kiosk-btn:focus-visible,
+    .legend-item:focus-visible,
+    .touch-feedback:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
+    }
+    
+    /* ============================================
+       ENHANCED LEGEND ITEMS
+       ============================================ */
+    .legend-item {
+        min-height: 44px;
+        padding: 12px 16px !important;
+        margin: 6px 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        border-left: 3px solid transparent;
+        background: transparent;
+    }
+    
+    .legend-item:hover {
+        color: var(--primary) !important;
+        background: linear-gradient(90deg, rgba(36, 136, 35, 0.12) 0%, rgba(36, 136, 35, 0.05) 100%) !important;
+        border-left-color: var(--primary);
+        padding-left: 20px !important;
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .legend-item:active {
+        background: linear-gradient(90deg, rgba(36, 136, 35, 0.2) 0%, rgba(36, 136, 35, 0.1) 100%) !important;
+    }
+    
+    /* ============================================
+       ENHANCED MODAL STYLES
+       ============================================ */
     .modal-overlay {
         display: none;
         position: fixed;
@@ -45,11 +388,14 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0,0,0,0.8);
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(15, 23, 42, 0.75) 100%);
+        -webkit-backdrop-filter: blur(12px) saturate(120%);
+        backdrop-filter: blur(12px) saturate(120%);
         z-index: 50;
         align-items: center;
         justify-content: center;
-        animation: fadeIn 0.3s ease;
+        animation: fadeInOverlay 0.3s ease;
+        perspective: 1200px;
     }
     
     .modal-overlay.active {
@@ -57,130 +403,776 @@
     }
     
     .modal-overlay.active > div {
-        animation: slideUp 0.3s ease;
+        animation: modalSlideIn3D 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     
     @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes fadeInOverlay {
+        from { 
+            opacity: 0; 
+            -webkit-backdrop-filter: blur(0px);
+            backdrop-filter: blur(0px);
+        }
+        to { 
+            opacity: 1; 
+            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+        }
+    }
+    
+    @keyframes modalSlideIn {
         from {
+            transform: translate3d(0, 40px, 0) scale(0.95);
             opacity: 0;
         }
         to {
+            transform: translate3d(0, 0, 0) scale(1);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideDown {
+        from {
+            transform: translate(-50%, -100%);
+            opacity: 0;
+        }
+        to {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideDown3D {
+        0% {
+            opacity: 0;
+            transform: translateY(-50px) translateZ(-40px) rotateX(15deg) scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) translateZ(0) rotateX(0deg) scale(1);
+        }
+    }
+    
+    @keyframes modalSlideIn3D {
+        0% {
+            transform: translateY(-60px) translateZ(-50px) rotateX(20deg) scale(0.85);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0) translateZ(0) rotateX(0deg) scale(1);
             opacity: 1;
         }
     }
     
     @keyframes slideUp {
         from {
-            transform: translateY(30px);
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+        to {
+            transform: translate(-50%, -100%);
+            opacity: 0;
+        }
+    }
+    
+    @keyframes popupSlideIn {
+        from {
+            transform: translate3d(0, 20px, 0) scale(0.98);
             opacity: 0;
         }
         to {
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0) scale(1);
             opacity: 1;
         }
     }
     
+    /* ============================================
+       ENHANCED TAB STYLES
+       ============================================ */
+    .details-tab {
+        color: var(--text-secondary);
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid transparent;
+        transition: all var(--transition-fast);
+        position: relative;
+    }
+    
+    .details-tab:hover {
+        color: var(--primary);
+        background: rgba(36, 136, 35, 0.08);
+    }
+    
+    .details-tab.active {
+        color: var(--primary);
+        background: white;
+        border-bottom-color: var(--primary);
+        box-shadow: 0 -2px 10px rgba(36, 136, 35, 0.1);
+    }
+    
+    .details-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        border-radius: 3px 3px 0 0;
+    }
+    
+    /* ============================================
+       ENHANCED SWIPE DOTS
+       ============================================ */
+    .swipe-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d1d5db;
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        border: 2px solid transparent;
+    }
+    
+    .swipe-dot:hover {
+        background: var(--primary-light);
+        transform: scale(1.2);
+    }
+    
+    .swipe-dot.active {
+        width: 32px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        box-shadow: 0 2px 8px var(--primary-glow);
+    }
+    
+    /* ============================================
+       ENHANCED MAP & BUILDING STYLES
+       ============================================ */
+    .building-marker {
+        display: none;
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border: 3px solid white;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        cursor: pointer;
+        transition: all var(--transition-normal);
+        z-index: 10;
+        box-shadow: var(--shadow-md);
+    }
+    
+    .building-marker:hover {
+        background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+        transform: translate(-50%, -50%) scale(1.15);
+        box-shadow: var(--shadow-lg), var(--shadow-glow);
+    }
+    
+    .map-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(145deg, #e8f5e9 0%, #f1f8e9 50%, #e8f5e9 100%);
+        overflow: visible;
+        touch-action: pan-x pan-y;
+        border-radius: var(--radius-lg);
+    }
+    
     /* Subtle pulse animation for clickable buildings */
     @keyframes buildingPulse {
-        0%, 100% {
-            filter: brightness(1);
-        }
-        50% {
-            filter: brightness(1.05);
-        }
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.08); }
     }
     
-    /* Loading spinner for modal content */
+    @keyframes glowPulse {
+        0%, 100% { box-shadow: 0 0 20px var(--primary-glow); }
+        50% { box-shadow: 0 0 35px var(--primary-glow); }
+    }
+    
+    /* Loading spinner for modal content - GPU optimized */
     .loading-spinner {
         display: inline-block;
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(36, 136, 35, 0.2);
-        border-top-color: #248823;
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgba(36, 136, 35, 0.15);
+        border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
+        transform: translateZ(0);
     }
-    
+
     @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-    
-    /* Highlight effect for selected building */
+        to { transform: rotate(360deg) translateZ(0); }
+    }    /* Highlight effect for selected building */
     .building-selected {
-        filter: brightness(1.3) drop-shadow(0 0 16px rgba(36, 136, 35, 1)) !important;
+        filter: brightness(1.3) drop-shadow(0 0 20px var(--primary)) !important;
         animation: buildingPulse 2s ease-in-out infinite;
-    }
-    
-    /* Green gradient hover for legend items */
-    .legend-item:hover {
-        color: #248823 !important;
-        background-color: rgba(36, 136, 35, 0.1) !important;
     }
     
     svg {
         width: 100%;
         height: 100%;
+        overflow: visible;
     }
     
-    /* Interactive building hover effects */
+    /* Navigation endpoint labels - allow overflow visibility */
+    .endpoint-label {
+        pointer-events: none;
+        font-weight: bold;
+    }
+    
+    /* Ensure navigation markers group is visible even outside SVG bounds */
+    #navigationMarkers {
+        overflow: visible;
+    }
+    
+    /* Enhanced 3D interactive building hover effects */
     svg [id]:hover:not(#Premises):not(#Outline):not(#Main_Road):not(#Side_Entrance):not(#Main_Entrance):not(#BuildingLabels):not(path):not(g) {
-        filter: brightness(1.2) drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: brightness(1.2) drop-shadow(0 4px 16px rgba(16, 185, 129, 0.6)) drop-shadow(0 0 24px rgba(34, 197, 94, 0.4));
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         cursor: pointer;
-        transform-origin: center;
+        transform: translateZ(10px) scale(1.02);
+        transform-style: preserve-3d;
     }
     
-    /* Building click animation */
     svg [id]:active:not(#Premises):not(#Outline):not(#Main_Road):not(#Side_Entrance):not(#Main_Entrance):not(#BuildingLabels):not(path):not(g) {
-        filter: brightness(1.3) drop-shadow(0 0 12px rgba(16, 185, 129, 0.8));
-        transform: scale(0.98);
+        filter: brightness(1.3) drop-shadow(0 6px 20px rgba(16, 185, 129, 0.8)) drop-shadow(0 0 32px rgba(34, 197, 94, 0.6));
+        transform: translateZ(5px) scale(0.99);
         transition: all 0.1s ease;
     }
     
-    /* Smooth cursor change for interactive elements */
-    svg [id][style*="cursor: pointer"] {
-        will-change: filter, transform;
-    }
-    
-    /* Enhanced button interactions */
-    button {
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    button:active {
-        transform: scale(0.96);
-    }
-    
-    button:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Building hover tooltip */
+    /* Enhanced 3D building tooltip with glass morphism */
     .building-tooltip {
         position: fixed;
-        background: rgba(0, 0, 0, 0.85);
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(16, 185, 129, 0.3) 50%, rgba(5, 150, 105, 0.35) 100%);
+        -webkit-backdrop-filter: blur(16px) saturate(180%);
+        backdrop-filter: blur(16px) saturate(180%);
         color: white;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
+        padding: 14px 22px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+        font-weight: 700;
         pointer-events: none;
         z-index: 9999;
         opacity: 0;
-        transition: opacity 0.2s ease;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 
+                    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+                    0 4px 12px rgba(34, 197, 94, 0.3);
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        transform-style: preserve-3d;
+        letter-spacing: 0.3px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+    
+    .building-tooltip::before {
+        content: '📍';
+        margin-right: 10px;
+        font-size: 1.1em;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
     
     .building-tooltip.show {
         opacity: 1;
+        transform: translateY(-8px) translateZ(20px) scale(1.05);
+    }
+    
+    /* ============================================
+       ENHANCED LAYOUT ALIGNMENT
+       ============================================ */
+    .main-content-wrapper {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        padding: 1rem;
+    }
+    
+    .content-container {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 20px 40px -12px rgba(0,0,0,0.2), 
+                    0 0 0 1px rgba(36,136,35,0.12);
+    }
+    
+    /* ============================================
+       ENHANCED LEGEND STYLES
+       ============================================ */
+    .legend-panel {
+        background: linear-gradient(180deg, #ffffff 0%, #f8fdf8 100%);
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .legend-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        flex-shrink: 0;
+    }
+    
+    .legend-scroll-content {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 0.75rem;
+    }
+    
+    /* Map container alignment */
+    .map-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);
+        position: relative;
+    }
+    
+    .map-wrapper svg {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+    }
+
+    .legend-category {
+        margin-bottom: 0.75rem;
+    }
+    
+    .legend-category-title {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 0.7rem;
+        color: var(--primary-dark);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 0.5rem 0.75rem;
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.04) 100%);
+        border-left: 3px solid var(--primary);
+        margin-bottom: 0.4rem;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: var(--shadow-xs);
+    }
+    
+    .legend-category-icon {
+        font-size: 1rem;
+        line-height: 1;
+    }
+    
+    .legend-item-enhanced {
+        display: flex;
+        align-items: center;
+        padding: 0.6rem 0.75rem;
+        margin: 0.2rem 0;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        background: transparent;
+        border: 1px solid transparent;
+        font-family: var(--font-body);
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        line-height: 1.4;
+        position: relative;
+    }
+    
+    .legend-item-enhanced::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 0;
+        background: var(--primary);
+        border-radius: 0 2px 2px 0;
+        transition: height var(--transition-fast);
+    }
+    
+    .legend-item-enhanced:hover {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%);
+        color: var(--primary-dark);
+        padding-left: 1rem;
+        border-color: rgba(34, 197, 94, 0.15);
+    }
+    
+    .legend-item-enhanced:hover::before {
+        height: 60%;
+    }
+    
+    .legend-item-enhanced:active {
+        background: rgba(34, 197, 94, 0.18);
+        transform: scale(0.98);
+    }
+    
+    .legend-item-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        margin-right: 0.65rem;
+        flex-shrink: 0;
+        opacity: 0.7;
+        transition: all var(--transition-fast);
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+    }
+    
+    .legend-item-enhanced:hover .legend-item-dot {
+        opacity: 1;
+        transform: scale(1.4);
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2), 0 0 12px var(--primary-glow);
     }
 
     #navPath {
         pointer-events: none;
         z-index: 100;
+    }
+    
+    /* Path animation styles - GPU optimized */
+    @keyframes drawPath {
+        from {
+            stroke-dashoffset: var(--path-length);
+        }
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+    
+    .animated-path {
+        animation: drawPath 1.5s ease-out forwards;
+        will-change: stroke-dashoffset;
+    }
+    
+    /* Search dropdown styles */
+    .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        box-shadow: var(--shadow-xl), 0 20px 40px rgba(0,0,0,0.2);
+        max-height: 320px;
+        overflow-y: auto;
+        z-index: 9999;
+        display: none;
+        border: 1px solid var(--border);
+        border-top: none;
+    }
+    
+    .search-dropdown.active {
+        display: block;
+        animation: dropdownSlideIn 0.2s ease-out;
+    }
+    
+    @keyframes dropdownSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .search-item {
+        padding: 14px 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        border-bottom: 1px solid var(--border-light);
+        transition: background var(--transition-fast), transform var(--transition-fast);
+        position: relative;
+    }
+    
+    .search-item:last-child {
+        border-bottom: none;
+    }
+    
+    .search-item:hover, .search-item.highlighted {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.02) 100%);
+    }
+    
+    .search-item:hover::after {
+        content: '→';
+        position: absolute;
+        right: 16px;
+        color: var(--primary);
+        font-weight: 600;
+        opacity: 0.7;
+    }
+    
+    .search-item-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.15rem;
+        box-shadow: var(--shadow-sm), 0 0 0 2px rgba(34, 197, 94, 0.1);
+        flex-shrink: 0;
+    }
+    
+    .search-item-text {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .search-item-name {
+        font-family: var(--font-display);
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.92rem;
+        margin-bottom: 2px;
+    }
+    
+    .search-item-category {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+    
+    .search-no-results {
+        padding: 32px 24px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+    
+    .search-no-results::before {
+        content: '🔍';
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 8px;
+        opacity: 0.5;
+    }
+    
+    /* Walking time display - positioned at top-left corner */
+    .walking-time-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        color: white;
+        padding: 10px 16px;
+        border-radius: var(--radius-lg);
+        display: none;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.1);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        z-index: 100;
+        animation: walkingBadgeEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        font-family: var(--font-display);
+        font-size: 0.88rem;
+        will-change: transform, opacity;
+    }
+    
+    .walking-time-badge.active {
+        display: flex;
+    }
+    
+    @keyframes walkingBadgeEnter {
+        0% {
+            opacity: 0;
+            transform: translate3d(0, -15px, 0) scale(0.9);
+        }
+        50% {
+            transform: translate3d(0, 2px, 0) scale(1.02);
+        }
+        100% {
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale(1);
+        }
+    }
+    
+    @keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translate3d(0, -10px, 0);
+        }
+        to {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+    }
+    
+    .walking-time-icon {
+        font-size: 1.1rem;
+    }
+    
+    .walking-time-text {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .walking-time-value {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    .walking-time-distance {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.8);
+        padding-left: 6px;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Accessibility panel */
+    .accessibility-panel {
+        position: fixed;
+        top: 85px;
+        right: 24px;
+        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border-radius: var(--radius-xl);
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05);
+        padding: 1.5rem;
+        width: 340px;
+        z-index: 1000;
+        display: none;
+        animation: slideInRight 0.3s ease-out;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+    
+    .accessibility-panel.active {
+        display: block;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .accessibility-title {
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(34, 197, 94, 0.15);
+    }
+    
+    .accessibility-option {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 0.5rem;
+        border-bottom: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        margin: 0.25rem -0.5rem;
+        transition: background var(--transition-fast);
+    }
+    
+    .accessibility-option:hover {
+        background: rgba(34, 197, 94, 0.05);
+    }
+    
+    .accessibility-option:last-child {
+        border-bottom: none;
+    }
+    
+    .accessibility-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+    
+    /* Toggle switch */
+    .toggle-switch {
+        position: relative;
+        width: 52px;
+        height: 28px;
+        background: #e2e8f0;
+        border-radius: 14px;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+    }
+    
+    .toggle-switch.active {
+        background: var(--primary);
+    }
+    
+    .toggle-switch::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        transition: all var(--transition-fast);
+    }
+    
+    .toggle-switch.active::after {
+        transform: translateX(24px);
+    }
+    
+    /* High contrast mode */
+    body.high-contrast {
+        --primary: #006400;
+        --text-primary: #000000;
+        --text-secondary: #333333;
+        --border: #000000;
+    }
+    
+    body.high-contrast .legend-item-enhanced,
+    body.high-contrast .search-item {
+        border: 2px solid #000 !important;
+    }
+    
+    body.high-contrast svg [id]:not(#Premises):not(#Outline) {
+        stroke: #000 !important;
+        stroke-width: 2 !important;
+    }
+    
+    /* Large text mode */
+    body.large-text {
+        font-size: 20px !important;
+    }
+    
+    body.large-text .legend-item-enhanced {
+        font-size: 1.1rem !important;
+        padding: 14px 16px !important;
+    }
+    
+    body.large-text .search-item-name {
+        font-size: 1.15rem !important;
+    }
+    
+    body.large-text .walking-time-value {
+        font-size: 1.5rem !important;
     }
     
     /* Road skeleton overlay */
@@ -198,43 +1190,19 @@
         display: none;
     }
     
-    .skeleton-node {
-        fill: #3b82f6;
-        fill-opacity: 0;
-        stroke: #1e40af;
-        stroke-width: 1;
-        display: none;
-    }
-    
     /* Endpoint edit mode */
     .endpoint-marker {
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: all var(--transition-fast);
     }
     
     .endpoint-marker.editable {
         cursor: move;
-        filter: brightness(1.2) drop-shadow(0 0 8px rgba(147, 51, 234, 0.8));
-    }
-    
-    .endpoint-marker.dragging {
-        filter: brightness(1.5) drop-shadow(0 0 12px rgba(147, 51, 234, 1));
-        opacity: 0.8;
+        filter: brightness(1.2) drop-shadow(0 0 10px rgba(147, 51, 234, 0.8));
     }
     
     .endpoint-marker:hover {
-        transform: scale(1.1);
-    }
-    
-    .endpoint-label {
-        pointer-events: none;
-        user-select: none;
-    }
-    
-    /* Edit mode overlay */
-    .edit-mode-active {
-        outline: 3px dashed #a855f7;
-        outline-offset: 5px;
+        transform: scale(1.15);
     }
     
     /* Interactive hint overlay */
@@ -243,67 +1211,638 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(16, 185, 129, 0.95);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
         color: white;
-        padding: 20px 40px;
-        border-radius: 12px;
-        font-size: 18px;
+        padding: 24px 48px;
+        border-radius: var(--radius-xl);
+        font-size: 1.2rem;
         font-weight: 600;
         z-index: 200;
         opacity: 0;
         animation: hintFadeInOut 4s ease;
         pointer-events: none;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-xl), 0 0 40px var(--primary-glow);
+        border: 2px solid rgba(255,255,255,0.2);
     }
     
     @keyframes hintFadeInOut {
-        0% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.9);
+        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        10%, 70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    }
+    
+    /* ============================================
+       "YOU ARE HERE" MARKER
+       ============================================ */
+    .you-are-here-marker {
+        pointer-events: none;
+    }
+    
+    .you-are-here-pulse {
+        animation: youAreHerePulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes youAreHerePulse {
+        0%, 100% { 
+            r: 8;
+            opacity: 0.3;
         }
-        10%, 70% {
+        50% { 
+            r: 16;
+            opacity: 0;
+        }
+    }
+    
+    .you-are-here-label {
+        font-family: var(--font-display);
+        font-weight: 700;
+        font-size: 7px;
+        letter-spacing: 0.5px;
+    }
+    
+    /* ============================================
+       3D MAP MODE - FIXED PERSPECTIVE
+       ============================================ */
+    
+    /* 3D perspective container */
+    .map-3d-container {
+        perspective: 1200px;
+        perspective-origin: 50% 50%;
+        transform-style: preserve-3d;
+    }
+    
+    /* 3D map transform - fixed angles */
+    .map-3d-mode #campusMap {
+        transform: rotateX(50deg) rotateZ(-10deg) scale(0.75);
+        transform-style: preserve-3d;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.25));
+    }
+    
+    /* Building 3D extrusion effect */
+    .map-3d-mode #campusMap path[id] {
+        transition: all 0.3s ease;
+        transform-origin: center;
+    }
+    
+    /* Major buildings - taller shadows */
+    .map-3d-mode #campusMap path[id="Administration"],
+    .map-3d-mode #campusMap path[id="CTE"],
+    .map-3d-mode #campusMap path[id="ULRC"],
+    .map-3d-mode #campusMap path[id="UG"] {
+        filter: drop-shadow(0 6px 3px rgba(0, 0, 0, 0.2))
+                drop-shadow(0 10px 6px rgba(0, 0, 0, 0.12));
+        transform: translateY(-3px);
+    }
+    
+    /* Medium buildings */
+    .map-3d-mode #campusMap path[id="CHS"],
+    .map-3d-mode #campusMap path[id="CCJE"],
+    .map-3d-mode #campusMap path[id="CoM"],
+    .map-3d-mode #campusMap path[id="GS"],
+    .map-3d-mode #campusMap path[id="Function"] {
+        filter: drop-shadow(0 4px 2px rgba(0, 0, 0, 0.18))
+                drop-shadow(0 6px 4px rgba(0, 0, 0, 0.1));
+        transform: translateY(-2px);
+    }
+    
+    /* All other buildings - base shadow */
+    .map-3d-mode #campusMap path[id]:not([id="Premises"]):not([id="Outline"]) {
+        filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+    }
+    
+    /* Hover effect in 3D */
+    .map-3d-mode #campusMap path[id]:hover {
+        filter: drop-shadow(0 12px 8px rgba(0, 0, 0, 0.3))
+                brightness(1.15) !important;
+        transform: translateY(-6px) scale(1.02) !important;
+    }
+    
+    /* 3D Toggle Button */
+    .toggle-3d-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        z-index: 100;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        transition: all 0.3s ease;
+        font-family: var(--font-display);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .toggle-3d-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+    
+    .toggle-3d-btn:active {
+        transform: translateY(0);
+    }
+    
+    .toggle-3d-btn.active {
+        background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    }
+    
+    .toggle-3d-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* 3D mode label adjustments */
+    .map-3d-mode .building-label-enhanced,
+    .map-3d-mode .you-are-here-marker text {
+        transform: rotateX(-50deg) rotateZ(15deg);
+        transform-origin: center;
+    }
+    
+    /* Smooth transition back to 2D */
+    #campusMap {
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                    filter 0.5s ease;
+    }
+    
+    /* ============================================
+       MICRO-ANIMATIONS
+       ============================================ */
+    
+    /* Building SVG hover effects - applies to all building paths */
+    #campusMap path[id] {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: center;
+    }
+    
+    #campusMap path[id]:hover {
+        filter: brightness(1.15) drop-shadow(0 0 8px rgba(34, 197, 94, 0.6));
+        transform: scale(1.02);
+        cursor: pointer;
+    }
+    
+    #campusMap path[id]:active {
+        filter: brightness(1.25) drop-shadow(0 0 12px rgba(34, 197, 94, 0.8));
+        transform: scale(0.98);
+    }
+    
+    /* Building highlight on hover */
+    @keyframes buildingGlow {
+        0%, 100% { filter: brightness(1.1) drop-shadow(0 0 8px var(--primary-glow)); }
+        50% { filter: brightness(1.2) drop-shadow(0 0 16px var(--primary-glow)); }
+    }
+    
+    .building-hover-glow {
+        animation: buildingGlow 1.5s ease-in-out infinite;
+    }
+    
+    /* Selected building pulse effect */
+    @keyframes selectedBuildingPulse {
+        0%, 100% { 
+            filter: brightness(1.2) drop-shadow(0 0 10px rgba(34, 197, 94, 0.7));
+        }
+        50% { 
+            filter: brightness(1.3) drop-shadow(0 0 20px rgba(34, 197, 94, 0.9));
+        }
+    }
+    
+    .building-selected {
+        animation: selectedBuildingPulse 1.5s ease-in-out infinite;
+    }
+    
+    /* Smooth fade transitions */
+    .fade-in {
+        animation: smoothFadeIn 0.3s ease-out forwards;
+    }
+    
+    @keyframes smoothFadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Loading skeleton - GPU optimized */
+    .skeleton {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: skeletonShimmer 1.5s infinite linear;
+        border-radius: var(--radius-sm);
+        will-change: background-position;
+    }
+    
+    @keyframes skeletonShimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+    
+    /* Button press effect - GPU optimized */
+    .press-effect {
+        will-change: transform;
+        transform: translateZ(0);
+    }
+    
+    .press-effect:active {
+        transform: scale(0.96) translateZ(0);
+        transition: transform 0.1s ease;
+    }
+    
+    /* Ripple effect container */
+    .ripple-container {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transform: scale(0);
+        animation: rippleEffect 0.6s ease-out;
+        pointer-events: none;
+    }
+    
+    @keyframes rippleEffect {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+    
+    /* Legend item hover enhancement */
+    .legend-item-enhanced {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .legend-item-enhanced::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .legend-item-enhanced:hover::before {
+        left: 100%;
+    }
+    
+    /* Card entrance animation - GPU optimized */
+    .card-enter {
+        animation: cardEnter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        will-change: transform, opacity;
+    }
+    
+    @keyframes cardEnter {
+        from {
+            opacity: 0;
+            transform: translate3d(0, 20px, 0) scale(0.95);
+        }
+        to {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate3d(0, 0, 0) scale(1);
         }
-        100% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.9);
-        }
+    }
+    
+    /* ============================================
+       ENHANCED SCREENSAVER
+       ============================================ */
+    #kioskIdleOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        cursor: pointer;
+        overflow: hidden;
+    }
+    
+    #kioskIdleOverlay::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle at 30% 30%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+        animation: screensaverBg 15s ease-in-out infinite;
+        transform: translateZ(0);
+    }
+    
+    @keyframes screensaverBg {
+        0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+        25% { transform: translate3d(5%, 5%, 0) rotate(5deg); }
+        50% { transform: translate3d(0, 10%, 0) rotate(0deg); }
+        75% { transform: translate3d(-5%, 5%, 0) rotate(-5deg); }
+    }
+    
+    #kioskIdleOverlay.show {
+        display: flex;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    .screensaver-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        transform: translateZ(0);
+    }
+    
+    .idle-logo {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto 2rem;
+        animation: logoFloat 3s ease-in-out infinite;
+        filter: drop-shadow(0 10px 30px rgba(34, 197, 94, 0.3));
+        transform: translateZ(0);
+    }
+    
+    @keyframes logoFloat {
+        0%, 100% { transform: translateY(0) scale(1) translateZ(0); }
+        50% { transform: translateY(-15px) scale(1.02) translateZ(0); }
+    }
+    
+    .idle-text {
+        color: white;
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        font-family: var(--font-display);
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .idle-subtext {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.25rem;
+        font-weight: 500;
+        margin-bottom: 3rem;
+    }
+    
+    .idle-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        padding: 16px 32px;
+        border-radius: var(--radius-full);
+        color: white;
+        font-weight: 600;
+        animation: hintPulse 2s ease-in-out infinite;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transform: translateZ(0);
+    }
+    
+    @keyframes hintPulse {
+        0%, 100% { opacity: 1; transform: scale(1) translateZ(0); }
+        50% { opacity: 0.8; transform: scale(0.98) translateZ(0); }
+    }
+    
+    .idle-icon {
+        font-size: 1.5rem;
+        animation: tapBounce 1s ease-in-out infinite;
+    }
+    
+    @keyframes tapBounce {
+        0%, 100% { transform: translateY(0) translateZ(0); }
+        50% { transform: translateY(-5px) translateZ(0); }
+    }
+    
+    /* Floating particles - GPU optimized */
+    .screensaver-particle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: var(--primary);
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: particleFloat 10s ease-in-out infinite;
+        transform: translateZ(0);
+    }
+    
+    @keyframes particleFloat {
+        0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.3; }
+        50% { transform: translate3d(50px, -100px, 0); opacity: 0.6; }
+    }
+    
+    /* ============================================
+       ENHANCED CARD STYLES
+       ============================================ */
+    .info-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        transition: all var(--transition-normal);
+    }
+    
+    .info-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+    
+    .stat-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, rgba(36, 136, 35, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        color: var(--primary);
+        border: 1px solid rgba(36, 136, 35, 0.2);
+    }
+    
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.95);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
 </style>
 @endsection
 
 @section('content')
-<div class="h-screen flex flex-col overflow-hidden">
-    <header class="text-white p-4 flex justify-between items-center" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('kiosk.idle') }}" class="flex items-center">
-                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-12 w-12 object-contain">
-            </a>
-            <h1 class="text-2xl font-bold">Access Map</h1>
+<!-- Enhanced Screensaver Overlay -->
+<div id="kioskIdleOverlay" onclick="resetIdleTimer()">
+    <!-- Floating particles -->
+    <div class="screensaver-particle" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+    <div class="screensaver-particle" style="top: 60%; left: 80%; animation-delay: 2s;"></div>
+    <div class="screensaver-particle" style="top: 40%; left: 30%; animation-delay: 4s;"></div>
+    <div class="screensaver-particle" style="top: 80%; left: 60%; animation-delay: 6s;"></div>
+    <div class="screensaver-particle" style="top: 30%; left: 70%; animation-delay: 8s;"></div>
+    
+    <div class="screensaver-content">
+        <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="idle-logo">
+        <div class="idle-text">Campus Navigation Kiosk</div>
+        <div class="idle-subtext">Sultan Kudarat State University</div>
+        <div class="idle-hint">
+            <span class="idle-icon">👆</span>
+            <span>Touch anywhere to start</span>
         </div>
-        <div class="flex-1 max-w-md mx-8">
-            <div class="relative">
+    </div>
+</div>
+
+<!-- Location Selector Modal -->
+<div id="locationSelectorModal" class="modal-overlay" onclick="closeLocationSelector(event)" style="z-index: 9999; perspective: 1500px;">
+    <div class="bg-white rounded-2xl max-w-2xl w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 0 2px rgba(34, 197, 94, 0.2) inset, 0 0 32px rgba(34, 197, 94, 0.15); max-height: 85vh; display: flex; flex-direction: column; margin-top: 2rem; background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); animation: slideDown3D 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: preserve-3d;">
+        <!-- Modal Header -->
+        <div class="px-6 py-5" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); border-bottom: 2px solid rgba(255,255,255,0.15); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-white bg-opacity-20 flex items-center justify-center backdrop-blur-sm" style="box-shadow: 0 4px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.3);">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white" style="text-shadow: 0 2px 8px rgba(0,0,0,0.2);">Set Your Current Location</h2>
+                        <p class="text-green-100 text-sm" style="text-shadow: 0 1px 4px rgba(0,0,0,0.15);">Select the building where you are now</p>
+                    </div>
+                </div>
+                <button onclick="closeLocationSelector()" class="touch-target p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition" style="transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);" onmouseover="this.style.transform='scale(1.1) translateZ(5px)'" onmouseout="this.style.transform='scale(1) translateZ(0)'" aria-label="Close location selector">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 overflow-y-auto" style="flex: 1;">
+            <!-- Reset to Main Gate -->
+            <div class="mb-4">
+                <button onclick="resetToMainGate()" class="w-full flex items-center justify-between p-4 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]" aria-label="Reset navigation starting point to main gate entrance" title="Reset to main gate">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-lg bg-white bg-opacity-20 flex items-center justify-center backdrop-blur-sm">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-white text-base">Main Gate (Default)</div>
+                            <div class="text-sm text-blue-100">Reset to main entrance</div>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Search Filter -->
+            <div class="mb-4">
+                <div class="relative">
+                    <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <input type="text" id="locationSearch" placeholder="Search buildings..." class="w-full pl-12 pr-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none transition-all text-base" oninput="filterLocationList()" autocomplete="off" aria-label="Search for buildings to set as current location">
+                </div>
+            </div>
+
+            <!-- Building List -->
+            <div id="locationBuildingList" class="space-y-2">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="h-screen flex flex-col overflow-hidden" style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);">
+    <!-- Enhanced Header -->
+    <header class="text-white px-6 py-4 flex justify-between items-center relative" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 40%, #15803d 80%, #166534 100%); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 4px 16px rgba(34, 197, 94, 0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; z-index: 50; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 2px solid rgba(255, 255, 255, 0.1);">
+        <!-- Decorative background elements -->
+        <div style="position: absolute; top: -50%; right: -10%; width: 300px; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%); pointer-events: none;"></div>
+        <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); pointer-events: none;"></div>
+        
+        <div class="flex items-center gap-5 relative z-10">
+            <a href="{{ route('kiosk.idle') }}" class="touch-target touch-feedback flex items-center p-2.5 rounded-2xl bg-white bg-opacity-15 hover:bg-opacity-25 transition-all duration-300" style="box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);">
+                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-14 w-14 object-contain drop-shadow-lg">
+            </a>
+            <div>
+                <h1 class="text-3xl font-display font-extrabold tracking-tight" style="text-shadow: 0 2px 12px rgba(0,0,0,0.25); letter-spacing: -0.02em;">Acces Map</h1>
+                <p class="text-green-100 font-medium opacity-90 text-sm tracking-wide">Sultan Kudarat State University</p>
+            </div>
+        </div>
+        
+        <div class="flex-1 max-w-lg mx-10 relative z-10">
+            <div class="relative group" id="searchContainer">
                 <input 
                     type="text" 
                     id="searchInput" 
-                    placeholder="Search buildings..." 
-                    class="w-full px-4 py-2 rounded-lg text-gray-800 focus:outline-none focus:ring-2" style="--tw-ring-color: #248823;"
+                    placeholder="Search buildings, offices, services..." 
+                    class="w-full px-5 py-3.5 pl-12 rounded-2xl text-gray-800 text-base font-medium focus:outline-none focus:ring-4 allow-select transition-all duration-300"
+                    style="background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%); --tw-ring-color: rgba(34, 197, 94, 0.6); box-shadow: 0 8px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(34, 197, 94, 0.1); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transform-style: preserve-3d;"
+                    autocomplete="off"
+                    autocorrect="off"
+                    spellcheck="false"
+                    aria-label="Search for buildings, offices, or services"
                 />
-                <svg class="absolute right-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
+                <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+                <!-- Search Dropdown -->
+                <div class="search-dropdown" id="searchDropdown"></div>
             </div>
         </div>
-        <div class="flex items-center gap-4">
-            <div id="clock" class="text-xl"></div>
+        
+        <div class="flex items-center gap-4 relative z-10">
+            <!-- Set Current Location Button -->
+            <button onclick="openLocationSelector()" 
+                    class="touch-target touch-feedback flex items-center gap-2 px-4 py-2.5 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-xl transition-all duration-300 relative"
+                    title="Set your current location"
+                    style="box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; backdrop-filter: blur(10px); transform-style: preserve-3d;"
+                    onmouseover="this.style.transform='translateZ(5px) scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.2) inset'"
+                    onmouseout="this.style.transform='translateZ(0) scale(1)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset'">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                <span class="font-semibold text-sm" id="currentLocationText" style="text-shadow: 0 1px 3px rgba(0,0,0,0.2);">Set Location</span>
+                <!-- Active Location Badge -->
+                <span id="currentLocationBadge" 
+                      class="absolute -top-1 -right-1 w-3 h-3 rounded-full transition-opacity duration-300"
+                      style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 3px 8px rgba(34, 197, 94, 0.6), 0 0 0 2px rgba(255,255,255,0.3); opacity: 0; transform-style: preserve-3d;">
+                </span>
+            </button>
+            
+            <!-- Clock with enhanced styling -->
+            <div id="clock" class="text-xl font-bold px-4 py-2.5 rounded-xl bg-white bg-opacity-15" style="font-variant-numeric: tabular-nums; text-shadow: 0 2px 6px rgba(0,0,0,0.3); font-family: var(--font-display); letter-spacing: 0.02em; box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);"></div>
             
             <!-- Admin Menu Toggle -->
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" 
-                        class="p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition duration-200"
-                        title="Menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="touch-target touch-feedback p-3.5 bg-white bg-opacity-15 hover:bg-opacity-25 rounded-xl transition-all duration-300"
+                        title="Menu"
+                        aria-label="Open navigation menu"
+                        style="box-shadow: 0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transform-style: preserve-3d;"
+                        onmouseover="this.style.transform='translateZ(5px) scale(1.05)'; this.style.boxShadow='0 8px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.2) inset'"
+                        onmouseout="this.style.transform='translateZ(0) scale(1)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.15) inset'">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
@@ -317,54 +1856,196 @@
                      x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="opacity-100 scale-100"
                      x-transition:leave-end="opacity-0 scale-95"
-                     class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-200 z-50 overflow-hidden"
-                     style="display: none;">
+                     class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
+                     style="display: none; z-index: 9999;">
                     
                     @auth
                         <a href="{{ route('admin.dashboard') }}" 
-                           class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100">
-                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="touch-target touch-feedback flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-700">Admin Dashboard</span>
+                            <span class="text-sm font-medium text-gray-600">Admin Dashboard</span>
                         </a>
                         
                         <button onclick="toggleEditMode()" 
-                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-700">Admin Inline Edit</span>
+                            <span class="text-sm font-medium text-gray-600">Admin Inline Edit</span>
                         </button>
                     @else
                         <button onclick="showAdminLogin()" 
-                                class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition border-b border-gray-100 text-left">
-                            <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
+                            <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                             </svg>
-                            <span class="text-sm font-medium text-gray-700">Admin Login</span>
+                            <span class="text-sm font-medium text-gray-600">Admin Login</span>
                         </button>
                     @endauth
                     
+                    <button onclick="toggleAccessibilityPanel()" 
+                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
+                        <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        <span class="text-sm font-medium text-gray-600">Accessibility</span>
+                    </button>
+                    
                     <button onclick="showAbout()" 
-                            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-left">
-                        <svg class="w-5 h-5 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition text-left">
+                        <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-sm font-medium text-gray-700">About</span>
+                        <span class="text-sm font-medium text-gray-600">About</span>
                     </button>
                 </div>
             </div>
         </div>
     </header>
+    
+    <!-- Accessibility Panel -->
+    <div class="accessibility-panel" id="accessibilityPanel">
+        <div class="accessibility-title">
+            <svg class="w-6 h-6" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            </svg>
+            Accessibility Options
+        </div>
+        
+        <div class="accessibility-option">
+            <div class="accessibility-label">
+                <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+                </svg>
+                Large Text
+            </div>
+            <div class="toggle-switch" id="toggleLargeText" onclick="toggleLargeText()"></div>
+        </div>
+        
+        <div class="accessibility-option">
+            <div class="accessibility-label">
+                <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                </svg>
+                High Contrast
+            </div>
+            <div class="toggle-switch" id="toggleHighContrast" onclick="toggleHighContrast()"></div>
+        </div>
+        
+        <div class="accessibility-option">
+            <div class="accessibility-label">
+                <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Reduced Motion
+            </div>
+            <div class="toggle-switch" id="toggleReducedMotion" onclick="toggleReducedMotion()"></div>
+        </div>
+        
+        <button onclick="resetAccessibility()" 
+                class="w-full mt-5 py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-600 font-medium transition-all" style="font-family: var(--font-body);">
+            Reset to Default
+        </button>
+    </div>
 
-    <div class="flex p-8" style="flex: 1; min-height: 0;">
-        <div class="flex rounded-xl overflow-hidden shadow-lg" style="height: 100%; width: 100%; position: relative;">
-            <!-- Map Section (60%) -->
-            <div class="map-wrapper" id="mapContainer" style="flex: 0 0 60%; height: 100%; position: relative; overflow: visible; transition: flex 0.5s ease;">
-            <div class="hint-overlay" id="interactiveHint">👆 Click on any building to explore</div>
-            <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position:absolute;top:0;left:0;width:100%;height:100%;">
+    <!-- Main Content Container - Unified 3-Panel Layout -->
+    <div style="flex: 1; display: flex; padding: 1.25rem; min-height: 0;">
+        <div style="display: flex; width: 100%; height: 100%; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2), 0 4px 6px -1px rgba(0,0,0,0.1); border: 2px solid #22c55e; border-radius: 0.5rem;">
+            
+            <!-- Left Legend Section (20%) -->
+            <div id="leftLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);">
+                <div class="legend-header" style="flex-shrink: 0; padding: 1rem 1.25rem; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -30px; right: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -40px; left: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 2px 4px rgba(0,0,0,0.15); letter-spacing: 0.025em;">
+                        <span class="flex items-center justify-center gap-2.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            Buildings & Facilities
+                        </span>
+                    </h2>
+                </div>
+                <div class="px-3 py-3 touch-scroll show-scrollbar-on-hover" style="flex: 1 1 0; min-height: 0; overflow-y: auto; font-size: 0.85rem;">
+                    <div class="legend-category">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🎓</span>
+                            Academic Colleges
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Administration')"><span class="legend-item-dot"></span>Administration</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CTE')"><span class="legend-item-dot"></span>College of Education</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CHS')"><span class="legend-item-dot"></span>College of Nursing</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CHS_Labs')"><span class="legend-item-dot"></span>College of Health Sciences</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CCJE')"><span class="legend-item-dot"></span>College of Criminal Justice</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CCJE_ext')"><span class="legend-item-dot"></span>CCJE Extension</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('CoM')"><span class="legend-item-dot"></span>College of Medicine</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('GS')"><span class="legend-item-dot"></span>Graduate School</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🏢</span>
+                            Facilities & Services
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('ULRC')"><span class="legend-item-dot"></span>University Library</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('UG')"><span class="legend-item-dot"></span>University Gymnasium</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('UC')"><span class="legend-item-dot"></span>University Canteen</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Function')"><span class="legend-item-dot"></span>Function Hall</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('UPP')"><span class="legend-item-dot"></span>UPP Building</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Motorpool')"><span class="legend-item-dot"></span>University Motorpool</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('FC')"><span class="legend-item-dot"></span>Food Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Parking_Space')"><span class="legend-item-dot"></span>Parking Area</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Restroom')"><span class="legend-item-dot"></span>Public Restroom</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🏥</span>
+                            Medical & Training
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('BCSF')"><span class="legend-item-dot"></span>Basic & Clinical Sciences</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('AMTC')"><span class="legend-item-dot"></span>Ang Magsasaka Center</div>
+                </div>
+            </div>
+            
+            <!-- Divider Line -->
+            <div style="width: 1px; background: linear-gradient(180deg, #248823 0%, #1a6619 50%, #248823 100%); flex-shrink: 0;"></div>
+            
+            <!-- Map Section (60%) - Centered & Aligned -->
+            <div class="map-wrapper map-3d-container" id="mapContainer" style="flex: 1 1 60%; height: 100%; position: relative; overflow: visible; background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 100%);">
+                <div class="hint-overlay" id="interactiveHint">
+                    <span class="flex items-center gap-3">
+                        <span style="font-size: 1.5rem;">👆</span>
+                        <span>Tap on any building to explore</span>
+                    </span>
+                </div>
+                
+                <!-- 3D Mode Toggle Button -->
+                <button class="toggle-3d-btn" id="toggle3DBtn" onclick="toggle3DMode()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3L2 9l10 6 10-6-10-6z"/>
+                        <path d="M2 17l10 6 10-6"/>
+                        <path d="M2 13l10 6 10-6"/>
+                    </svg>
+                    <span id="toggle3DText">3D VIEW</span>
+                </button>
+                
+                <!-- Walking Time Badge - Compact top-left position -->
+                <div class="walking-time-badge" id="walkingTimeBadge">
+                    <span class="walking-time-icon">🚶</span>
+                    <div class="walking-time-text">
+                        <span class="walking-time-value" id="walkingTimeValue">~2 min</span>
+                        <span class="walking-time-distance" id="walkingDistance">~150m</span>
+                    </div>
+                </div>
+                
+                <svg xmlns="http://www.w3.org/2000/svg" id="campusMap" viewBox="0 0 302.596 275.484" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; max-width: 100%; max-height: 100%; overflow: visible;" preserveAspectRatio="xMidYMid meet">
                 <g id="layer1" transform="translate(43.417 59.938)">
                     <path id="Premises" d="m-33.024-7.685-1.12 176.012 156.418 1.031v36.09l129.52.001c-.035-88.47-.025-172.804 0-261.322l-177.22.568z" style="fill:#bfe4c5;fill-opacity:1;fill-rule:evenodd;stroke:#0a0a00;stroke-width:.275879;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/>
                 </g>
@@ -474,343 +2155,628 @@
                     <path id="MD_1" d="M13.002 71.001h11.957V81H13.002z" style="fill:#53ac53;fill-rule:evenodd;stroke:#0b6614;stroke-width:1;stroke-opacity:1;stroke-dasharray:none;fill-opacity:1"/>
                 </g>
                 <g id="BuildingLabels">
-                    <!-- Administration -->
-                    <rect x="180" y="32" width="60" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="210" y="38" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Administration</text>
+                    <!-- ========================================
+                         ENHANCED BUILDING LABELS
+                         Organized by area, non-overlapping
+                         ======================================== -->
                     
-                    <!-- CTE -->
-                    <rect x="250" y="110" width="40" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="116" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">CTE</text>
+                    <!-- === TOP AREA (Administration & Offices) === -->
                     
-                    <!-- College of Nursing -->
-                    <rect x="118" y="104" width="54" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="145" y="110" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Nursing</text>
-                    
-                    <!-- CCJE -->
-                    <rect x="240" y="242" width="40" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="260" y="248" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">CCJE</text>
-                    
-                    <!-- CCJE Extension -->
-                    <rect x="242" y="256" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="260" y="260" text-anchor="middle" font-size="3" font-weight="normal" fill="#0d4710" style="pointer-events:none;">Extension</text>
-                    
-                    <!-- BCSF -->
-                    <rect x="161" y="239" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="176" y="243" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">BCSF</text>
-                    
-                    <!-- UPP Building -->
-                    <rect x="258" y="228" width="40" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="278" y="232" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">UPP Building</text>
-                    
-                    <!-- Ang Magsasaka -->
-                    <rect x="218" y="226" width="48" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="242" y="230" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Ang Magsasaka</text>
-                    
-                    <!-- ULRC -->
-                    <rect x="137" y="204" width="30" height="8" rx="1" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="152" y="210" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">ULRC</text>
-                    
-                    <!-- TCL -->
-                    <rect x="107" y="213" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="120" y="217" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">TCL</text>
-                    
-                    <!-- DOST -->
-                    <rect x="56" y="215" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="70" y="219" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">DOST</text>
-                    
-                    <!-- Motorpool -->
-                    <rect x="30" y="211" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="46" y="215" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Motorpool</text>
-                    
-                    <!-- Food Center -->
-                    <rect x="242" y="196" width="36" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="260" y="201" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Food Center</text>
-                    
-                    <!-- Mosque -->
-                    <rect x="0" y="232" width="22" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));" transform="rotate(-40 2 236)"/>
-                    <text x="2" y="236" text-anchor="start" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;" transform="rotate(-40 2 236)">Mosque</text>
-                    
-                    <!-- TIP -->
-                    <rect x="110" y="174" width="22" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="121" y="178" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">TIP</text>
-                    
-                    <!-- Climate -->
-                    <rect x="84" y="174" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="100" y="178" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Climate</text>
-                    
-                    <!-- Agri 1 -->
-                    <rect x="52" y="174" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="65" y="178" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Agri 1</text>
-                    
-                    <!-- Agri 2 -->
-                    <rect x="24" y="174" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="37" y="178" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Agri 2</text>
-                    
-                    <!-- ROTC Office -->
-                    <rect x="5" y="148" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="19" y="152" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">ROTC Office</text>
-                    
-                    <!-- OSAS -->
-                    <rect x="109" y="152" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="123" y="156" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">OSAS</text>
-                    
-                    <!-- UC -->
-                    <rect x="139" y="152" width="20" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="149" y="156" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">UC</text>
-                    
-                    <!-- GS-SBO -->
-                    <rect x="262" y="155" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="277" y="159" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">GS-SBO</text>
-                    
-                    <!-- Alumni Relations -->
-                    <rect x="248" y="155" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="262" y="159" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Alumni</text>
-                    
-                    <!-- Univ AVR -->
-                    <rect x="252" y="145" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="149" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Univ AVR</text>
-                    
-                    <!-- GS Ext -->
-                    <rect x="230" y="153" width="24" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="242" y="157" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">GS Ext</text>
-                    
-                    <!-- Graduate School -->
-                    <rect x="200" y="141" width="46" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="223" y="147" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Graduate School</text>
-                    
-                    <!-- College of Health Sciences -->
-                    <rect x="148" y="135" width="54" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="175" y="139" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Health Sciences</text>
-                    
-                    <!-- Field -->
-                    <rect x="48" y="98" width="44" height="10" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="70" y="105" text-anchor="middle" font-size="8" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Field</text>
-                    
-                    <!-- Bleacher -->
-                    <rect x="97" y="79" width="26" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="110" y="83" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Bleacher</text>
-                    
-                    <!-- Parking Area -->
-                    <rect x="197" y="82" width="38" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="216" y="86" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Parking Area</text>
-                    
-                    <!-- LHS Ext -->
-                    <rect x="260" y="23" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="275" y="27" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">LHS Ext</text>
-                    
-                    <!-- Laboratory Highschool -->
-                    <rect x="238" y="43" width="50" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="263" y="48" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Laboratory Highschool</text>
-                    
-                    <!-- College of Medicine -->
-                    <rect x="258" y="30" width="54" height="7" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="285" y="35" text-anchor="middle" font-size="4" font-weight="bold" fill="#0d4710" style="pointer-events:none;">College of Medicine</text>
-                    
-                    <!-- Restroom -->
-                    <rect x="257" y="6" width="26" height="5" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="270" y="9.5" text-anchor="middle" font-size="2.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Restroom</text>
-                    
-                    <!-- SKSU-MPC -->
-                    <rect x="236" y="7" width="32" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="252" y="11" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">SKSU-MPC</text>
-                    
-                    <!-- MPC Dorm -->
-                    <rect x="247" y="6" width="30" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="262" y="10" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">MPC Dorm</text>
-                    
-                    <!-- Ladies Dormitory -->
-                    <rect x="218" y="7" width="38" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="237" y="11" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Ladies Dormitory</text>
-                    
-                    <!-- QMS -->
-                    <rect x="209" y="6" width="24" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="221" y="10" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">QMS</text>
-                    
-                    <!-- Function Hall -->
-                    <rect x="113" y="56" width="44" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="135" y="60" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Function Hall</text>
-                    
-                    <!-- University Gymnasium -->
-                    <rect x="118" y="36" width="40" height="8" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="138" y="42" text-anchor="middle" font-size="5" font-weight="bold" fill="#0d4710" style="pointer-events:none;">University Gymnasium</text>
+                    <!-- Administration - Main Building -->
+                    <rect x="178" y="28" width="52" height="9" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="204" y="34.5" text-anchor="middle" font-size="5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Administration</text>
                     
                     <!-- Registrar -->
-                    <rect x="172" y="18" width="36" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="190" y="22" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Registrar</text>
+                    <rect x="175" y="16" width="30" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="190" y="20.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Registrar</text>
+                    
+                    <!-- QMS -->
+                    <rect x="214" y="2" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="223" y="6.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">QMS</text>
+                    
+                    <!-- Ladies Dormitory -->
+                    <rect x="230" y="10" width="28" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="244" y="14.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Ladies Dorm</text>
+                    
+                    <!-- MPC -->
+                    <rect x="247" y="2" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="256" y="6.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">MPC</text>
+                    
+                    <!-- Restroom -->
+                    <rect x="266" y="2" width="22" height="6" rx="1.5" fill="#e8f5e9" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="277" y="6.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Restroom</text>
+                    
+                    <!-- === MEDICAL & COLLEGE AREA (Right Side) === -->
+                    
+                    <!-- College of Medicine -->
+                    <rect x="274" y="18" width="24" height="14" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="286" y="24" text-anchor="middle" font-size="2.8" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">College of</text>
+                    <text x="286" y="28.5" text-anchor="middle" font-size="2.8" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Medicine</text>
+                    
+                    <!-- LHS Extension -->
+                    <rect x="268" y="34" width="20" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="278" y="38" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">LHS Ext</text>
+                    
+                    <!-- Laboratory Highschool -->
+                    <rect x="253" y="42" width="24" height="12" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="265" y="47" text-anchor="middle" font-size="2.6" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Laboratory</text>
+                    <text x="265" y="51.5" text-anchor="middle" font-size="2.6" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Highschool</text>
+                    
+                    <!-- === GYMNASIUM AREA (Left-Center) === -->
+                    
+                    <!-- University Gymnasium -->
+                    <rect x="112" y="32" width="50" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="137" y="39" text-anchor="middle" font-size="4" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Gymnasium</text>
+                    
+                    <!-- Function Hall -->
+                    <rect x="117" y="56" width="36" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="135" y="60.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Function Hall</text>
+                    
+                    <!-- Field -->
+                    <rect x="54" y="96" width="30" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="69" y="103" text-anchor="middle" font-size="5.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Field</text>
+                    
+                    <!-- Bleacher -->
+                    <rect x="100" y="78" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="111" y="82" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Bleacher</text>
+                    
+                    <!-- === DORMITORIES (Left Side) === -->
                     
                     <!-- Men's Dormitory 1 -->
-                    <rect x="5" y="72" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="19" y="76" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Men's Dorm 1</text>
+                    <rect x="6" y="69" width="24" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="18" y="73" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Men's Dorm 1</text>
                     
                     <!-- Men's Dormitory 2 -->
-                    <rect x="5" y="83" width="28" height="6" rx="0.8" fill="white" fill-opacity="0.95" stroke="#0d4710" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
-                    <text x="19" y="87" text-anchor="middle" font-size="3" font-weight="bold" fill="#0d4710" style="pointer-events:none;">Men's Dorm 2</text>
+                    <rect x="6" y="82" width="24" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="18" y="86" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Men's Dorm 2</text>
+                    
+                    <!-- === CTE AREA (Right Side) === -->
+                    
+                    <!-- CTE -->
+                    <rect x="256" y="88" width="32" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="272" y="95" text-anchor="middle" font-size="5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">CTE</text>
+                    
+                    <!-- Parking Area -->
+                    <rect x="203" y="80" width="30" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="218" y="84.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Parking</text>
+                    
+                    <!-- === COLLEGE OF NURSING AREA (Center) === -->
+                    
+                    <!-- College of Nursing -->
+                    <rect x="118" y="98" width="44" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="140" y="103" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">College of</text>
+                    <text x="140" y="107.5" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Nursing</text>
+                    
+                    <!-- College of Health Sciences -->
+                    <rect x="145" y="130" width="50" height="8" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="170" y="135.5" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Health Sciences</text>
+                    
+                    <!-- === GRADUATE SCHOOL AREA === -->
+                    
+                    <!-- Graduate School -->
+                    <rect x="206" y="120" width="40" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="226" y="125" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Graduate</text>
+                    <text x="226" y="129" text-anchor="middle" font-size="3" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">School</text>
+                    
+                    <!-- AVR -->
+                    <rect x="256" y="122" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="265" y="126.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">AVR</text>
+                    
+                    <!-- GS Extension -->
+                    <rect x="256" y="132" width="20" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="266" y="136" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">GS Ext</text>
+                    
+                    <!-- GS-SBO -->
+                    <rect x="256" y="140" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="267" y="144" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">GS-SBO</text>
+                    
+                    <!-- Alumni -->
+                    <rect x="280" y="140" width="18" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="289" y="144" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Alumni</text>
+                    
+                    <!-- === CANTEEN & OFFICES AREA === -->
+                    
+                    <!-- OSAS -->
+                    <rect x="113" y="148" width="22" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="124" y="152.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">OSAS</text>
+                    
+                    <!-- UC (University Canteen) -->
+                    <rect x="140" y="148" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="149" y="152.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">UC</text>
+                    
+                    <!-- ROTC Office -->
+                    <rect x="6" y="145" width="22" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="17" y="149" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">ROTC</text>
+                    
+                    <!-- === RESEARCH & AGRICULTURE AREA === -->
+                    
+                    <!-- TIP -->
+                    <rect x="113" y="172" width="18" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="122" y="176.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">TIP</text>
+                    
+                    <!-- Climate -->
+                    <rect x="86" y="172" width="24" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="98" y="176.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Climate</text>
+                    
+                    <!-- Agri 1 -->
+                    <rect x="54" y="172" width="20" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="64" y="176.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Agri 1</text>
+                    
+                    <!-- Agri 2 -->
+                    <rect x="29" y="172" width="20" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="39" y="176.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Agri 2</text>
+                    
+                    <!-- === FOOD CENTER AREA === -->
+                    
+                    <!-- Food Center -->
+                    <rect x="244" y="194" width="32" height="8" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="260" y="199.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">Food Center</text>
+                    
+                    <!-- === LIBRARY AREA === -->
+                    
+                    <!-- ULRC (University Library) -->
+                    <rect x="140" y="200" width="26" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="153" y="207" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">ULRC</text>
+                    
+                    <!-- TCL -->
+                    <rect x="108" y="212" width="20" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="118" y="216.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">TCL</text>
+                    
+                    <!-- DOST -->
+                    <rect x="58" y="214" width="22" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="69" y="218.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">DOST</text>
+                    
+                    <!-- Motorpool -->
+                    <rect x="32" y="208" width="26" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="45" y="212.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Motorpool</text>
+                    
+                    <!-- === BOTTOM AREA (CCJE & Medical) === -->
+                    
+                    <!-- Ang Magsasaka -->
+                    <rect x="230" y="220" width="36" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="248" y="224.5" text-anchor="middle" font-size="2.8" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">Ang Magsasaka</text>
+                    
+                    <!-- UPP Building -->
+                    <rect x="268" y="228" width="24" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="280" y="232.5" text-anchor="middle" font-size="3" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">UPP</text>
+                    
+                    <!-- BCSF -->
+                    <rect x="165" y="238" width="22" height="6" rx="1.5" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.4" style="pointer-events:none;filter:drop-shadow(0 1px 3px rgba(0,0,0,0.12));"/>
+                    <text x="176" y="242.5" text-anchor="middle" font-size="3.2" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">BCSF</text>
+                    
+                    <!-- CCJE -->
+                    <rect x="248" y="238" width="28" height="10" rx="2" fill="white" fill-opacity="0.97" stroke="#248823" stroke-width="0.5" style="pointer-events:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));"/>
+                    <text x="262" y="245" text-anchor="middle" font-size="4.5" font-weight="bold" fill="#1a5c1a" style="pointer-events:none;">CCJE</text>
+                    
+                    <!-- CCJE Extension -->
+                    <rect x="240" y="254" width="28" height="5" rx="1" fill="white" fill-opacity="0.95" stroke="#248823" stroke-width="0.3" style="pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.1));"/>
+                    <text x="254" y="258" text-anchor="middle" font-size="2.5" font-weight="600" fill="#1a5c1a" style="pointer-events:none;">CCJE Ext</text>
+                </g>
+                
+                <!-- ==================== YOU ARE HERE MARKER ==================== -->
+                <g id="youAreHereMarker" class="you-are-here-marker" style="pointer-events: none;">
+                    <!-- Outer pulsing ring -->
+                    <circle cx="188.32" cy="267.166" r="8" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.3">
+                        <animate attributeName="r" values="6;12;6" dur="2s" repeatCount="indefinite"/>
+                        <animate attributeName="opacity" values="0.5;0;0.5" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    <!-- Middle ring -->
+                    <circle cx="188.32" cy="267.166" r="5" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.4">
+                        <animate attributeName="r" values="4;8;4" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                        <animate attributeName="opacity" values="0.6;0;0.6" dur="2s" repeatCount="indefinite" begin="0.3s"/>
+                    </circle>
+                    <!-- Main marker circle -->
+                    <circle cx="188.32" cy="267.166" r="3.5" fill="#22c55e" stroke="white" stroke-width="1">
+                        <animate attributeName="r" values="3.5;4;3.5" dur="1.5s" repeatCount="indefinite"/>
+                    </circle>
+                    <!-- Inner dot -->
+                    <circle cx="188.32" cy="267.166" r="1.5" fill="white"/>
+                    <!-- "You Are Here" Label with background -->
+                    <rect x="192" y="258" width="30" height="8" rx="2" fill="white" fill-opacity="0.95" stroke="#22c55e" stroke-width="0.5" style="filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));"/>
+                    <text x="207" y="263.5" text-anchor="middle" font-size="3.5" font-weight="bold" fill="#16a34a" font-family="Inter, sans-serif">YOU ARE HERE</text>
+                    <!-- Location pin icon -->
+                    <g transform="translate(193.5, 259.5) scale(0.2)">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#22c55e"/>
+                    </g>
                 </g>
             </svg>
-        </div>
-            
-            <!-- Sidebar Section (40%) - Toggles between Legend and Building Details -->
-            <div id="sidebarContainer" class="bg-white" style="flex: 0 0 40%; display: flex; flex-direction: column; overflow: visible; position: relative; z-index: 20; transition: flex 0.5s ease;">
-            
-            <!-- Legend View -->
-            <div id="legendView" style="display: flex; flex-direction: column; height: 100%; overflow: hidden;">
-                <div class="p-2 border-b" style="border-color: #248823; flex-shrink: 0;">
-                    <h2 class="font-bold text-gray-800" style="font-size: 1rem;">Map Legend</h2>
-                </div>
-                
-                <div class="px-5 py-2" style="flex: 1 1 0; min-height: 0; overflow: hidden;">
-                    <div id="buildingList" style="column-count: 2; column-gap: 0.25rem; column-fill: balance; height: 100%; word-wrap: break-word; overflow-wrap: break-word; font-size: 0.75rem;">
-                    <!-- Column 1: Academic Colleges through part of list -->
-                    <div class="font-semibold text-gray-800 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Academic Colleges</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Administration')">• Administration</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CTE')">• College of Education</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS')">• College of Nursing</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CHS_Labs')">• College of Health Sciences</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE')">• College of Criminal Justice</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CCJE_ext')">• CCJE Extension</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('CoM')">• College of Medicine</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS')">• Graduate School</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Facilities & Services</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULRC')">• University Library (ULRC)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UG')">• University Gymnasium</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UC')">• University Canteen (UC)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Function')">• Function Hall</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('UPP')">• UPP Building</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Motorpool')">• University Motorpool</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('FC')">• Food Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Parking_Space')">• Parking Area</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Restroom')">• Public Restroom</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Medical & Training Centers</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('BCSF')">• Basic & Clinical Sciences (BCSF)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('AMTC')">• Ang Magsasaka Training Center</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Research & Development</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TIP_center')">• Technology Incubation Park (TIP)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('TCL')">• Technology & Computer Lab (TCL)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('DOST')">• DOST Innovation Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Climate')">• Climate Resillient and Adoptation Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_1')">• Agriculture Building 1</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Agri_bldg_2')">• Agriculture Building 2</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Administrative Offices</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Reg_Office')">• Registrar's Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Alumni_Office')">• Alumni Relations Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-SBO')">• Graduate School - SBO Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('GS-ext')">• GS Extension Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('OSAS')">• Student Affairs (OSAS)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('QMS')">• Quality Management (QMS)</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ULD')">• Ladies Dormitory</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Univesity_AVR')">• Audio-Visual Room (AVR)</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Student Services</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS')">• Laboratory Highschool</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('LHS_ext')">• LHS Extension</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('ROTC')">• ROTC Office</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('SKSU-MPC')">• SKSU Multi-Purpose Center</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MPC-Dorm')">• MPC Dormitory</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_1')">• Men's Dormitory 1</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('MD_2')">• Men's Dormitory 2</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Sports & Recreation</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Field')">• University Athletic Field</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('Bleacher')">• Field Bleachers</div>
-                    
-                    <div class="font-semibold text-gray-800 mt-1 mb-0.5 break-after-avoid" style="font-size: 0.8rem;">Religious Facility</div>
-                    <div class="text-gray-700 pl-4 cursor-pointer legend-item rounded transition-colors" onclick="navigateTo('mosque')">• University Mosque</div>
-                </div>
-                </div>
             </div>
             
-            <!-- Building Details View (replaces legend when building is clicked) -->
-            <div id="buildingDetailsView" style="display: none; flex-direction: column; height: 100%; min-height: 0; position: relative; overflow: visible; z-index: 5;">
-                <!-- Wrapper clips the right side, allows left side to show -->
-                <div style="position: absolute; left: -40px; top: 0; width: 40px; height: 100%; overflow: hidden; z-index: 25;">
-                    <div id="cabinetToggle" 
-                         style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%); 
-                                background: linear-gradient(135deg, #248823 0%, #1a6619 100%); 
-                                width: 40px; height: 100px; border-radius: 12px 0 0 12px; 
-                                box-shadow: -2px 0 8px rgba(0,0,0,0.2);
-                                display: flex; align-items: center; justify-content: center;
-                                cursor: pointer; transition: left 0.5s ease, width 0.3s ease, border-radius 0.5s ease; opacity: 1;"
-                         onclick="toggleCabinet()"
-                         onmouseenter="if(!cabinetExpanded) { this.style.left='-5px'; this.style.width='45px'; }"
-                         onmouseleave="if(!cabinetExpanded) { this.style.left='0px'; this.style.width='40px'; }">
-                        <svg id="cabinetChevron" style="width: 24px; height: 24px; color: white; transition: transform 0.3s ease;" 
-                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"></path>
-                        </svg>
+            <!-- Divider Line -->
+            <div style="width: 2px; background: linear-gradient(180deg, #22c55e 0%, #16a34a 50%, #22c55e 100%); flex-shrink: 0;"></div>
+            
+            <!-- Right Legend Section (20%) - Aligned with Left -->
+            <div id="rightLegendContainer" class="legend-panel" style="flex: 0 0 20%; display: flex; flex-direction: column; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);">
+                <div class="legend-header" style="flex-shrink: 0; padding: 1rem 1.25rem; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -30px; left: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
+                    <div style="position: absolute; bottom: -40px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                    <h2 class="font-bold text-white text-center text-sm relative z-10" style="text-shadow: 0 2px 4px rgba(0,0,0,0.15); letter-spacing: 0.025em;">
+                        <span class="flex items-center justify-center gap-2.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            Offices & Areas
+                        </span>
+                    </h2>
+                </div>
+                <div class="px-3 py-3 touch-scroll show-scrollbar-on-hover" style="flex: 1 1 0; min-height: 0; overflow-y: auto; font-size: 0.85rem;">
+                    <div class="legend-category">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🔬</span>
+                            Research & Development
+                        </div>
                     </div>
-                </div>
-                
-                <div class="p-4 border-b flex items-center gap-3" style="border-color: #248823; flex-shrink: 0;">
-                    <button onclick="closeBuildingDetails()" class="text-2xl text-gray-600 hover:text-gray-800 transition p-2 rounded-lg hover:bg-gray-100">
-                        ←
-                    </button>
-                    <h2 id="buildingDetailTitle" class="text-xl font-bold text-gray-800">Building Details</h2>
-                </div>
-                
-                <div id="buildingDetailContent" class="flex-1 overflow-y-auto p-4" style="min-height: 0;">
-                    <!-- Building details load here -->
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('TIP_center')"><span class="legend-item-dot"></span>Technology Incubation Park</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('TCL')"><span class="legend-item-dot"></span>Tech & Computer Lab</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('DOST')"><span class="legend-item-dot"></span>DOST Innovation Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Climate')"><span class="legend-item-dot"></span>Climate Research Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Agri_bldg_1')"><span class="legend-item-dot"></span>Agriculture Building 1</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Agri_bldg_2')"><span class="legend-item-dot"></span>Agriculture Building 2</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">📋</span>
+                            Administrative Offices
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Reg_Office')"><span class="legend-item-dot"></span>Registrar's Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Alumni_Office')"><span class="legend-item-dot"></span>Alumni Relations Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('GS-SBO')"><span class="legend-item-dot"></span>GS - SBO Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('GS-ext')"><span class="legend-item-dot"></span>GS Extension Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('OSAS')"><span class="legend-item-dot"></span>Student Affairs (OSAS)</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('QMS')"><span class="legend-item-dot"></span>Quality Management</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('ULD')"><span class="legend-item-dot"></span>Ladies Dormitory</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Univesity_AVR')"><span class="legend-item-dot"></span>Audio-Visual Room</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">👥</span>
+                            Student Services
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('LHS')"><span class="legend-item-dot"></span>Laboratory Highschool</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('LHS_ext')"><span class="legend-item-dot"></span>LHS Extension</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('ROTC')"><span class="legend-item-dot"></span>ROTC Office</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('SKSU-MPC')"><span class="legend-item-dot"></span>Multi-Purpose Center</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('MPC-Dorm')"><span class="legend-item-dot"></span>MPC Dormitory</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('MD_1')"><span class="legend-item-dot"></span>Men's Dormitory 1</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('MD_2')"><span class="legend-item-dot"></span>Men's Dormitory 2</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">⚽</span>
+                            Sports & Recreation
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Field')"><span class="legend-item-dot"></span>University Athletic Field</div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('Bleacher')"><span class="legend-item-dot"></span>Field Bleachers</div>
+                    
+                    <div class="legend-category" style="margin-top: 1rem;">
+                        <div class="legend-category-title">
+                            <span class="legend-category-icon">🕌</span>
+                            Religious Facility
+                        </div>
+                    </div>
+                    <div class="legend-item-enhanced touch-feedback" onclick="navigateTo('mosque')"><span class="legend-item-dot"></span>University Mosque</div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
 </div>
 
+<!-- Building Preview Popup (shows when clicking a building on the map) -->
+<div id="buildingPreviewPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center" onclick="closeBuildingPreview(event)" style="background: rgba(0,0,0,0.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);">
+    <div class="bg-white rounded-2xl max-w-lg w-full mx-4 overflow-hidden relative" onclick="event.stopPropagation()" style="animation: popupSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.1);">
+        <!-- Decorative top bar -->
+        <div style="height: 5px; background: linear-gradient(90deg, #22c55e, #10b981, #059669);"></div>
+        
+        <div class="p-6">
+            <!-- Building Image with enhanced styling -->
+            <div id="previewImageContainer" class="relative mb-5 rounded-xl overflow-hidden" style="height: 200px; box-shadow: 0 8px 25px -5px rgba(34,197,94,0.25);">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-400/15 to-emerald-600/15"></div>
+                <img id="previewBuildingImage" src="" alt="" class="w-full h-full object-cover" style="display: none;" loading="lazy" decoding="async">
+                <div id="previewImagePlaceholder" class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
+                    <div class="text-center">
+                        <div class="w-20 h-20 mx-auto mb-3 rounded-full bg-gradient-to-br from-green-100 to-emerald-200 flex items-center justify-center">
+                            <svg class="w-12 h-12" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 font-medium text-sm">No image available</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Building Name with decorative element -->
+            <div class="text-center mb-4">
+                <h2 id="previewBuildingName" class="text-xl font-bold text-gray-800 mb-2" style="font-family: var(--font-display);"></h2>
+                <div class="w-12 h-1 mx-auto rounded-full" style="background: linear-gradient(90deg, #22c55e, #10b981);"></div>
+            </div>
+            
+            <!-- Building Summary with badge styling -->
+            <div id="previewBuildingSummary" class="text-center mb-5">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-50 to-emerald-50 rounded-full border border-green-100">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <p id="previewOfficeCount" class="text-base font-medium text-green-700"></p>
+                </div>
+            </div>
+            
+            <!-- Action Buttons - Enhanced styling -->
+            <div class="flex gap-3">
+                <button onclick="closeBuildingPreview()" class="touch-target touch-feedback flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3.5 px-5 rounded-xl transition-all text-base border-2 border-transparent hover:border-gray-300" style="box-shadow: inset 0 -2px 0 rgba(0,0,0,0.06);">
+                    Close
+                </button>
+                <button id="viewBuildingDetailsBtn" onclick="openBuildingDetailsModal()" class="touch-target touch-feedback flex-1 text-white font-semibold py-3.5 px-5 rounded-xl transition-all text-base relative overflow-hidden group" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 15px rgba(34,197,94,0.35);">
+                    <span class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                    <span class="relative flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        View Details
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Building Details Modal (full details view with tabs) -->
+<div id="buildingDetailsModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center" style="background: rgba(0,0,0,0.65); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);" onclick="closeBuildingDetailsModal(event)">
+    <div class="bg-white rounded-2xl w-full max-w-4xl mx-4 max-h-[90vh] overflow-hidden flex flex-col relative" onclick="event.stopPropagation()" style="animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4), 0 0 60px rgba(34,197,94,0.12);">
+        <!-- Decorative gradient bar -->
+        <div style="height: 4px; background: linear-gradient(90deg, #22c55e, #10b981, #059669, #10b981, #22c55e);"></div>
+        
+        <!-- Modal Header with enhanced styling -->
+        <div class="flex items-center justify-between p-5 border-b relative overflow-hidden" style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f0fdf4 100%);">
+            <!-- Decorative circles -->
+            <div style="position: absolute; top: -40px; right: -40px; width: 100px; height: 100px; background: rgba(34,197,94,0.08); border-radius: 50%;"></div>
+            <div style="position: absolute; bottom: -30px; right: 60px; width: 50px; height: 50px; background: rgba(16,185,129,0.08); border-radius: 50%;"></div>
+            
+            <div class="flex items-center gap-4 relative z-10">
+                <div class="p-3.5 rounded-xl relative overflow-hidden" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 6px 16px rgba(34,197,94,0.35);">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-white/0 to-white/20"></div>
+                    <svg class="w-8 h-8 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="detailsModalTitle" class="text-2xl font-bold text-gray-800">Building Details</h2>
+                    <p id="detailsModalSubtitle" class="text-sm text-gray-500 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Complete building information
+                    </p>
+                </div>
+            </div>
+            <button onclick="closeBuildingDetailsModal()" class="touch-target touch-feedback text-gray-400 hover:text-gray-600 transition-all p-3 hover:bg-white/80 rounded-xl relative z-10 group" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <svg class="w-8 h-8 transition-transform group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Tab Navigation - Enhanced styling -->
+        <div class="border-b px-4 py-2" style="background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);">
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar" id="detailsTabNav">
+                <button onclick="switchDetailsTab('overview')" id="tab-overview" class="details-tab active touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                    Overview
+                </button>
+                <button onclick="switchDetailsTab('offices')" id="tab-offices" class="details-tab touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                    Offices <span id="officeCountBadge" class="ml-1 px-2.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200">0</span>
+                </button>
+                <button onclick="switchDetailsTab('services')" id="tab-services" class="details-tab touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Services <span id="serviceCountBadge" class="ml-1 px-2.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200">0</span>
+                </button>
+                <button onclick="switchDetailsTab('heads')" id="tab-heads" class="details-tab touch-target px-5 py-4 font-semibold text-base rounded-xl transition-all whitespace-nowrap flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Heads <span id="headsCountBadge" class="ml-1 px-2.5 py-1 text-xs font-bold rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border border-purple-200">0</span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Swipe Indicator - Enhanced styling -->
+        <div class="flex justify-center py-4" style="background: linear-gradient(180deg, #f3f4f6 0%, #ffffff 100%);">
+            <div class="flex gap-3 p-2 rounded-full bg-gray-100/80" id="swipeIndicators">
+                <div class="swipe-dot active" data-tab="overview"></div>
+                <div class="swipe-dot" data-tab="offices"></div>
+                <div class="swipe-dot" data-tab="services"></div>
+                <div class="swipe-dot" data-tab="heads"></div>
+            </div>
+        </div>
+        
+        <!-- Tab Content Container - Simple show/hide for reliable scrolling -->
+        <div id="detailsTabContent" style="flex: 1; overflow-y: auto; min-height: 0; background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);">
+            <!-- Overview Tab -->
+            <div class="tab-panel p-6" id="panel-overview">
+                <div class="flex items-center justify-center py-12">
+                    <div class="text-center">
+                        <div class="loading-spinner mx-auto mb-4"></div>
+                        <p class="text-gray-500 font-medium">Loading building information...</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Offices Tab -->
+            <div class="tab-panel p-6 hidden" id="panel-offices">
+                <!-- Content loaded dynamically -->
+            </div>
+            <!-- Services Tab -->
+            <div class="tab-panel p-6 hidden" id="panel-services">
+                <!-- Content loaded dynamically -->
+            </div>
+            <!-- Heads Tab -->
+            <div class="tab-panel p-6 hidden" id="panel-heads">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+        
+        <!-- Modal Footer with Navigation - Touch optimized -->
+        <div class="p-4 border-t bg-gray-50 flex items-center justify-between gap-4">
+            <button onclick="prevDetailsTab()" id="prevTabBtn" class="touch-target touch-feedback kiosk-btn bg-gray-200 hover:bg-gray-300 text-gray-700 opacity-50 cursor-not-allowed" disabled>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                Previous
+            </button>
+            <div class="text-base text-gray-500 text-center flex-1">
+                <span id="currentTabLabel" class="font-semibold">Overview</span>
+                <br><span class="text-sm">Swipe or tap arrows</span>
+            </div>
+            <button onclick="nextDetailsTab()" id="nextTabBtn" class="touch-target touch-feedback kiosk-btn text-white" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
+                Next
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.details-tab {
+    color: #6b7280;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+
+.details-tab:hover, .details-tab:active {
+    color: #248823;
+    background: rgba(36, 136, 35, 0.05);
+}
+
+.details-tab.active {
+    color: #248823;
+    background: white;
+    border-bottom: 3px solid #248823;
+}
+
+.swipe-dot {
+    width: 8px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #d1d5db;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    /* Larger touch target via padding */
+    padding: 6px;
+    box-sizing: content-box;
+    background-clip: content-box;
+}
+
+.swipe-dot:hover, .swipe-dot:active {
+    background: #9ca3af;
+    background-clip: content-box;
+}
+
+.swipe-dot.active {
+    width: 32px;
+    border-radius: 6px;
+    background: #248823;
+    background-clip: content-box;
+}
+
+.tab-panel {
+    flex-shrink: 0;
+}
+
+.office-card {
+    background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+    border-left: 4px solid #248823;
+    transition: all 0.2s ease;
+}
+
+.office-card:hover, .office-card:active {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: translateX(4px);
+}
+
+.service-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.service-card:hover, .service-card:active {
+    border-color: #248823;
+    box-shadow: 0 2px 8px rgba(36, 136, 35, 0.15);
+}
+
+.head-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border: 2px solid #bbf7d0;
+    transition: all 0.2s ease;
+}
+
+.head-card:hover, .head-card:active {
+    border-color: #248823;
+    box-shadow: 0 4px 12px rgba(36, 136, 35, 0.2);
+}
+</style>
+
 <div class="modal-overlay" id="buildingModal">
-    <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto touch-scroll hide-scrollbar">
         <div class="flex justify-between items-start mb-6">
             <h2 id="modalTitle" class="text-3xl font-bold text-gray-800"></h2>
-            <button onclick="closeModal()" class="text-4xl text-gray-500 hover:text-gray-700">×</button>
+            <button onclick="closeModal()" class="touch-target touch-feedback text-3xl text-gray-400 hover:text-gray-600 p-2 transition">×</button>
         </div>
         <div id="modalContent"></div>
     </div>
 </div>
 
 <!-- Admin Login Modal -->
-<div class="modal-overlay" id="adminLoginModal" style="backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
-        <div class="flex justify-between items-start mb-6">
+<div class="modal-overlay" id="adminLoginModal" style="-webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);">
+    <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
+        <div class="flex justify-between items-start mb-5">
             <div class="flex items-center gap-3">
-                <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34,197,94,0.3);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Admin Login</h2>
-                    <p class="text-sm text-gray-500">Access admin panel</p>
+                    <h2 class="text-xl font-bold text-gray-800" style="font-family: var(--font-display);">Admin Login</h2>
+                    <p class="text-xs text-gray-400">Access admin panel</p>
                 </div>
             </div>
-            <button onclick="closeAdminLogin()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
+            <button onclick="closeAdminLogin()" class="text-2xl text-gray-400 hover:text-gray-600 transition">×</button>
         </div>
         
         <form action="{{ route('login') }}" method="POST" id="adminLoginForm">
             @csrf
             <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">Username</label>
                 <input type="text" 
                        name="username" 
                        required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition"
+                       class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-400 transition text-sm"
                        placeholder="admin">
             </div>
             
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-600 mb-1.5">Password</label>
                 <input type="password" 
                        name="password" 
                        required
-                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-teal-500 transition"
+                       class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-400 transition text-sm"
                        placeholder="admin123">
             </div>
 
-            <div id="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg hidden">
+            <div id="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg hidden text-sm">
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <span id="loginErrorText"></span>
@@ -818,10 +2784,10 @@
             </div>
             
             <button type="submit" 
-                    class="w-full text-white font-semibold py-3 px-6 rounded-lg transition duration-200 shadow-lg"
-                    style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);"
-                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(152, 216, 200, 0.5)';"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(152, 216, 200, 0.4)';">
+                    class="w-full text-white font-semibold py-2.5 px-5 rounded-lg transition duration-200"
+                    style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34,197,94,0.3);"
+                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 6px 16px rgba(34,197,94,0.4)';"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(34,197,94,0.3)';">
                 Login to Admin Panel
             </button>
         </form>
@@ -829,66 +2795,190 @@
 </div>
 
 <!-- About Modal -->
-<div class="modal-overlay" id="aboutModal" style="backdrop-filter: blur(8px);">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl" style="animation: modalSlideIn 0.3s ease-out;">
-        <div class="flex justify-between items-start mb-6">
+<div class="modal-overlay" id="aboutModal" style="-webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);">
+    <div class="bg-white rounded-xl p-6 max-w-4xl w-full shadow-2xl overflow-y-auto" style="animation: modalSlideIn 0.3s ease-out; max-height: 90vh;">
+        <div class="flex justify-between items-start mb-5">
             <div class="flex items-center gap-3">
-                <div class="p-3 rounded-lg" style="background: linear-gradient(135deg, #248823 0%, #1a6619 100%);">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="p-2.5 rounded-lg" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); box-shadow: 0 4px 12px rgba(34,197,94,0.3);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-bold text-gray-800">About</h2>
-                    <p class="text-sm text-gray-500">SKSU Access Campus Map</p>
+                    <h2 class="text-xl font-bold text-gray-800" style="font-family: var(--font-display);">About This Research</h2>
+                    <p class="text-xs text-gray-400">SKSU Access Campus Map System</p>
                 </div>
             </div>
-            <button onclick="closeAbout()" class="text-3xl text-gray-400 hover:text-gray-600 transition">×</button>
+            <button onclick="closeAbout()" class="text-2xl text-gray-400 hover:text-gray-600 transition">×</button>
         </div>
         
-        <div class="space-y-4">
-            <div>
-                <h3 class="font-semibold text-gray-800 mb-2">Campus Navigation System</h3>
+        <div class="space-y-5">
+            <!-- Research Overview -->
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-5 border-l-4" style="border-color: #22c55e;">
+                <h3 class="font-bold text-base text-gray-800 mb-2" style="font-family: var(--font-display);">Research Overview</h3>
+                <p class="text-sm text-gray-600 leading-relaxed mb-2">
+                    This study presents the development and implementation of an <strong>Interactive Digital Campus Navigation System</strong> 
+                    for Sultan Kudarat State University (SKSU). The research addresses the increasing need for efficient wayfinding 
+                    solutions in modern educational institutions, particularly for new students, visitors, and faculty members 
+                    navigating the extensive SKSU campus.
+                </p>
                 <p class="text-sm text-gray-600 leading-relaxed">
-                    An interactive campus map designed to help students, faculty, and visitors navigate the 
-                    Sultan Kudarat State University campus with ease.
+                    The system leverages web-based technologies to provide real-time, accessible campus information through an 
+                    intuitive interface, facilitating seamless navigation and information retrieval across 44 campus buildings, 
+                    116 offices, and 345 services.
                 </p>
             </div>
-            
-            <div class="border-t pt-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Features</h3>
-                <ul class="text-sm text-gray-600 space-y-2">
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Interactive building selection</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Office directory & services</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Real-time announcements</span>
-                    </li>
-                    <li class="flex items-start gap-2">
-                        <svg class="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        <span>Building image galleries</span>
-                    </li>
-                </ul>
+
+            <!-- Research Purpose -->
+            <div>
+                <h3 class="font-bold text-lg text-gray-800 mb-3 flex items-center gap-2">
+                    <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Research Purpose & Objectives
+                </h3>
+                <div class="bg-white border rounded-lg p-4">
+                    <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                        <strong>Primary Purpose:</strong> To design, develop, and deploy a comprehensive digital kiosk system 
+                        that enhances campus accessibility, reduces navigation barriers, and improves overall user experience 
+                        within the university environment.
+                    </p>
+                    <p class="text-sm text-gray-700 font-semibold mb-2">Specific Objectives:</p>
+                    <ul class="text-sm text-gray-600 space-y-2 ml-4">
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Develop an interactive SVG-based campus map with real-time building information</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Create a centralized database of campus facilities, offices, and services</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Implement an administrative system for content management and announcements</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Ensure responsive design and accessibility across multiple devices</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="font-bold" style="color: #248823;">•</span>
+                            <span>Evaluate system usability and effectiveness in improving campus navigation</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Key Features -->
+            <div>
+                <h3 class="font-bold text-lg text-gray-800 mb-3">System Features & Capabilities</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gradient-to-br from-green-50 to-white border border-green-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Interactive Map</span>
+                        </div>
+                        <p class="text-xs text-gray-600">SVG-based clickable buildings with visual feedback and detailed information</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Office Directory</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Comprehensive database with office heads and service descriptions</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-purple-50 to-white border border-purple-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Announcements</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Real-time campus announcements and important notices</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-yellow-50 to-white border border-yellow-100 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            <span class="font-semibold text-sm text-gray-800">Image Galleries</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Visual building documentation with image caching system</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Research Team -->
+            <div class="border-t pt-6">
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Research Team</h3>
+                
+                <!-- Researchers -->
+                <div class="mb-6">
+                    <p class="text-sm font-semibold text-gray-700 mb-3">Researchers</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
+                            <img src="{{ asset('images/researcher1.jpg') }}" alt="Hannah Mae V. Magallosa" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm">Hannah Mae V. Magallosa</p>
+                                <p class="text-xs text-gray-600">Researcher</p>
+                                <p class="text-xs text-gray-500 mt-1">BS Computer Engineering</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
+                            <img src="{{ asset('images/researcher2.jpg') }}" alt="Sam Jones L. Cedana" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
+                            <div>
+                                <p class="font-semibold text-gray-800 text-sm">Sam Jones L. Cedana</p>
+                                <p class="text-xs text-gray-600">Researcher</p>
+                                <p class="text-xs text-gray-500 mt-1">BS Computer Engineering</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adviser -->
+                <div>
+                    <p class="text-sm font-semibold text-gray-700 mb-3">Research Adviser</p>
+                    <div class="flex items-center gap-4 bg-gradient-to-r from-green-50 to-white p-4 rounded-lg border-2" style="border-color: #248823;">
+                        <img src="{{ asset('images/adviser.jpg') }}" alt="Charity L. Oria, DEng" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" loading="lazy" decoding="async">
+                        <div>
+                            <p class="font-bold text-gray-800">Charity L. Oria, DEng</p>
+                            <p class="text-sm text-gray-600">Research Adviser</p>
+                            <p class="text-xs text-gray-500 mt-1">College of Engineering</p>
+                            <p class="text-xs text-gray-500">Sultan Kudarat State University</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Specifications -->
+            <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                <h3 class="font-semibold text-gray-800 mb-2 text-sm">Technical Implementation</h3>
+                <div class="grid grid-cols-3 gap-3 text-xs">
+                    <div>
+                        <p class="font-semibold text-gray-700">Frontend</p>
+                        <p class="text-gray-600">Laravel Blade, Alpine.js, Tailwind CSS</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Backend</p>
+                        <p class="text-gray-600">Laravel 11, PHP 8.2, MySQL</p>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-700">Database</p>
+                        <p class="text-gray-600">44 Buildings, 116 Offices, 345 Services</p>
+                    </div>
+                </div>
             </div>
             
+            <!-- Footer -->
             <div class="border-t pt-4">
                 <p class="text-xs text-gray-500 text-center">
                     © 2025 Sultan Kudarat State University<br>
-                    Version 1.0.0
+                    Interactive Campus Navigation System • Version 1.0.0<br>
+                    Research Project - College of Engineering
                 </p>
             </div>
         </div>
@@ -906,6 +2996,37 @@
     });
 </script>
 @endif
+
+<script>
+    // Handle admin login form submission with CSRF refresh
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('adminLoginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Refresh CSRF token before submission
+                try {
+                    const response = await fetch('/refresh-csrf');
+                    const data = await response.json();
+                    
+                    if (data.csrf_token) {
+                        // Update the CSRF token in the form
+                        const csrfInput = loginForm.querySelector('input[name="_token"]');
+                        if (csrfInput) {
+                            csrfInput.value = data.csrf_token;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error refreshing CSRF token:', error);
+                }
+                
+                // Submit the form
+                loginForm.submit();
+            });
+        }
+    });
+</script>
 
 <style>
     @keyframes modalSlideIn {
@@ -927,6 +3048,126 @@
 
 @section('scripts')
 <script>
+    // ============================================
+    // PERFORMANCE UTILITIES
+    // ============================================
+    
+    /**
+     * Debounce function for rate-limiting event handlers
+     * @param {Function} func - Function to debounce
+     * @param {number} wait - Wait time in ms
+     * @param {boolean} immediate - Execute on leading edge
+     */
+    function debounce(func, wait = 100, immediate = false) {
+        let timeout;
+        return function executedFunction(...args) {
+            const context = this;
+            const later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            const callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    }
+    
+    /**
+     * Throttle function for high-frequency events
+     * @param {Function} func - Function to throttle
+     * @param {number} limit - Minimum time between calls in ms
+     */
+    function throttle(func, limit = 16) {
+        let inThrottle;
+        return function(...args) {
+            if (!inThrottle) {
+                func.apply(this, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+    
+    /**
+     * Request animation frame wrapper for smooth updates
+     */
+    const rafCallback = (callback) => {
+        return (...args) => {
+            requestAnimationFrame(() => callback(...args));
+        };
+    };
+    
+    /**
+     * Cache DOM queries for better performance
+     */
+    const domCache = new Map();
+    function getElement(id) {
+        if (!domCache.has(id)) {
+            domCache.set(id, document.getElementById(id));
+        }
+        return domCache.get(id);
+    }
+    
+    // ============================================
+    // KIOSK IDLE TIMEOUT SYSTEM
+    // ============================================
+    let idleTimer = null;
+    const IDLE_TIMEOUT = 120000; // 2 minutes of inactivity (adjust as needed)
+    
+    function resetIdleTimer() {
+        // Hide idle overlay if visible
+        const idleOverlay = document.getElementById('kioskIdleOverlay');
+        if (idleOverlay) {
+            idleOverlay.classList.remove('show');
+        }
+        
+        // Clear existing timer
+        if (idleTimer) {
+            clearTimeout(idleTimer);
+        }
+        
+        // Set new timer for idle screen
+        idleTimer = setTimeout(() => {
+            showIdleScreen();
+            // Also reset custom location when idle screen shows
+            if (customStartLocation) {
+                resetToMainGate();
+                setTimeout(() => {
+                    showToast('🏠 Returned to Main Gate (idle timeout)', 'info');
+                }, 500);
+            }
+        }, IDLE_TIMEOUT);
+    }
+    
+    function showIdleScreen() {
+        const idleOverlay = document.getElementById('kioskIdleOverlay');
+        if (idleOverlay) {
+            // Close any open modals first
+            closeBuildingPreview();
+            closeBuildingDetailsModal();
+            
+            // Show idle screen
+            idleOverlay.classList.add('show');
+        }
+    }
+    
+    // Start idle timer and listen for user activity
+    document.addEventListener('DOMContentLoaded', function() {
+        // Events that reset idle timer
+        const resetEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'touchmove', 'click'];
+        
+        resetEvents.forEach(event => {
+            document.addEventListener(event, resetIdleTimer, { passive: true });
+        });
+        
+        // Start initial timer
+        resetIdleTimer();
+        
+        // Load saved custom location
+        loadSavedLocation();
+    });
+
     const buildings = @json($buildings);
     const isAdmin = @json($isAdmin);
     const dbEndpoints = @json($navigationEndpoints ?? []);
@@ -936,53 +3177,56 @@
     const imageCache = new Map();
     
     // Preload all building images on first user interaction
+    // Use requestIdleCallback polyfill for browsers that don't support it
+    const requestIdleCallbackPolyfill = window.requestIdleCallback || 
+        function(cb) { 
+            return setTimeout(() => cb({ timeRemaining: () => 50 }), 1); 
+        };
+    
     function preloadAllBuildingImages() {
         if (imagesPreloaded) return;
         imagesPreloaded = true;
         
-        // Clear console first
-        console.clear();
-        
-        let loadedCount = 0;
-        let totalImages = 0;
-        let currentFile = '';
-        
-        // Function to update progress
-        const updateProgress = () => {
-            console.clear();
-            console.log(`Caching: ${currentFile}`);
-            console.log(`Progress: ${loadedCount}/${totalImages}`);
-        };
-        
-        buildings.forEach(building => {
-            // Try JPG first, then PNG from public folder
-            const publicJpg = `/images/buildings/${building.code}.jpg`;
-            const publicPng = `/images/buildings/${building.code}.png`;
+        // Use requestIdleCallback to defer image loading to idle time
+        requestIdleCallbackPolyfill(() => {
+            let loadedCount = 0;
+            let totalImages = 0;
+            let currentFile = '';
             
-            // Preload public images
-            [publicJpg, publicPng].forEach(src => {
-                totalImages++;
-                const img = new Image();
-                img.onload = () => {
-                    imageCache.set(src, img);
-                    loadedCount++;
-                    currentFile = src;
-                    updateProgress();
-                    if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
-                    }
-                };
-                img.onerror = () => {
-                    loadedCount++;
-                    if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
-                    }
-                };
-                img.src = src;
-            });
+            // Function to update progress (throttled to reduce console spam)
+            const updateProgress = throttle(() => {
+                console.log(`Image caching: ${loadedCount}/${totalImages}`);
+            }, 1000);
             
+            buildings.forEach(building => {
+                // Try JPG first, then PNG from public folder
+                const publicJpg = `/images/buildings/${building.code}.jpg`;
+                const publicPng = `/images/buildings/${building.code}.png`;
+                
+                // Preload public images
+                [publicJpg, publicPng].forEach(src => {
+                    totalImages++;
+                    const img = new Image();
+                    img.onload = () => {
+                        imageCache.set(src, img);
+                        loadedCount++;
+                        currentFile = src;
+                        updateProgress();
+                        if (loadedCount === totalImages) {
+                            console.log(`✓ All ${totalImages} images cached`);
+                        }
+                    };
+                    img.onerror = () => {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            console.log(`✓ All ${totalImages} images cached`);
+                        }
+                    };
+                    // Defer image loading slightly for better initial load
+                    setTimeout(() => { img.src = src; }, 0);
+                });
+            
+            // Preload database images
             // Preload database images
             if (building.image_path) {
                 totalImages++;
@@ -994,18 +3238,16 @@
                     currentFile = dbSrc;
                     updateProgress();
                     if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                        console.log(`✓ All ${totalImages} images cached`);
                     }
                 };
                 dbImg.onerror = () => {
                     loadedCount++;
                     if (loadedCount === totalImages) {
-                        console.clear();
-                        console.log(`All ${totalImages}/${totalImages} images cached`);
+                        console.log(`✓ All ${totalImages} images cached`);
                     }
                 };
-                dbImg.src = dbSrc;
+                setTimeout(() => { dbImg.src = dbSrc; }, 0);
             }
             
             // Preload gallery images
@@ -1020,21 +3262,20 @@
                         currentFile = gallerySrc;
                         updateProgress();
                         if (loadedCount === totalImages) {
-                            console.clear();
-                            console.log(`All ${totalImages}/${totalImages} images cached`);
+                            console.log(`✓ All ${totalImages} images cached`);
                         }
                     };
                     galleryImg.onerror = () => {
                         loadedCount++;
                         if (loadedCount === totalImages) {
-                            console.clear();
-                            console.log(`All ${totalImages}/${totalImages} images cached`);
+                            console.log(`✓ All ${totalImages} images cached`);
                         }
                     };
-                    galleryImg.src = gallerySrc;
+                    setTimeout(() => { galleryImg.src = gallerySrc; }, 0);
                 });
             }
         });
+        }); // End of requestIdleCallback
     }
     
     // Main gate starting point (aligned with path start)
@@ -1161,38 +3402,281 @@
     updateClock();
     setInterval(updateClock, 1000);
     
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        const buildingList = document.getElementById('buildingList');
-        const buildings = buildingList.querySelectorAll('[onclick^="navigateTo"]');
-        const categories = buildingList.querySelectorAll('.font-semibold');
+    // ============================================
+    // ENHANCED SEARCH FUNCTIONALITY WITH DROPDOWN
+    // ============================================
+    
+    // Building categories for search
+    const buildingCategories = {
+        'Administration': 'Admin & Offices',
+        'CTE': 'Academic Colleges',
+        'CHS': 'Academic Colleges',
+        'CHS_Labs': 'Academic Colleges',
+        'CCJE': 'Academic Colleges',
+        'CCJE_ext': 'Academic Colleges',
+        'CoM': 'Academic Colleges',
+        'GS': 'Academic Colleges',
+        'ULRC': 'Facilities & Services',
+        'UG': 'Facilities & Services',
+        'UC': 'Facilities & Services',
+        'Function': 'Facilities & Services',
+        'UPP': 'Facilities & Services',
+        'Motorpool': 'Facilities & Services',
+        'FC': 'Facilities & Services',
+        'Parking_Space': 'Facilities & Services',
+        'Restroom': 'Facilities & Services',
+        'BCSF': 'Medical & Training',
+        'AMTC': 'Medical & Training',
+        'LHS': 'Academic Colleges',
+        'LHS_ext': 'Academic Colleges',
+        'QMS': 'Admin & Offices',
+        'ULD': 'Facilities & Services',
+        'Field': 'Sports & Recreation',
+        'Bleacher': 'Sports & Recreation',
+        'OSAS': 'Admin & Offices',
+        'ROTC': 'Facilities & Services',
+        'DOST': 'Research & Innovation',
+        'TCL': 'Research & Innovation',
+        'Climate': 'Research & Innovation',
+        'MD_1': 'Dormitories',
+        'MD_2': 'Dormitories',
+        'MPC-Dorm': 'Dormitories',
+        'SKSU-MPC': 'Facilities & Services',
+        'Reg_Office': 'Admin & Offices',
+        'Alumni_Office': 'Admin & Offices',
+        'GS-SBO': 'Admin & Offices',
+        'GS-ext': 'Academic Colleges',
+        'Univesity_AVR': 'Facilities & Services',
+        'TIP_center': 'Research & Innovation',
+        'Agri_bldg_1': 'Academic Colleges',
+        'Agri_bldg_2': 'Academic Colleges'
+    };
+    
+    const categoryIcons = {
+        'Academic Colleges': '🎓',
+        'Admin & Offices': '🏛️',
+        'Facilities & Services': '🏢',
+        'Medical & Training': '🏥',
+        'Sports & Recreation': '⚽',
+        'Research & Innovation': '🔬',
+        'Dormitories': '🏠'
+    };
+    
+    let searchHighlightIndex = -1;
+    let searchResults = [];
+    
+    const searchInput = document.getElementById('searchInput');
+    const searchDropdown = document.getElementById('searchDropdown');
+    
+    searchInput.addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        searchHighlightIndex = -1;
         
-        buildings.forEach(building => {
-            const buildingName = building.textContent.toLowerCase();
-            if (buildingName.includes(searchTerm)) {
-                building.style.display = '';
-            } else {
-                building.style.display = 'none';
+        if (searchTerm.length < 1) {
+            searchDropdown.classList.remove('active');
+            searchDropdown.innerHTML = '';
+            return;
+        }
+        
+        // Search through all buildings
+        searchResults = [];
+        
+        // Search in svgToDisplayName
+        for (const [svgId, displayName] of Object.entries(svgToDisplayName)) {
+            if (displayName.toLowerCase().includes(searchTerm) || svgId.toLowerCase().includes(searchTerm)) {
+                searchResults.push({
+                    id: svgId,
+                    name: displayName,
+                    category: buildingCategories[svgId] || 'Other'
+                });
             }
+        }
+        
+        // Remove duplicates
+        searchResults = searchResults.filter((v, i, a) => a.findIndex(t => t.id === v.id) === i);
+        
+        // Limit results
+        searchResults = searchResults.slice(0, 8);
+        
+        if (searchResults.length === 0) {
+            searchDropdown.innerHTML = '<div class="search-no-results">No buildings found</div>';
+            searchDropdown.classList.add('active');
+            return;
+        }
+        
+        // Build dropdown HTML
+        let html = '';
+        searchResults.forEach((result, index) => {
+            const icon = categoryIcons[result.category] || '📍';
+            html += `
+                <div class="search-item" data-index="${index}" data-id="${result.id}" onclick="selectSearchResult('${result.id}')">
+                    <div class="search-item-icon">${icon}</div>
+                    <div class="search-item-text">
+                        <div class="search-item-name">${highlightMatch(result.name, searchTerm)}</div>
+                        <div class="search-item-category">${result.category}</div>
+                    </div>
+                </div>
+            `;
         });
         
-        // Show/hide category headers based on visible buildings
-        categories.forEach(category => {
-            let nextElement = category.nextElementSibling;
-            let hasVisibleBuildings = false;
-            
-            while (nextElement && !nextElement.classList.contains('font-semibold')) {
-                if (nextElement.style.display !== 'none') {
-                    hasVisibleBuildings = true;
-                    break;
-                }
-                nextElement = nextElement.nextElementSibling;
-            }
-            
-            category.style.display = hasVisibleBuildings ? '' : 'none';
-        });
+        searchDropdown.innerHTML = html;
+        searchDropdown.classList.add('active');
     });
+    
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        const items = searchDropdown.querySelectorAll('.search-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            searchHighlightIndex = Math.min(searchHighlightIndex + 1, items.length - 1);
+            updateSearchHighlight(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            searchHighlightIndex = Math.max(searchHighlightIndex - 1, 0);
+            updateSearchHighlight(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (searchHighlightIndex >= 0 && searchResults[searchHighlightIndex]) {
+                selectSearchResult(searchResults[searchHighlightIndex].id);
+            } else if (searchResults.length > 0) {
+                selectSearchResult(searchResults[0].id);
+            }
+        } else if (e.key === 'Escape') {
+            searchDropdown.classList.remove('active');
+            searchInput.blur();
+        }
+    });
+    
+    function updateSearchHighlight(items) {
+        items.forEach((item, idx) => {
+            if (idx === searchHighlightIndex) {
+                item.classList.add('highlighted');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('highlighted');
+            }
+        });
+    }
+    
+    function highlightMatch(text, term) {
+        const regex = new RegExp(`(${term})`, 'gi');
+        return text.replace(regex, '<strong style="color: var(--primary);">$1</strong>');
+    }
+    
+    function selectSearchResult(buildingId) {
+        searchDropdown.classList.remove('active');
+        searchInput.value = '';
+        searchInput.blur();
+        navigateTo(buildingId);
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#searchContainer')) {
+            searchDropdown.classList.remove('active');
+        }
+    });
+    
+    // ============================================
+    // ACCESSIBILITY FUNCTIONS
+    // ============================================
+    
+    function toggleAccessibilityPanel() {
+        const panel = document.getElementById('accessibilityPanel');
+        panel.classList.toggle('active');
+    }
+    
+    function toggleLargeText() {
+        const toggle = document.getElementById('toggleLargeText');
+        toggle.classList.toggle('active');
+        document.body.classList.toggle('large-text');
+        safeLocalStorage.setItem('largeText', toggle.classList.contains('active'));
+    }
+    
+    function toggleHighContrast() {
+        const toggle = document.getElementById('toggleHighContrast');
+        toggle.classList.toggle('active');
+        document.body.classList.toggle('high-contrast');
+        safeLocalStorage.setItem('highContrast', toggle.classList.contains('active'));
+    }
+    
+    function toggleReducedMotion() {
+        const toggle = document.getElementById('toggleReducedMotion');
+        toggle.classList.toggle('active');
+        window.reducedMotion = toggle.classList.contains('active');
+        safeLocalStorage.setItem('reducedMotion', toggle.classList.contains('active'));
+    }
+    
+    function resetAccessibility() {
+        document.body.classList.remove('large-text', 'high-contrast');
+        window.reducedMotion = false;
+        document.getElementById('toggleLargeText').classList.remove('active');
+        document.getElementById('toggleHighContrast').classList.remove('active');
+        document.getElementById('toggleReducedMotion').classList.remove('active');
+        safeLocalStorage.removeItem('largeText');
+        safeLocalStorage.removeItem('highContrast');
+        safeLocalStorage.removeItem('reducedMotion');
+    }
+    
+    // Load saved accessibility settings
+    function loadAccessibilitySettings() {
+        if (safeLocalStorage.getItem('largeText') === 'true') {
+            document.getElementById('toggleLargeText').classList.add('active');
+            document.body.classList.add('large-text');
+        }
+        if (safeLocalStorage.getItem('highContrast') === 'true') {
+            document.getElementById('toggleHighContrast').classList.add('active');
+            document.body.classList.add('high-contrast');
+        }
+        if (safeLocalStorage.getItem('reducedMotion') === 'true') {
+            document.getElementById('toggleReducedMotion').classList.add('active');
+            window.reducedMotion = true;
+        }
+    }
+    
+    // Close accessibility panel when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#accessibilityPanel') && !e.target.closest('[onclick*="toggleAccessibilityPanel"]')) {
+            document.getElementById('accessibilityPanel').classList.remove('active');
+        }
+    });
+    
+    // ============================================
+    // WALKING TIME CALCULATION
+    // ============================================
+    
+    // Scale factor: 1 SVG unit ≈ 1 meter (approximate campus scale)
+    const METERS_PER_SVG_UNIT = 1.5;
+    const WALKING_SPEED_MPS = 1.2; // Average walking speed: 1.2 m/s (~4.3 km/h)
+    
+    function calculateWalkingTime(pathLength) {
+        const distanceMeters = pathLength * METERS_PER_SVG_UNIT;
+        const timeSeconds = distanceMeters / WALKING_SPEED_MPS;
+        const timeMinutes = Math.ceil(timeSeconds / 60);
+        
+        return {
+            distance: Math.round(distanceMeters),
+            minutes: Math.max(1, timeMinutes) // Minimum 1 minute
+        };
+    }
+    
+    function showWalkingTime(pathLength) {
+        const { distance, minutes } = calculateWalkingTime(pathLength);
+        
+        const badge = document.getElementById('walkingTimeBadge');
+        const timeValue = document.getElementById('walkingTimeValue');
+        const distanceEl = document.getElementById('walkingDistance');
+        
+        timeValue.textContent = `~${minutes} min`;
+        distanceEl.textContent = `~${distance}m`;
+        
+        badge.classList.add('active');
+    }
+    
+    function hideWalkingTime() {
+        document.getElementById('walkingTimeBadge').classList.remove('active');
+    }
     
     // Map SVG building IDs to database building names
     const buildingNameMap = {
@@ -1255,6 +3739,9 @@
     
     // Add click handlers to SVG buildings
     document.addEventListener('DOMContentLoaded', function() {
+        // Load accessibility settings
+        loadAccessibilitySettings();
+        
         // Preload all building images immediately on page load
         preloadAllBuildingImages();
         
@@ -1284,20 +3771,9 @@
                         hint.style.display = 'none';
                     }
                     
-                    // Get display name for navigation
+                    // Get display name for navigation and show popup when clicking on map
                     const displayName = svgToDisplayName[buildingId] || buildingId;
-                    navigateTo(displayName);
-                    
-                    // Show building details in sidebar
-                    // Use building code (from fullinfo.json building_id) to match
-                    const building = buildings.find(b => b.code === buildingId);
-                    if (building) {
-                        showBuildingModal(building.id);
-                    } else {
-                        // Building exists in map but not in database yet
-                        console.warn('Building not found in database with code:', buildingId);
-                        showBuildingNotAvailable(svgToDisplayName[buildingId] || buildingId);
-                    }
+                    navigateTo(displayName, true); // true = show popup
                 });
                 
                 // Add hover tooltip functionality
@@ -1312,7 +3788,8 @@
                     }
                 });
                 
-                element.addEventListener('mousemove', function(e) {
+                // Throttled mousemove for better performance
+                const handleMouseMove = throttle(function(e) {
                     if (editMode) return;
                     
                     const tooltip = document.getElementById('buildingTooltip');
@@ -1324,7 +3801,9 @@
                         tooltip.style.left = (e.clientX + offsetX) + 'px';
                         tooltip.style.top = (e.clientY + offsetY) + 'px';
                     }
-                });
+                }, 16); // ~60fps
+                
+                element.addEventListener('mousemove', handleMouseMove, { passive: true });
                 
                 element.addEventListener('mouseleave', function(e) {
                     const tooltip = document.getElementById('buildingTooltip');
@@ -1339,251 +3818,570 @@
     async function showBuildingModal(buildingId) {
         if (editMode) return;
         
-        // Hide legend, show building details
-        document.getElementById('legendView').style.display = 'none';
-        document.getElementById('buildingDetailsView').style.display = 'flex';
+        // Store current building ID for details window
+        window.currentBuildingId = buildingId;
         
-        // Animate cabinet toggle sliding from hidden (inside sidebar) to visible (on map)
-        const cabinetToggle = document.getElementById('cabinetToggle');
-        if (cabinetToggle) {
-            setTimeout(() => {
-                cabinetToggle.style.left = '0px';
-                cabinetToggle.style.opacity = '1';
-            }, 100);
-        }
-        
-        // Show loading
-        document.getElementById('buildingDetailTitle').textContent = 'Loading...';
-        document.getElementById('buildingDetailContent').innerHTML = `
-            <div class="flex items-center justify-center py-12">
-                <div class="loading-spinner"></div>
-                <p class="ml-4 text-gray-600">Loading...</p>
-            </div>
-        `;
+        // Show building preview popup instead of sidebar
+        const popup = document.getElementById('buildingPreviewPopup');
+        popup.classList.remove('hidden');
         
         try {
-            // Fetch full building data with offices and services from API
+            // Fetch building data
             const response = await fetch(`/api/buildings/${buildingId}`);
             if (!response.ok) {
                 throw new Error('Building not found');
             }
             
             const building = await response.json();
-        
-        document.getElementById('modalTitle').textContent = building.name;
-        
-        let content = '';
-        
-        // Image Gallery with Swiper
-        const gallery = building.image_gallery || [];
-        const hasMainImage = building.image_path;
-        
-        // Build image sources list (JPG default, PNG fallback, then DB images)
-        const publicImageJpg = `/images/buildings/${building.code}.jpg`;
-        const publicImagePng = `/images/buildings/${building.code}.png`;
-        
-        const allImages = [];
-        
-        // Add public images with fallback chain
-        allImages.push({src: publicImageJpg, isPublic: true, fallback: publicImagePng});
-        
-        if (hasMainImage) {
-            allImages.push({src: building.image_path, isPublic: false});
-        }
-        if (gallery.length > 0) {
-            gallery.forEach(img => allImages.push({src: img, isPublic: false}));
-        }
-        
-        // Build image gallery HTML - use cached images if available
-        let imageHtml = '';
-        let hasAnyValidImage = false;
-        
-        allImages.forEach((img, index) => {
-            const imgSrc = img.isPublic ? img.src : `/storage/${img.src}`;
-            const fallbackSrc = img.fallback || '';
             
-            // Check if image is cached (exists)
-            const primaryCached = imageCache.has(imgSrc);
-            const fallbackCached = fallbackSrc && imageCache.has(fallbackSrc);
-            const isCached = primaryCached || fallbackCached;
+            // Update popup content
+            document.getElementById('previewBuildingName').textContent = building.name;
             
-            // If caching already ran and image is not cached, skip it (doesn't exist)
-            if (imagesPreloaded && !isCached) {
-                return; // Skip this image entirely
+            // Handle image
+            const publicImageJpg = `/images/buildings/${building.code}.jpg`;
+            const publicImagePng = `/images/buildings/${building.code}.png`;
+            const previewImage = document.getElementById('previewBuildingImage');
+            const placeholder = document.getElementById('previewImagePlaceholder');
+            
+            // Check cached images
+            const jpgCached = imageCache.has(publicImageJpg);
+            const pngCached = imageCache.has(publicImagePng);
+            const dbImageCached = building.image_path && imageCache.has(`/storage/${building.image_path}`);
+            
+            if (jpgCached || pngCached || dbImageCached) {
+                let imgSrc = jpgCached ? publicImageJpg : (pngCached ? publicImagePng : `/storage/${building.image_path}`);
+                previewImage.src = imgSrc;
+                previewImage.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else {
+                previewImage.style.display = 'none';
+                placeholder.style.display = 'flex';
             }
             
-            hasAnyValidImage = true;
+            // Update summary
+            const officeCount = building.offices ? building.offices.length : 0;
+            let serviceCount = 0;
+            if (building.offices) {
+                building.offices.forEach(office => {
+                    if (office.services) serviceCount += office.services.length;
+                });
+            }
             
-            // Use the cached image's src (already loaded and ready)
-            const finalSrc = primaryCached ? imgSrc : (fallbackCached ? fallbackSrc : imgSrc);
+            document.getElementById('previewOfficeCount').innerHTML = `
+                <span class="inline-flex items-center gap-1"><strong>${officeCount}</strong> ${officeCount === 1 ? 'Office' : 'Offices'}</span>
+                <span class="mx-2">•</span>
+                <span class="inline-flex items-center gap-1"><strong>${serviceCount}</strong> ${serviceCount === 1 ? 'Service' : 'Services'}</span>
+            `;
             
-            imageHtml += `
-                <div class="swiper-slide" id="slide-${index}" style="position: relative; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);">
-                    <img src="${finalSrc}" 
-                         style="opacity: 1;"
-                         class="building-detail-image w-full h-full object-cover rounded-lg">
+        } catch (error) {
+            console.error('Error loading building:', error);
+            document.getElementById('previewBuildingName').textContent = 'Error loading building';
+            document.getElementById('previewOfficeCount').textContent = error.message;
+        }
+    }
+    
+    function closeBuildingPreview(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('buildingPreviewPopup').classList.add('hidden');
+    }
+    
+    // Tab navigation state
+    let currentDetailsTab = 0;
+    const tabNames = ['overview', 'offices', 'services', 'heads'];
+    const tabLabels = ['Overview', 'Offices', 'Services', 'Office Heads'];
+    let currentBuildingData = null;
+    
+    async function openBuildingDetailsModal() {
+        if (!window.currentBuildingId) return;
+        
+        // Close preview and show details modal
+        closeBuildingPreview();
+        const modal = document.getElementById('buildingDetailsModal');
+        modal.classList.remove('hidden');
+        
+        // Reset to first tab
+        currentDetailsTab = 0;
+        updateTabUI();
+        
+        // Show loading state in overview
+        document.getElementById('panel-overview').innerHTML = `
+            <div class="flex items-center justify-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent"></div>
+            </div>
+        `;
+        
+        try {
+            // Fetch building data with offices and services
+            const response = await fetch(`/api/buildings/${window.currentBuildingId}`);
+            if (!response.ok) throw new Error('Building not found');
+            
+            const building = await response.json();
+            currentBuildingData = building;
+            
+            // Update modal title
+            document.getElementById('detailsModalTitle').textContent = building.name;
+            
+            // Calculate counts
+            const offices = building.offices || [];
+            let allServices = [];
+            let allHeads = [];
+            
+            offices.forEach(office => {
+                if (office.services) {
+                    office.services.forEach(s => {
+                        allServices.push({ ...s, officeName: office.name });
+                    });
+                }
+                if (office.head_name) {
+                    allHeads.push({
+                        name: office.head_name,
+                        title: office.head_title,
+                        officeName: office.name,
+                        floor: office.floor_number
+                    });
+                }
+            });
+            
+            // Update badge counts
+            document.getElementById('officeCountBadge').textContent = offices.length;
+            document.getElementById('serviceCountBadge').textContent = allServices.length;
+            document.getElementById('headsCountBadge').textContent = allHeads.length;
+            document.getElementById('detailsModalSubtitle').textContent = 
+                `${offices.length} offices • ${allServices.length} services • ${allHeads.length} heads`;
+            
+            // Build Overview Tab
+            buildOverviewTab(building);
+            
+            // Build Offices Tab
+            buildOfficesTab(offices);
+            
+            // Build Services Tab
+            buildServicesTab(allServices);
+            
+            // Build Heads Tab
+            buildHeadsTab(allHeads);
+            
+            // Setup swipe gestures
+            setupSwipeGestures();
+            
+        } catch (error) {
+            console.error('Error loading building details:', error);
+            document.getElementById('panel-overview').innerHTML = `
+                <div class="text-center py-12">
+                    <svg class="mx-auto h-16 w-16 text-red-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <p class="text-gray-600 text-lg">Failed to load building details</p>
+                    <p class="text-gray-400">${error.message}</p>
                 </div>
             `;
-        });
+        }
+    }
+    
+    function buildOverviewTab(building) {
+        let html = '';
         
-        // If no valid images after caching check, show placeholder immediately
-        if (imagesPreloaded && !hasAnyValidImage) {
-            content += `
-                <div id="placeholder-container" class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg items-center justify-center border-2 border-dashed" style="border-color: #248823; height: 12rem; display: flex; transition: height 0.5s ease;">
-                    <div class="text-center">
-                        <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                        <p class="text-gray-600 font-medium">${building.name}</p>
-                        <p class="text-gray-400 text-sm">Image not available</p>
-                    </div>
+        // Building Image
+        const publicImageJpg = `/images/buildings/${building.code}.jpg`;
+        const publicImagePng = `/images/buildings/${building.code}.png`;
+        const hasImage = imageCache.has(publicImageJpg) || imageCache.has(publicImagePng) || building.image_path;
+        
+        if (hasImage) {
+            let imgSrc = imageCache.has(publicImageJpg) ? publicImageJpg : 
+                        (imageCache.has(publicImagePng) ? publicImagePng : `/storage/${building.image_path}`);
+            html += `
+                <div class="mb-6 rounded-xl overflow-hidden shadow-lg" style="height: 250px;">
+                    <img src="${imgSrc}" alt="${building.name}" class="w-full h-full object-cover" 
+                         onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full bg-gradient-to-br from-green-50 to-green-100\\'><svg class=\\'w-20 h-20 text-green-300\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4\\'></path></svg></div>'">
                 </div>
             `;
         } else {
-            // Image section (expands when cabinet expanded)
-            content += `
-                <div id="image-container-0" class="relative mb-4" style="height: 12rem; transition: height 0.5s ease;">
-                    <div class="swiper buildingGallerySwiper" style="height: 100%;">
-                        <div class="swiper-wrapper">
-                            ${imageHtml}
-                        </div>
-                        ${allImages.length > 1 ? `
-                            <div class="swiper-button-next" style="color: #248823;"></div>
-                            <div class="swiper-button-prev" style="color: #248823;"></div>
-                            <div class="swiper-pagination"></div>
-                        ` : ''}
-                    </div>
-                    ${allImages.length > 1 ? `
-                        <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
-                            <span class="swiper-current">1</span> / <span class="swiper-total">${allImages.length}</span>
-                        </div>
-                    ` : ''}
-                </div>
-                <div id="placeholder-container" class="relative mb-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg items-center justify-center border-2 border-dashed" style="border-color: #248823; height: 12rem; display: none; transition: height 0.5s ease;">
+            html += `
+                <div class="mb-6 rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center" style="height: 200px;">
                     <div class="text-center">
-                        <svg class="w-16 h-16 mx-auto mb-2" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-20 h-20 mx-auto text-green-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
-                        <p class="text-gray-600 font-medium">${building.name}</p>
-                        <p class="text-gray-400 text-sm">Image not available</p>
+                        <p class="text-green-400 text-sm">No image available</p>
                     </div>
                 </div>
             `;
         }
         
-        // Scrollable details container
-        content += `<div id="detailsScrollContainer" class="" style="overflow-y: auto;">`;
+        // Quick Stats
+        const offices = building.offices || [];
+        let serviceCount = 0;
+        let headCount = 0;
+        offices.forEach(o => {
+            if (o.services) serviceCount += o.services.length;
+            if (o.head_name) headCount++;
+        });
+        
+        html += `
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-blue-50 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-blue-600">${offices.length}</div>
+                    <div class="text-sm text-blue-500">Offices</div>
+                </div>
+                <div class="bg-green-50 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-green-600">${serviceCount}</div>
+                    <div class="text-sm text-green-500">Services</div>
+                </div>
+                <div class="bg-purple-50 rounded-xl p-4 text-center">
+                    <div class="text-3xl font-bold text-purple-600">${headCount}</div>
+                    <div class="text-sm text-purple-500">Office Heads</div>
+                </div>
+            </div>
+        `;
         
         // Building Description
         if (building.description) {
-            content += `
-                <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-4 mb-6 border-l-4" style="border-color: #248823;">
-                    <p class="text-gray-700">${building.description}</p>
-                </div>
-            `;
-        }
-        
-        // Offices (hidden by default, shown when expanded)
-        if (building.offices && building.offices.length > 0) {
-            content += `
-                <div id="officesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
-                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                        Offices
+            html += `
+                <div class="bg-gray-50 rounded-xl p-5 mb-6">
+                    <h3 class="text-lg font-bold mb-3 flex items-center gap-2" style="color: #248823;">
+                        <span>📋</span> About This Building
                     </h3>
-                    <div class="space-y-2">
-                        ${building.offices.map(office => `
-                            <div class="bg-white rounded-lg p-3 border-l-4" style="border-color: #248823;">
-                                <div class="font-medium text-gray-800">${office.name}</div>
-                                ${office.description ? `<div class="text-sm text-gray-600 mt-1">${office.description}</div>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
+                    <p class="text-gray-700 leading-relaxed">${building.description}</p>
                 </div>
             `;
         }
         
-        // Services (hidden by default, shown when expanded)
-        if (building.services && building.services.length > 0) {
-            content += `
-                <div id="servicesSection" class="mb-6" style="display: none; opacity: 0; transform: translateY(-10px); transition: opacity 0.5s ease, transform 0.5s ease;">
-                    <h3 class="text-lg font-semibold mb-3 flex items-center gap-2" style="color: #248823;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                        </svg>
-                        Services
-                    </h3>
-                    <div class="space-y-2">
-                        ${building.services.map(service => `
-                            <div class="bg-white rounded-lg p-3 border-l-4" style="border-color: #248823;">
-                                <div class="font-medium text-gray-800">${service.name}</div>
-                                ${service.description ? `<div class="text-sm text-gray-600 mt-1">${service.description}</div>` : ''}
+        // Quick Links to other tabs
+        html += `
+            <div class="bg-white border border-gray-200 rounded-xl p-5">
+                <h3 class="text-lg font-bold mb-4 text-gray-800">Quick Navigation</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button onclick="switchDetailsTab('offices')" class="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg text-left transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-blue-500 rounded-lg text-white group-hover:scale-110 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
                             </div>
-                        `).join('')}
-                    </div>
+                            <div>
+                                <div class="font-semibold text-gray-800">View Offices</div>
+                                <div class="text-sm text-gray-500">${offices.length} available</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button onclick="switchDetailsTab('services')" class="p-4 bg-green-50 hover:bg-green-100 rounded-lg text-left transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-green-500 rounded-lg text-white group-hover:scale-110 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800">View Services</div>
+                                <div class="text-sm text-gray-500">${serviceCount} available</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button onclick="switchDetailsTab('heads')" class="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg text-left transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-purple-500 rounded-lg text-white group-hover:scale-110 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-800">Office Heads</div>
+                                <div class="text-sm text-gray-500">${headCount} personnel</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('panel-overview').innerHTML = html;
+    }
+    
+    function buildOfficesTab(offices) {
+        let html = '';
+        
+        if (offices.length === 0) {
+            html = `
+                <div class="text-center py-16">
+                    <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No offices listed</p>
+                    <p class="text-gray-400 text-sm">This building's office information is being updated</p>
                 </div>
             `;
+        } else {
+            html = `<div class="space-y-4">`;
+            offices.forEach((office, index) => {
+                const serviceCount = office.services ? office.services.length : 0;
+                html += `
+                    <div class="office-card rounded-xl p-5">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="flex items-center justify-center w-8 h-8 rounded-full text-white text-sm font-bold" style="background: #248823;">${index + 1}</span>
+                                    <h4 class="font-bold text-xl text-gray-800">${office.name}</h4>
+                                </div>
+                                ${office.floor_number ? `
+                                    <p class="text-gray-500 text-sm flex items-center gap-2 ml-11">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        </svg>
+                                        Floor ${office.floor_number}
+                                    </p>
+                                ` : ''}
+                            </div>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    ${serviceCount} ${serviceCount === 1 ? 'Service' : 'Services'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        ${office.head_name ? `
+                            <div class="ml-11 mb-3 p-3 bg-white rounded-lg border border-gray-200">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-1">Office Head</p>
+                                <p class="font-semibold text-gray-800">${office.head_name}</p>
+                                ${office.head_title ? `<p class="text-sm text-gray-500">${office.head_title}</p>` : ''}
+                            </div>
+                        ` : ''}
+                        
+                        ${serviceCount > 0 ? `
+                            <div class="ml-11 mt-3">
+                                <p class="text-xs text-gray-400 uppercase tracking-wide mb-2">Services Offered</p>
+                                <div class="flex flex-wrap gap-2">
+                                    ${office.services.slice(0, 4).map(s => `
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">
+                                            <span class="text-green-500">✓</span> ${s.description.substring(0, 30)}${s.description.length > 30 ? '...' : ''}
+                                        </span>
+                                    `).join('')}
+                                    ${serviceCount > 4 ? `<span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">+${serviceCount - 4} more</span>` : ''}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            html += `</div>`;
         }
         
-        // Close details scroll container
-        content += `</div>`;
+        document.getElementById('panel-offices').innerHTML = html;
+    }
+    
+    function buildServicesTab(services) {
+        let html = '';
         
-            document.getElementById('buildingDetailTitle').textContent = building.name;
-            document.getElementById('buildingDetailContent').innerHTML = content;
+        if (services.length === 0) {
+            html = `
+                <div class="text-center py-16">
+                    <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No services listed</p>
+                    <p class="text-gray-400 text-sm">Service information is being updated</p>
+                </div>
+            `;
+        } else {
+            // Group services by office
+            const grouped = {};
+            services.forEach(s => {
+                if (!grouped[s.officeName]) grouped[s.officeName] = [];
+                grouped[s.officeName].push(s);
+            });
             
-            // Initialize Swiper immediately (images load asynchronously)
-            if (allImages.length > 1) {
-                setTimeout(() => {
-                    new Swiper('.buildingGallerySwiper', {
-                        loop: true,
-                        lazy: {
-                            loadPrevNext: true,
-                            loadPrevNextAmount: 2,
-                        },
-                        preloadImages: false,
-                        navigation: {
-                            nextEl: '.swiper-button-next',
-                            prevEl: '.swiper-button-prev',
-                        },
-                        pagination: {
-                            el: '.swiper-pagination',
-                            clickable: true,
-                        },
-                        on: {
-                            slideChange: function() {
-                                const current = document.querySelector('.swiper-current');
-                                if (current) {
-                                    current.textContent = this.realIndex + 1;
-                                }
-                            }
-                        }
-                    });
-                }, 100);
+            html = `
+                <div class="mb-4 p-4 bg-green-50 rounded-xl">
+                    <p class="text-green-700 text-sm">
+                        <strong>${services.length}</strong> services available across <strong>${Object.keys(grouped).length}</strong> offices
+                    </p>
+                </div>
+            `;
+            
+            Object.keys(grouped).forEach(officeName => {
+                html += `
+                    <div class="mb-6">
+                        <h4 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5" style="color: #248823;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
+                            </svg>
+                            ${officeName}
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${grouped[officeName].map(s => `
+                                <div class="service-card rounded-lg p-4">
+                                    <div class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm">✓</span>
+                                        <p class="text-gray-700 text-sm">${s.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        document.getElementById('panel-services').innerHTML = html;
+    }
+    
+    function buildHeadsTab(heads) {
+        let html = '';
+        
+        if (heads.length === 0) {
+            html = `
+                <div class="text-center py-16">
+                    <svg class="mx-auto h-16 w-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No office heads listed</p>
+                    <p class="text-gray-400 text-sm">Personnel information is being updated</p>
+                </div>
+            `;
+        } else {
+            html = `
+                <div class="mb-4 p-4 bg-purple-50 rounded-xl">
+                    <p class="text-purple-700 text-sm">
+                        <strong>${heads.length}</strong> office heads in this building
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            `;
+            
+            heads.forEach(head => {
+                html += `
+                    <div class="head-card rounded-xl p-5">
+                        <div class="flex items-start gap-4">
+                            <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
+                                ${head.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 text-lg">${head.name}</h4>
+                                ${head.title ? `<p class="text-green-600 text-sm font-medium">${head.title}</p>` : ''}
+                                <div class="mt-2 flex items-center gap-2 text-gray-500 text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
+                                    </svg>
+                                    ${head.officeName}
+                                </div>
+                                ${head.floor ? `
+                                    <div class="flex items-center gap-2 text-gray-400 text-xs mt-1">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        </svg>
+                                        Floor ${head.floor}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+        
+        document.getElementById('panel-heads').innerHTML = html;
+    }
+    
+    function switchDetailsTab(tabName) {
+        const index = tabNames.indexOf(tabName);
+        if (index !== -1) {
+            currentDetailsTab = index;
+            updateTabUI();
+        }
+    }
+    
+    function updateTabUI() {
+        // Show/hide panels (simple approach - no sliding, guaranteed scrolling)
+        tabNames.forEach((name, index) => {
+            const panel = document.getElementById(`panel-${name}`);
+            if (index === currentDetailsTab) {
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
             }
-            
-            // Check if all images failed after giving them time to load
-            setTimeout(() => {
-                const allSlides = document.querySelectorAll('.swiper-slide');
-                const visibleSlides = Array.from(allSlides).filter(slide => slide.style.display !== 'none');
-                
-                if (visibleSlides.length === 0) {
-                    // All images failed, show placeholder
-                    document.getElementById('image-container-0').style.display = 'none';
-                    document.getElementById('placeholder-container').style.display = 'flex';
-                }
-            }, 2000);
-        } catch (error) {
-            console.error('Error loading building:', error);
-            document.getElementById('buildingDetailTitle').textContent = 'Error';
-            document.getElementById('buildingDetailContent').innerHTML = `
-                <div class="text-center py-12">
-                    <p class="text-red-500 text-lg font-semibold mb-2">⚠️ Failed to load building information</p>
-                    <p class="text-gray-600">${error.message}</p>
-                </div>
-            `;
+        });
+        
+        // Update tab buttons
+        tabNames.forEach((name, index) => {
+            const tab = document.getElementById(`tab-${name}`);
+            if (index === currentDetailsTab) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        
+        // Update swipe dots
+        document.querySelectorAll('.swipe-dot').forEach((dot, index) => {
+            if (index === currentDetailsTab) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+        
+        // Update current tab label
+        document.getElementById('currentTabLabel').textContent = tabLabels[currentDetailsTab];
+        
+        // Update prev/next buttons
+        const prevBtn = document.getElementById('prevTabBtn');
+        const nextBtn = document.getElementById('nextTabBtn');
+        
+        if (currentDetailsTab === 0) {
+            prevBtn.disabled = true;
+            prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+            prevBtn.disabled = false;
+            prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
         }
+        
+        if (currentDetailsTab === tabNames.length - 1) {
+            nextBtn.innerHTML = `Close <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+            nextBtn.onclick = closeBuildingDetailsModal;
+        } else {
+            nextBtn.innerHTML = `Next <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>`;
+            nextBtn.onclick = nextDetailsTab;
+        }
+    }
+    
+    function prevDetailsTab() {
+        if (currentDetailsTab > 0) {
+            currentDetailsTab--;
+            updateTabUI();
+        }
+    }
+    
+    function nextDetailsTab() {
+        if (currentDetailsTab < tabNames.length - 1) {
+            currentDetailsTab++;
+            updateTabUI();
+        }
+    }
+    
+    function setupSwipeGestures() {
+        // ONLY attach swipe detection to the tab slider header area, NOT the content
+        // This allows normal scrolling in the content panels
+        
+        // Swipe dot clicks
+        document.querySelectorAll('.swipe-dot').forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentDetailsTab = index;
+                updateTabUI();
+            });
+        });
+        
+        // Keyboard navigation for accessibility
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('buildingDetailsModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                if (e.key === 'ArrowLeft') {
+                    prevDetailsTab();
+                } else if (e.key === 'ArrowRight') {
+                    nextDetailsTab();
+                }
+            }
+        });
+    }
+    
+    function closeBuildingDetailsModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('buildingDetailsModal').classList.add('hidden');
+        currentBuildingData = null;
     }
     
     function clearNavigationPath() {
@@ -1596,144 +4394,10 @@
         
         const navMarkers = document.getElementById('navMarkers');
         if (navMarkers) navMarkers.remove();
+        
+        // Hide walking time badge
+        hideWalkingTime();
     }
-    
-    function closeBuildingDetails() {
-        // If cabinet is expanded, collapse it first
-        if (cabinetExpanded) {
-            toggleCabinet();
-        }
-        
-        // Reset cabinet toggle to hidden position
-        const cabinetToggle = document.getElementById('cabinetToggle');
-        if (cabinetToggle) {
-            cabinetToggle.style.left = '40px';
-            cabinetToggle.style.opacity = '1';
-        }
-        
-        // Clear navigation path and reset selected building
-        clearNavigationPath();
-        
-        document.getElementById('buildingDetailsView').style.display = 'none';
-        document.getElementById('legendView').style.display = 'flex';
-    }
-    
-    // Toggle expandable cabinet
-    let cabinetExpanded = false;
-    function toggleCabinet() {
-        const chevron = document.getElementById('cabinetChevron');
-        const toggle = document.getElementById('cabinetToggle');
-        const wrapper = toggle.parentElement;
-        const mapContainer = document.getElementById('mapContainer');
-        const sidebarContainer = document.getElementById('sidebarContainer');
-        const officesSection = document.getElementById('officesSection');
-        const servicesSection = document.getElementById('servicesSection');
-        const imageContainer = document.getElementById('image-container-0');
-        const placeholderContainer = document.getElementById('placeholder-container');
-        const detailsScroll = document.getElementById('detailsScrollContainer');
-        const contentArea = document.getElementById('buildingDetailContent');
-        cabinetExpanded = !cabinetExpanded;
-        
-        if (cabinetExpanded) {
-            // Rotate chevron to point right
-            chevron.style.transform = 'rotate(180deg)';
-            // Remove wrapper clipping so chevron is visible
-            wrapper.style.overflow = 'visible';
-            // Move chevron to the right (now visible since no clipping)
-            toggle.style.left = '40px';
-            // Shift border radius to right side
-            toggle.style.borderRadius = '0 12px 12px 0';
-            // Expand sidebar to full width
-            mapContainer.style.flex = '0 0 0%';
-            sidebarContainer.style.flex = '0 0 100%';
-            
-            // Expand image to take more vertical space
-            if (imageContainer) {
-                imageContainer.style.height = '59vh';
-            }
-            if (placeholderContainer) {
-                placeholderContainer.style.height = '59vh';
-            }
-            
-            // Change image object-fit to fill (stretch) when expanded
-            const detailImages = document.querySelectorAll('.building-detail-image');
-            detailImages.forEach(img => {
-                img.style.objectFit = 'fill';
-            });
-            
-            // Set max height for scrollable details area
-            if (detailsScroll) {
-                const headerHeight = 80; // Approximate header height
-                const imageHeight = imageContainer ? imageContainer.offsetHeight : 0;
-                detailsScroll.style.maxHeight = `calc(100vh - ${headerHeight + imageHeight + 80}px)`;
-            }
-            
-            // Show offices and services with animation
-            if (officesSection) {
-                officesSection.style.display = 'block';
-                setTimeout(() => {
-                    officesSection.style.opacity = '1';
-                    officesSection.style.transform = 'translateY(0)';
-                }, 10);
-            }
-            if (servicesSection) {
-                servicesSection.style.display = 'block';
-                setTimeout(() => {
-                    servicesSection.style.opacity = '1';
-                    servicesSection.style.transform = 'translateY(0)';
-                }, 10);
-            }
-        } else {
-            // Rotate chevron back to point left
-            chevron.style.transform = 'rotate(0deg)';
-            // Restore wrapper clipping
-            wrapper.style.overflow = 'hidden';
-            // Move chevron back to visible position (on map)
-            toggle.style.left = '0px';
-            // Restore border radius to left side
-            toggle.style.borderRadius = '12px 0 0 12px';
-            // Restore original 60/40 distribution
-            mapContainer.style.flex = '0 0 60%';
-            sidebarContainer.style.flex = '0 0 40%';
-            
-            // Restore image to normal size
-            if (imageContainer) {
-                imageContainer.style.height = '12rem';
-            }
-            if (placeholderContainer) {
-                placeholderContainer.style.height = '12rem';
-            }
-            
-            // Change image object-fit back to cover when collapsed
-            const detailImages = document.querySelectorAll('.building-detail-image');
-            detailImages.forEach(img => {
-                img.style.objectFit = 'cover';
-            });
-            
-            // Remove max height constraint
-            if (detailsScroll) {
-                detailsScroll.style.maxHeight = 'none';
-            }
-            
-            // Hide offices and services with animation
-            if (officesSection) {
-                officesSection.style.opacity = '0';
-                officesSection.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    officesSection.style.display = 'none';
-                }, 500);
-            }
-            if (servicesSection) {
-                servicesSection.style.opacity = '0';
-                servicesSection.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    servicesSection.style.display = 'none';
-                }, 500);
-            }
-        }
-    }
-    
-    // Show message for buildings not yet in database
     function showBuildingNotAvailable(buildingName) {
         // Hide legend, show details view
         document.getElementById('legendView').style.display = 'none';
@@ -1784,6 +4448,608 @@
         document.getElementById('aboutModal').classList.remove('active');
     }
 
+    // Location Selector Functions
+    let customStartLocation = null;
+
+    // Utility: Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    // Path cache for navigation
+    let pathCache = {};
+
+    function findNearestIntersection(x, y) {
+        let nearest = 'gate';
+        let minDistance = Infinity;
+        
+        for (const [name, coords] of Object.entries(roadNetwork.intersections)) {
+            const dx = coords.x - x;
+            const dy = coords.y - y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = name;
+            }
+        }
+        
+        return nearest;
+    }
+
+    function openLocationSelector() {
+        console.log('Opening location selector...');
+        const modal = document.getElementById('locationSelectorModal');
+        if (!modal) {
+            console.error('Location selector modal not found!');
+            return;
+        }
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        
+        try {
+            populateLocationList();
+        } catch (error) {
+            console.error('Error populating location list:', error);
+        }
+        
+        const searchInput = document.getElementById('locationSearch');
+        if (searchInput) {
+            searchInput.value = '';
+            setTimeout(() => searchInput.focus(), 100);
+        }
+    }
+
+    function closeLocationSelector(event) {
+        if (event && event.target !== event.currentTarget) return;
+        console.log('Closing location selector...');
+        const modal = document.getElementById('locationSelectorModal');
+        if (!modal) return;
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    }
+
+    function populateLocationList() {
+        const listContainer = document.getElementById('locationBuildingList');
+        listContainer.innerHTML = '';
+
+        console.log('Total buildings:', buildings.length);
+        
+        // Filter buildings that have entries in navigationPoints
+        const navigableBuildings = buildings.filter(b => {
+            // Try to find the building in navigationPoints using code or name
+            const navPoint = navigationPoints[b.code] || navigationPoints[b.name];
+            const hasNavPoint = !!navPoint;
+            if (!hasNavPoint) {
+                console.log(`Building ${b.name} (${b.code}): No navigationPoint found`);
+            }
+            return hasNavPoint;
+        });
+        console.log('Buildings with navigation points:', navigableBuildings.length);
+
+        if (navigableBuildings.length === 0) {
+            listContainer.innerHTML = `
+                <div class="text-center py-8">
+                    <p class="text-gray-500">No buildings available for location selection.</p>
+                    <p class="text-xs text-gray-400 mt-2">Buildings need endpoint or map coordinates.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Group buildings by category
+        const categories = {};
+        navigableBuildings.forEach(building => {
+            const category = building.category || 'Other';
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push(building);
+        });
+
+        console.log('Categories:', Object.keys(categories));
+
+        // Render each category
+        Object.keys(categories).sort().forEach(category => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'mb-4';
+            
+            const categoryHeader = document.createElement('h3');
+            categoryHeader.className = 'text-sm font-bold text-gray-600 uppercase tracking-wide mb-2 px-2';
+            categoryHeader.textContent = category;
+            categoryDiv.appendChild(categoryHeader);
+
+            const buildingsInCategory = categories[category].sort((a, b) => 
+                a.name.localeCompare(b.name)
+            );
+
+            buildingsInCategory.forEach(building => {
+                // Get navigation point for this building
+                const navPoint = navigationPoints[building.code] || navigationPoints[building.name];
+                if (!navPoint) return;
+
+                const button = document.createElement('button');
+                button.className = 'location-item w-full flex items-center justify-between p-3.5 bg-white hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 rounded-xl transition-all duration-300 border-2 border-gray-100 hover:border-green-400 hover:shadow-lg mb-2.5 group relative';
+                button.style.transformStyle = 'preserve-3d';
+                button.dataset.buildingName = building.name;
+                button.dataset.buildingCode = building.code;
+                button.dataset.buildingX = navPoint.x;
+                button.dataset.buildingY = navPoint.y;
+                button.onclick = () => selectCustomLocation(building, navPoint);
+                button.onmouseenter = function() {
+                    this.style.transform = 'translateZ(8px) scale(1.02)';
+                    this.style.boxShadow = '0 12px 32px rgba(34, 197, 94, 0.25), 0 0 0 3px rgba(34, 197, 94, 0.15) inset';
+                    previewLocation(building.code, navPoint.x, navPoint.y);
+                };
+                button.onmouseleave = function() {
+                    this.style.transform = 'translateZ(0) scale(1)';
+                    this.style.boxShadow = '';
+                    clearPreview();
+                };
+
+                // Check if building has image
+                const imagePath = building.image || `/images/buildings/${building.code}.jpg`;
+
+                button.innerHTML = `
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-green-400/0 via-green-400/0 to-green-400/0 group-hover:from-green-400/10 group-hover:via-green-400/20 group-hover:to-green-400/10 transition-all duration-300 pointer-events-none" style="box-shadow: inset 0 0 30px rgba(34, 197, 94, 0);"></div>
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center">
+                            <img src="${imagePath}" alt="${building.name}" class="w-full h-full object-cover building-thumbnail" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="display:block;">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <div class="text-left flex-1">
+                            <div class="font-bold text-gray-800 text-base group-hover:text-green-700 transition-colors">${building.name}</div>
+                            ${building.description ? `<div class="text-xs text-gray-500 mt-0.5">${building.description.substring(0, 45)}${building.description.length > 45 ? '...' : ''}</div>` : '<div class="text-xs text-gray-400 mt-0.5">Tap to set as starting point</div>'}
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                `;
+
+                categoryDiv.appendChild(button);
+            });
+
+            listContainer.appendChild(categoryDiv);
+        });
+    }
+
+    // Debounced filter function
+    const filterLocationList = debounce(function() {
+        const searchTerm = document.getElementById('locationSearch').value.toLowerCase();
+        const items = document.querySelectorAll('.location-item');
+        
+        items.forEach(item => {
+            const buildingName = item.dataset.buildingName.toLowerCase();
+            if (buildingName.includes(searchTerm)) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }, 300);
+
+    function previewLocation(buildingCode, x, y) {
+        const svg = document.getElementById('campusMap');
+        
+        // Remove existing preview
+        const existingPreview = document.getElementById('locationPreview');
+        if (existingPreview) existingPreview.remove();
+
+        // Create preview highlight
+        const previewGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        previewGroup.setAttribute('id', 'locationPreview');
+
+        // Pulsing glow circle with enhanced 3D depth
+        const glowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        glowCircle.setAttribute('cx', x);
+        glowCircle.setAttribute('cy', y);
+        glowCircle.setAttribute('r', '15');
+        glowCircle.setAttribute('fill', 'none');
+        glowCircle.setAttribute('stroke', '#22c55e');
+        glowCircle.setAttribute('stroke-width', '3');
+        glowCircle.setAttribute('opacity', '0.8');
+        glowCircle.setAttribute('filter', 'drop-shadow(0 0 12px rgba(34, 197, 94, 0.8)) drop-shadow(0 0 24px rgba(34, 197, 94, 0.5))');
+        glowCircle.innerHTML = '<animate attributeName="r" from="12" to="25" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.8" to="0" dur="1.5s" repeatCount="indefinite"/>';
+        previewGroup.appendChild(glowCircle);
+
+        // Center dot with enhanced glow
+        const centerDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        centerDot.setAttribute('cx', x);
+        centerDot.setAttribute('cy', y);
+        centerDot.setAttribute('r', '6');
+        centerDot.setAttribute('fill', '#22c55e');
+        centerDot.setAttribute('stroke', '#ffffff');
+        centerDot.setAttribute('stroke-width', '2.5');
+        centerDot.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(34, 197, 94, 0.6)) drop-shadow(0 0 16px rgba(34, 197, 94, 0.4))');
+        centerDot.style.transform = 'translateZ(10px)';
+        centerDot.setAttribute('filter', 'drop-shadow(0 2px 6px rgba(34, 197, 94, 0.4))');
+        previewGroup.appendChild(centerDot);
+
+        svg.appendChild(previewGroup);
+
+        // Highlight building polygon if exists
+        const buildingPoly = document.querySelector(`[data-code="${buildingCode}"]`);
+        if (buildingPoly) {
+            buildingPoly.style.filter = 'drop-shadow(0 0 15px rgba(34, 197, 94, 0.8))';
+            buildingPoly.style.stroke = '#22c55e';
+            buildingPoly.style.strokeWidth = '3';
+        }
+    }
+
+    function clearPreview() {
+        const preview = document.getElementById('locationPreview');
+        if (preview) preview.remove();
+
+        // Remove building highlight
+        document.querySelectorAll('[data-code]').forEach(poly => {
+            poly.style.filter = '';
+            poly.style.stroke = '';
+            poly.style.strokeWidth = '';
+        });
+    }
+
+    function selectCustomLocation(building, navPoint) {
+        // Validate inputs
+        if (!building || !navPoint) {
+            console.error('Invalid building or navigation point');
+            showToast('❌ Error setting location', 'error');
+            return;
+        }
+        
+        if (!navPoint.x || !navPoint.y || !navPoint.roadConnection) {
+            console.error('Invalid navigation point data:', navPoint);
+            showToast('❌ Invalid location data', 'error');
+            return;
+        }
+        
+        // Verify road connection exists
+        if (!roadNetwork.intersections[navPoint.roadConnection]) {
+            console.error('Road connection not found:', navPoint.roadConnection);
+            showToast('❌ Invalid road connection', 'error');
+            return;
+        }
+
+        // Set custom start location
+        customStartLocation = {
+            name: building.name,
+            code: building.code,
+            x: parseFloat(navPoint.x),
+            y: parseFloat(navPoint.y),
+            roadConnection: navPoint.roadConnection
+        };
+
+        // Update button text with animation and change badge color
+        const locationText = document.getElementById('currentLocationText');
+        const locationBadge = document.getElementById('currentLocationBadge');
+        
+        if (!locationText || !locationBadge) {
+            console.error('Location UI elements not found');
+            return;
+        }
+        
+        locationText.style.opacity = '0';
+        setTimeout(() => {
+            locationText.textContent = building.name;
+            locationText.style.opacity = '1';
+            locationBadge.style.opacity = '1';
+            // Change badge to blue/orange gradient
+            locationBadge.style.background = 'linear-gradient(135deg, #3b82f6 0%, #f97316 100%)';
+        }, 150);
+
+        // Save to localStorage first (before animations)
+        safeLocalStorage.setItem('customStartLocation', JSON.stringify(customStartLocation));
+
+        // Clear any existing navigation path
+        const existingPath = document.getElementById('navPath');
+        if (existingPath) existingPath.remove();
+        const existingMarkers = document.getElementById('navMarkers');
+        if (existingMarkers) existingMarkers.remove();
+        const existingDebugPath = document.getElementById('debugRoadPath');
+        if (existingDebugPath) existingDebugPath.remove();
+
+        // Show custom location marker on map (with pulse effect for visibility)
+        try {
+            showCustomLocationMarker();
+            
+            // Temporarily highlight the area with enhanced 3D expanding circle
+            const svg = document.getElementById('campusMap');
+            const highlightCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            highlightCircle.setAttribute('cx', customStartLocation.x);
+            highlightCircle.setAttribute('cy', customStartLocation.y);
+            highlightCircle.setAttribute('r', '15');
+            highlightCircle.setAttribute('fill', 'none');
+            highlightCircle.setAttribute('stroke', '#3b82f6');
+            highlightCircle.setAttribute('stroke-width', '4');
+            highlightCircle.setAttribute('opacity', '0.9');
+            highlightCircle.setAttribute('filter', 'drop-shadow(0 0 16px rgba(59, 130, 246, 0.8)) drop-shadow(0 4px 12px rgba(59, 130, 246, 0.5))');
+            highlightCircle.setAttribute('id', 'locationHighlight');
+            highlightCircle.style.transform = 'translateZ(15px)';
+            
+            // Animate the highlight circle with smooth expansion
+            const animation = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+            animation.setAttribute('attributeName', 'r');
+            animation.setAttribute('from', '15');
+            animation.setAttribute('to', '40');
+            animation.setAttribute('dur', '1.8s');
+            animation.setAttribute('fill', 'freeze');
+            
+            const opacityAnim = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+            opacityAnim.setAttribute('attributeName', 'opacity');
+            opacityAnim.setAttribute('from', '0.9');
+            opacityAnim.setAttribute('to', '0');
+            opacityAnim.setAttribute('dur', '1.5s');
+            opacityAnim.setAttribute('fill', 'freeze');
+            
+            highlightCircle.appendChild(animation);
+            highlightCircle.appendChild(opacityAnim);
+            svg.appendChild(highlightCircle);
+            
+            // Remove highlight after animation
+            setTimeout(() => {
+                const highlight = document.getElementById('locationHighlight');
+                if (highlight) highlight.remove();
+            }, 1500);
+            
+        } catch (e) {
+            console.error('Error showing location marker:', e);
+        }
+
+        // Reset idle timer
+        resetIdleTimer();
+
+        // Close modal with success animation
+        closeLocationSelector();
+
+        // Show toast notification
+        showToast(`📍 Starting location set to ${building.name}`, 'success');
+
+        console.log('✓ Custom start location set:', customStartLocation);
+    }
+
+    function resetToMainGate() {
+        customStartLocation = null;
+        const locationBadge = document.getElementById('currentLocationBadge');
+        const locationText = document.getElementById('currentLocationText');
+        
+        if (locationText) locationText.textContent = 'Set Location';
+        if (locationBadge) {
+            locationBadge.style.opacity = '0';
+            // Reset badge to original green
+            locationBadge.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+        }
+        
+        // Clear idle timer
+        clearTimeout(idleTimer);
+        
+        // Remove custom location marker
+        const marker = document.getElementById('customLocationMarker');
+        if (marker) marker.remove();
+        
+        // Reset map view to full
+        const svg = document.getElementById('campusMap');
+        if (svg) {
+            svg.setAttribute('viewBox', '0 0 302.596 275.484');
+        }
+        
+        // Save to localStorage
+        safeLocalStorage.removeItem('customStartLocation');
+
+        // Clear any existing navigation path
+        const existingPath = document.getElementById('navPath');
+        if (existingPath) existingPath.remove();
+        const existingMarkers = document.getElementById('navMarkers');
+        if (existingMarkers) existingMarkers.remove();
+        const existingDebugPath = document.getElementById('debugRoadPath');
+        if (existingDebugPath) existingDebugPath.remove();
+        
+        // Close modal
+        closeLocationSelector();
+        
+        showToast('🏠 Reset to Main Gate', 'info');
+        console.log('✓ Reset to Main Gate');
+    }
+
+    // Load saved location on page load
+    function loadSavedLocation() {
+        try {
+            const saved = safeLocalStorage.getItem('customStartLocation');
+            if (saved) {
+                customStartLocation = JSON.parse(saved);
+                document.getElementById('currentLocationText').textContent = customStartLocation.name;
+                document.getElementById('currentLocationBadge').style.opacity = '1';
+                showCustomLocationMarker();
+                console.log('Loaded saved location:', customStartLocation);
+            }
+        } catch (e) {
+            console.warn('Could not load saved location:', e);
+            safeLocalStorage.removeItem('customStartLocation');
+        }
+    }
+
+    // Toast notification system
+    function showToast(message, type = 'info') {
+        const existingToast = document.getElementById('customToast');
+        if (existingToast) existingToast.remove();
+
+        const toast = document.createElement('div');
+        toast.id = 'customToast';
+        toast.className = 'fixed top-24 left-1/2 transform -translate-x-1/2 px-6 py-4 rounded-xl shadow-2xl z-[100] flex items-center gap-3 animate-slideDown';
+        
+        const colors = {
+            success: 'bg-gradient-to-r from-green-500 to-green-600',
+            info: 'bg-gradient-to-r from-blue-500 to-blue-600',
+            warning: 'bg-gradient-to-r from-yellow-500 to-yellow-600'
+        };
+        
+        toast.className += ' ' + (colors[type] || colors.info);
+        toast.innerHTML = `
+            <span class="text-white font-semibold text-lg">${message}</span>
+        `;
+        toast.style.cssText = 'animation: slideDown 0.3s ease-out;';
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideUp 0.3s ease-in';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    function animateMapToLocation(targetX, targetY) {
+        const svg = document.getElementById('campusMap');
+        if (!svg) return;
+        
+        const currentViewBox = svg.getAttribute('viewBox').split(' ').map(Number);
+        const [currentX, currentY, currentWidth, currentHeight] = currentViewBox;
+
+        // Calculate zoom while keeping the point visible and map edges in view
+        const zoomFactor = 0.6; // Zoom to 60% (more moderate zoom)
+        const targetWidth = 302.596 * zoomFactor; // Use base width
+        const targetHeight = 275.484 * zoomFactor; // Use base height
+        
+        // Center on target with padding
+        let newX = targetX - targetWidth / 2;
+        let newY = targetY - targetHeight / 2;
+        
+        // Constrain to map boundaries with padding
+        const padding = 10;
+        newX = Math.max(padding, Math.min(newX, 302.596 - targetWidth - padding));
+        newY = Math.max(padding, Math.min(newY, 275.484 - targetHeight - padding));
+
+        // Smooth animation
+        let frame = 0;
+        const totalFrames = 45; // Slightly faster (0.75s at 60fps)
+        
+        function animate() {
+            frame++;
+            const progress = frame / totalFrames;
+            const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease-out cubic
+
+            const x = currentX + (newX - currentX) * easeProgress;
+            const y = currentY + (newY - currentY) * easeProgress;
+            const w = currentWidth + (targetWidth - currentWidth) * easeProgress;
+            const h = currentHeight + (targetHeight - currentHeight) * easeProgress;
+
+            svg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+
+            if (frame < totalFrames) {
+                requestAnimationFrame(animate);
+            }
+        }
+        
+        requestAnimationFrame(animate);
+    }
+
+    function showCustomLocationMarker() {
+        if (!customStartLocation) {
+            console.warn('No custom start location set');
+            return;
+        }
+        
+        const svg = document.getElementById('campusMap');
+        if (!svg) {
+            console.error('Campus map SVG not found');
+            return;
+        }
+        
+        // Remove existing marker
+        const existingMarker = document.getElementById('customLocationMarker');
+        if (existingMarker) existingMarker.remove();
+
+        // Create marker group with animated drop effect
+        const markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        markerGroup.setAttribute('id', 'customLocationMarker');
+        markerGroup.style.transformOrigin = `${customStartLocation.x}px ${customStartLocation.y}px`;
+        markerGroup.style.animation = 'pinDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        
+        // Add CSS animation for pin drop with 3D effects
+        if (!document.getElementById('pinDropAnimation')) {
+            const style = document.createElement('style');
+            style.id = 'pinDropAnimation';
+            style.textContent = `
+                @keyframes pinDrop {
+                    0% { 
+                        transform: translateY(-40px) translateZ(30px) scale(0) rotateX(20deg); 
+                        opacity: 0; 
+                        filter: drop-shadow(0 0 0 rgba(239, 68, 68, 0));
+                    }
+                    40% { 
+                        transform: translateY(-6px) translateZ(8px) scale(1.15) rotateX(-8deg); 
+                        opacity: 1; 
+                        filter: drop-shadow(0 10px 20px rgba(239, 68, 68, 0.7));
+                    }
+                    60% { 
+                        transform: translateY(3px) translateZ(3px) scale(0.92) rotateX(4deg); 
+                        filter: drop-shadow(0 6px 12px rgba(239, 68, 68, 0.5));
+                    }
+                    80% { 
+                        transform: translateY(-1px) translateZ(1px) scale(1.05) rotateX(-2deg); 
+                    }
+                    100% { 
+                        transform: translateY(0) translateZ(0) scale(1) rotateX(0deg); 
+                        opacity: 1; 
+                        filter: drop-shadow(0 4px 8px rgba(239, 68, 68, 0.5));
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Single pulsing circle - red
+        const pulseCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pulseCircle.setAttribute('cx', customStartLocation.x);
+        pulseCircle.setAttribute('cy', customStartLocation.y);
+        pulseCircle.setAttribute('r', '4');
+        pulseCircle.setAttribute('fill', '#ef4444');
+        pulseCircle.setAttribute('opacity', '0.5');
+        pulseCircle.innerHTML = '<animate attributeName="r" from="4" to="10" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.5" to="0" dur="1.5s" repeatCount="indefinite"/>';
+        markerGroup.appendChild(pulseCircle);
+
+        // Location pin icon - sleeker design
+        const pin = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pin.setAttribute('d', `M ${customStartLocation.x} ${customStartLocation.y} 
+                              C ${customStartLocation.x - 4} ${customStartLocation.y}, 
+                                ${customStartLocation.x - 7} ${customStartLocation.y - 2.5}, 
+                                ${customStartLocation.x - 7} ${customStartLocation.y - 5.5} 
+                              C ${customStartLocation.x - 7} ${customStartLocation.y - 8.5}, 
+                                ${customStartLocation.x} ${customStartLocation.y - 13}, 
+                                ${customStartLocation.x} ${customStartLocation.y - 13} 
+                              C ${customStartLocation.x} ${customStartLocation.y - 13}, 
+                                ${customStartLocation.x + 7} ${customStartLocation.y - 8.5}, 
+                                ${customStartLocation.x + 7} ${customStartLocation.y - 5.5} 
+                              C ${customStartLocation.x + 7} ${customStartLocation.y - 2.5}, 
+                                ${customStartLocation.x + 4} ${customStartLocation.y}, 
+                                ${customStartLocation.x} ${customStartLocation.y} Z`);
+        pin.setAttribute('fill', '#ef4444');
+        pin.setAttribute('stroke', '#ffffff');
+        pin.setAttribute('stroke-width', '1.5');
+        pin.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(239, 68, 68, 0.5)) drop-shadow(0 2px 4px rgba(0,0,0,0.6)) drop-shadow(0 0 12px rgba(239, 68, 68, 0.3))');
+        pin.style.transform = 'translateZ(10px)';
+        markerGroup.appendChild(pin);
+
+        // Inner circle on pin
+        const pinDot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pinDot.setAttribute('cx', customStartLocation.x);
+        pinDot.setAttribute('cy', customStartLocation.y - 5.5);
+        pinDot.setAttribute('r', '2');
+        pinDot.setAttribute('fill', '#ffffff');
+        markerGroup.appendChild(pinDot);
+
+        svg.appendChild(markerGroup);
+        console.log('✓ Location marker added at:', customStartLocation.x, customStartLocation.y);
+    }
+
     function toggleEditMode() {
         editMode = !editMode;
         if (editMode) {
@@ -1806,8 +5072,64 @@
         }
     });
     
-    function navigateTo(buildingName) {
+    // ==================== 3D MODE TOGGLE ====================
+    let is3DMode = false;
+    
+    function toggle3DMode() {
+        const mapContainer = document.getElementById('mapContainer');
+        const toggleBtn = document.getElementById('toggle3DBtn');
+        const toggleText = document.getElementById('toggle3DText');
+        
+        is3DMode = !is3DMode;
+        
+        if (is3DMode) {
+            mapContainer.classList.add('map-3d-mode');
+            toggleBtn.classList.add('active');
+            toggleText.textContent = '2D VIEW';
+        } else {
+            mapContainer.classList.remove('map-3d-mode');
+            toggleBtn.classList.remove('active');
+            toggleText.textContent = '3D VIEW';
+        }
+        
+        // Reset idle timer on interaction
+        resetIdleTimer();
+    }
+    
+    // Safe localStorage wrapper to prevent tracking prevention errors
+    const safeLocalStorage = {
+        getItem: (key) => {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                console.warn('localStorage.getItem blocked:', e);
+                return null;
+            }
+        },
+        setItem: (key, value) => {
+            try {
+                localStorage.setItem(key, value);
+                return true;
+            } catch (e) {
+                console.warn('localStorage.setItem blocked:', e);
+                return false;
+            }
+        },
+        removeItem: (key) => {
+            try {
+                localStorage.removeItem(key);
+                return true;
+            } catch (e) {
+                console.warn('localStorage.removeItem blocked:', e);
+                return false;
+            }
+        }
+    };
+    
+    // Make navigateTo globally accessible for onclick handlers
+    window.navigateTo = function(buildingName, showPopup = false) {
         closeModal();
+        closeBuildingPreview();
         
         // Map building name to navigation point key
         // Try the name as-is first, then check if it exists in navigationPoints
@@ -1872,18 +5194,20 @@
         
         drawNavigationPath(navKey);
         
-        // Show building details in sidebar when clicking legend item
-        const svgId = Object.keys(svgToDisplayName).find(key => 
-            svgToDisplayName[key] === buildingName || key === navKey
-        );
-        
-        if (svgId) {
-            // Use building code (from fullinfo.json building_id) to match
-            const building = buildings.find(b => b.code === svgId);
-            if (building) {
-                showBuildingModal(building.id);
-            } else {
-                showBuildingNotAvailable(svgToDisplayName[svgId] || buildingName);
+        // Show building preview popup only if showPopup is true (when clicking on map)
+        if (showPopup) {
+            const svgId = Object.keys(svgToDisplayName).find(key => 
+                svgToDisplayName[key] === buildingName || key === navKey
+            );
+            
+            if (svgId) {
+                // Use building code (from fullinfo.json building_id) to match
+                const building = buildings.find(b => b.code === svgId);
+                if (building) {
+                    showBuildingModal(building.id);
+                } else {
+                    showBuildingNotAvailable(svgToDisplayName[svgId] || buildingName);
+                }
             }
         }
     }
@@ -1891,6 +5215,8 @@
     // Enhanced interactivity: Keyboard shortcuts and click-outside-to-close
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+            closeBuildingDetailsModal();
+            closeBuildingPreview();
             closeModal();
         }
     });
@@ -2259,6 +5585,13 @@
     }
 
     function findPath(startIntersection, endIntersection) {
+        // Check cache first
+        const cacheKey = `${startIntersection}->${endIntersection}`;
+        if (pathCache[cacheKey]) {
+            console.log('Using cached path:', cacheKey);
+            return pathCache[cacheKey];
+        }
+
         // Dijkstra's algorithm to find shortest DISTANCE path (not just hop count)
         
         // Calculate actual distance between two intersections
@@ -2318,7 +5651,13 @@
             current = previous[current];
         }
         
-        return path.length > 0 ? path : [startIntersection, endIntersection];
+        const result = path.length > 0 ? path : [startIntersection, endIntersection];
+        
+        // Cache the result
+        pathCache[cacheKey] = result;
+        console.log('Cached new path:', cacheKey);
+        
+        return result;
     }
 
     // Simplify path by removing collinear points (points on same straight line)
@@ -2479,8 +5818,19 @@
             return;
         }
         
-        // Use pre-defined road connection
-        const startIntersection = 'gate';
+        // Determine starting point - use custom location if set, otherwise use main gate
+        let startIntersection = 'gate';
+        let startX = kioskX;
+        let startY = kioskY;
+        
+        if (customStartLocation && customStartLocation.roadConnection) {
+            // Use the custom location's road connection point
+            startIntersection = customStartLocation.roadConnection;
+            startX = customStartLocation.x;
+            startY = customStartLocation.y;
+            console.log('Using custom start location:', customStartLocation.name, 'at intersection:', startIntersection);
+        }
+        
         const endIntersection = point.roadConnection;
         
         // Get path through road network using Dijkstra's algorithm
@@ -2526,19 +5876,19 @@
         // Build clean orthogonal path segments
         const segments = [];
         
-        // Start from kiosk
-        const kioskNode = roadNetwork.intersections['gate'];
-        segments.push({x: kioskX, y: kioskY});
+        // Start from custom location or kiosk
+        const startNode = roadNetwork.intersections[startIntersection];
+        segments.push({x: startX, y: startY});
         
-        // Only add kiosk node if it's different from actual kiosk position
-        if (kioskNode && (kioskNode.x !== kioskX || kioskNode.y !== kioskY)) {
-            segments.push({x: kioskNode.x, y: kioskNode.y});
+        // Only add start node if it's different from actual start position
+        if (startNode && (startNode.x !== startX || startNode.y !== startY)) {
+            segments.push({x: startNode.x, y: startNode.y});
         }
         
-        // Add all intersection points from the path (skip first if it's gate)
+        // Add all intersection points from the path (skip first if it's the start intersection)
         for (let i = 0; i < intersectionPath.length; i++) {
             const intersectionName = intersectionPath[i];
-            if (intersectionName === 'gate' && i === 0) continue; // Skip gate as we already added it
+            if (intersectionName === startIntersection && i === 0) continue; // Skip start as we already added it
             
             const intersection = roadNetwork.intersections[intersectionName];
             if (intersection) {
@@ -2633,71 +5983,94 @@
             }
         }
         
-        // Create navigation path - thin smooth red line
+        // Calculate total path length for walking time and animation
+        let totalPathLength = 0;
+        for (let i = 1; i < orthogonalSegments.length; i++) {
+            const prev = orthogonalSegments[i - 1];
+            const curr = orthogonalSegments[i];
+            totalPathLength += Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2));
+        }
+        
+        // Create navigation path - enhanced 3D style with depth
         const navPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         navPath.setAttribute('id', 'navPath');
         navPath.setAttribute('d', pathData);
         navPath.setAttribute('fill', 'none');
         navPath.setAttribute('stroke', '#ef4444');
-        navPath.setAttribute('stroke-width', '2.5');
+        navPath.setAttribute('stroke-width', '3.5');
         navPath.setAttribute('stroke-linecap', 'round');
         navPath.setAttribute('stroke-linejoin', 'round');
-        navPath.setAttribute('opacity', '0.9');
-        navPath.setAttribute('filter', 'drop-shadow(0 1px 2px rgba(239, 68, 68, 0.3))');
-        navPath.setAttribute('style', 'pointer-events: none;');
+        navPath.setAttribute('opacity', '0.95');
+        navPath.setAttribute('filter', 'drop-shadow(0 0 12px rgba(239, 68, 68, 0.8)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 24px rgba(239, 68, 68, 0.5))');
+        navPath.setAttribute('style', 'pointer-events: none; transform: translateZ(12px); transform-style: preserve-3d;');
+        
+        // Add path animation (unless reduced motion is enabled)
+        if (!window.reducedMotion) {
+            const pathLen = navPath.getTotalLength ? navPath.getTotalLength() : totalPathLength * 3;
+            navPath.style.setProperty('--path-length', pathLen);
+            navPath.setAttribute('stroke-dasharray', pathLen);
+            navPath.setAttribute('stroke-dashoffset', pathLen);
+            navPath.classList.add('animated-path');
+        }
+        
         svg.appendChild(navPath);
+        
+        // Show walking time
+        showWalkingTime(totalPathLength);
         
         // Create markers group
         const markersGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         markersGroup.setAttribute('id', 'navMarkers');
         
-        // Start marker (main gate) - smaller refined green dot
+        // Start marker (main gate) - enhanced 3D green dot with depth
         const startMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         startMarker.setAttribute('cx', kioskX);
         startMarker.setAttribute('cy', kioskY);
-        startMarker.setAttribute('r', '5');
+        startMarker.setAttribute('r', '6');
         startMarker.setAttribute('fill', '#10b981');
         startMarker.setAttribute('stroke', '#fff');
-        startMarker.setAttribute('stroke-width', '2');
-        startMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(16, 185, 129, 0.4))');
+        startMarker.setAttribute('stroke-width', '2.5');
+        startMarker.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(16, 185, 129, 0.6)) drop-shadow(0 0 16px rgba(16, 185, 129, 0.4))');
+        startMarker.style.transform = 'translateZ(10px)';
         markersGroup.appendChild(startMarker);
         
-        // Destination marker - smaller refined red circle with pulsing animation
+        // Destination marker - enhanced 3D red circle with stronger glow
         const destMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         destMarker.setAttribute('cx', point.x);
         destMarker.setAttribute('cy', point.y);
-        destMarker.setAttribute('r', '4');
+        destMarker.setAttribute('r', '5');
         destMarker.setAttribute('fill', '#ef4444');
         destMarker.setAttribute('stroke', '#fff');
-        destMarker.setAttribute('stroke-width', '1.5');
-        destMarker.setAttribute('filter', 'drop-shadow(0 1px 3px rgba(239, 68, 68, 0.4))');
+        destMarker.setAttribute('stroke-width', '2');
+        destMarker.setAttribute('filter', 'drop-shadow(0 4px 8px rgba(239, 68, 68, 0.6)) drop-shadow(0 0 16px rgba(239, 68, 68, 0.4))');
         destMarker.setAttribute('class', 'endpoint-marker');
         destMarker.dataset.buildingName = buildingName; // Store building name for drag functionality
+        destMarker.style.transform = 'translateZ(10px)';
         markersGroup.appendChild(destMarker);
         
-        // Pulsing outer ring for destination
+        // Pulsing outer ring for destination - enhanced visibility
         const pulseRing = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         pulseRing.setAttribute('cx', point.x);
         pulseRing.setAttribute('cy', point.y);
-        pulseRing.setAttribute('r', '4');
+        pulseRing.setAttribute('r', '5');
         pulseRing.setAttribute('fill', 'none');
         pulseRing.setAttribute('stroke', '#ef4444');
-        pulseRing.setAttribute('stroke-width', '1');
-        pulseRing.setAttribute('opacity', '0.6');
+        pulseRing.setAttribute('stroke-width', '2');
+        pulseRing.setAttribute('opacity', '0.8');
         markersGroup.appendChild(pulseRing);
         
-        // Animate the pulse ring
+        // Animate the pulse ring with enhanced effect
         const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animate.setAttribute('attributeName', 'r');
-        animate.setAttribute('from', '6');
-        animate.setAttribute('to', '12');
+        animate.setAttribute('from', '7');
+        animate.setAttribute('to', '16');
         animate.setAttribute('dur', '1.5s');
         animate.setAttribute('repeatCount', 'indefinite');
         pulseRing.appendChild(animate);
         
         const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
         animateOpacity.setAttribute('attributeName', 'opacity');
-        animateOpacity.setAttribute('from', '0.6');
+        animateOpacity.setAttribute('from', '0.8');
         animateOpacity.setAttribute('to', '0');
         animateOpacity.setAttribute('dur', '1.5s');
         animateOpacity.setAttribute('repeatCount', 'indefinite');
@@ -2710,8 +6083,33 @@
         // Get display name
         const displayName = svgToDisplayName[buildingName] || buildingName;
         labelText.textContent = displayName;
-        labelText.setAttribute('x', point.x);
-        labelText.setAttribute('y', point.y - 12);
+        
+        // Smart label positioning - check if near edges and adjust accordingly
+        let labelY = point.y - 14; // Default: above the marker
+        let labelX = point.x;
+        
+        // If near top edge (y < 30), place label below the marker
+        if (point.y < 30) {
+            labelY = point.y + 20;
+        }
+        
+        // If near left edge (x < 50), shift label to the right
+        if (point.x < 50) {
+            labelX = point.x + 25;
+        }
+        
+        // If near right edge (x > 260), shift label to the left
+        if (point.x > 260) {
+            labelX = point.x - 25;
+        }
+        
+        // If near bottom edge (y > 250), place label above
+        if (point.y > 250) {
+            labelY = point.y - 20;
+        }
+        
+        labelText.setAttribute('x', labelX);
+        labelText.setAttribute('y', labelY);
         labelText.setAttribute('text-anchor', 'middle');
         labelText.setAttribute('font-size', '9');
         labelText.setAttribute('font-weight', 'bold');
@@ -2723,13 +6121,14 @@
         svg.appendChild(labelText);
         const bbox = labelText.getBBox();
         
-        labelBg.setAttribute('x', bbox.x - 3);
-        labelBg.setAttribute('y', bbox.y - 1);
-        labelBg.setAttribute('width', bbox.width + 6);
-        labelBg.setAttribute('height', bbox.height + 2);
-        labelBg.setAttribute('fill', '#ef4444');
-        labelBg.setAttribute('rx', '3');
-        labelBg.setAttribute('opacity', '0.9');
+        labelBg.setAttribute('x', bbox.x - 5);
+        labelBg.setAttribute('y', bbox.y - 2);
+        labelBg.setAttribute('width', bbox.width + 10);
+        labelBg.setAttribute('height', bbox.height + 4);
+        labelBg.setAttribute('fill', '#248823');
+        labelBg.setAttribute('rx', '4');
+        labelBg.setAttribute('opacity', '0.95');
+        labelBg.setAttribute('filter', 'drop-shadow(0 2px 4px rgba(36, 136, 35, 0.4))');
         
         markersGroup.appendChild(labelBg);
         markersGroup.appendChild(labelText);
@@ -3076,6 +6475,39 @@
             coordinateTooltip.style.display = 'none';
         }
     }
+
+    // Refresh CSRF token periodically to prevent 419 errors on kiosk
+    function refreshCsrfToken() {
+        fetch('/refresh-csrf', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.csrf_token) {
+                // Update all CSRF token inputs
+                document.querySelectorAll('input[name="_token"]').forEach(input => {
+                    input.value = data.csrf_token;
+                });
+                console.log('CSRF token refreshed successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Error refreshing CSRF token:', error);
+        });
+    }
+
+    // Refresh CSRF token every 90 minutes (before the 120-minute session expires)
+    setInterval(refreshCsrfToken, 90 * 60 * 1000);
+    
+    // Also refresh on page visibility change (when user returns to kiosk)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            refreshCsrfToken();
+        }
+    });
 </script>
 @endsection
 

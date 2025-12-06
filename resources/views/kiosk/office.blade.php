@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Office Details')
 @section('body-class', 'bg-gradient-to-br from-green-600 to-green-800')

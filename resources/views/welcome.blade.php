@@ -1,4 +1,4 @@
-@extends('Layouts.app')
+@extends('layouts.app')
 
 @section('content')
 <div class="map-container">
@@ -131,6 +131,28 @@
 
 <!-- filepath: c:\xampp\htdocs\Navi\resources\views\welcome.blade.php -->
 @push('scripts')
+<style>
+/* Prevent text selection during touch/swipe on all elements */
+* {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+}
+
+svg, svg * {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  user-select: none !important;
+  touch-action: none !important;
+}
+
+.map-container {
+  touch-action: pan-x pan-y !important;
+}
+</style>
 <script>
 const panel = document.getElementById('infoPanel');
 const panelTitle = document.getElementById('panelTitle');

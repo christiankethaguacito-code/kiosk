@@ -18,12 +18,18 @@ Route::get('/map', [KioskController::class, 'map'])->name('kiosk.map');
 Route::get('/dual-welcome', [DualModeController::class, 'welcome'])->name('dual.welcome');
 Route::get('/dual-map', [DualModeController::class, 'map'])->name('dual.map');
 Route::get('/building/{id}', [KioskController::class, 'building'])->name('kiosk.building');
+Route::get('/kiosk/building/{id}', [KioskController::class, 'building'])->name('kiosk.building.popup');
 Route::get('/office/{id}', [KioskController::class, 'office'])->name('kiosk.office');
 Route::get('/navigate/{buildingId}', [KioskController::class, 'navigate'])->name('kiosk.navigate');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// CSRF token refresh endpoint for kiosk
+Route::get('/refresh-csrf', function () {
+    return response()->json(['csrf_token' => csrf_token()]);
+});
 
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');

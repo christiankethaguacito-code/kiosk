@@ -23,10 +23,10 @@ echo ""
 echo "[2/7] Removing old storage symlink (if exists)..."
 if [ -L "public/storage" ]; then
     rm public/storage
-    echo "  ✓ Old symlink removed"
+    echo "  âœ“ Old symlink removed"
 elif [ -d "public/storage" ]; then
     rm -rf public/storage
-    echo "  ✓ Old storage directory removed"
+    echo "  âœ“ Old storage directory removed"
 else
     echo "  - No existing symlink found"
 fi
@@ -36,11 +36,11 @@ echo ""
 echo "[3/7] Creating storage symlink..."
 php artisan storage:link
 if [ $? -eq 0 ]; then
-    echo "  ✓ Storage symlink created successfully"
+    echo "  âœ“ Storage symlink created successfully"
 else
-    echo "  ✗ Failed to create symlink, trying manual method..."
+    echo "  âœ— Failed to create symlink, trying manual method..."
     ln -sf "$SCRIPT_DIR/storage/app/public" "$SCRIPT_DIR/public/storage"
-    echo "  ✓ Manual symlink created"
+    echo "  âœ“ Manual symlink created"
 fi
 echo ""
 
@@ -48,7 +48,7 @@ echo ""
 echo "[4/7] Ensuring announcements directory exists..."
 mkdir -p storage/app/public/announcements
 mkdir -p storage/app/public/buildings
-echo "  ✓ Directories created"
+echo "  âœ“ Directories created"
 echo ""
 
 # Fix permissions
@@ -64,9 +64,9 @@ if [ "$EUID" -eq 0 ] || [ -n "$SUDO_USER" ]; then
     chown -R www-data:www-data storage
     chown -R www-data:www-data bootstrap/cache
     chown -R www-data:www-data public/storage 2>/dev/null || true
-    echo "  ✓ Permissions and ownership fixed"
+    echo "  âœ“ Permissions and ownership fixed"
 else
-    echo "  ✓ Permissions fixed (run with sudo for full ownership fix)"
+    echo "  âœ“ Permissions fixed (run with sudo for full ownership fix)"
 fi
 echo ""
 
@@ -76,23 +76,23 @@ php artisan cache:clear 2>/dev/null || echo "  - Cache clear skipped"
 php artisan view:clear 2>/dev/null || echo "  - View clear skipped"
 php artisan config:clear 2>/dev/null || echo "  - Config clear skipped"
 php artisan route:clear 2>/dev/null || echo "  - Route clear skipped"
-echo "  ✓ Caches cleared"
+echo "  âœ“ Caches cleared"
 echo ""
 
 # Verify the symlink
 echo "[7/7] Verifying setup..."
 if [ -L "public/storage" ]; then
     LINK_TARGET=$(readlink -f public/storage)
-    echo "  ✓ Symlink exists: public/storage -> $LINK_TARGET"
+    echo "  âœ“ Symlink exists: public/storage -> $LINK_TARGET"
 else
-    echo "  ✗ WARNING: Symlink not found!"
+    echo "  âœ— WARNING: Symlink not found!"
 fi
 
 # Check if announcements directory is accessible
 if [ -d "public/storage/announcements" ] || [ -L "public/storage" ]; then
-    echo "  ✓ Announcements directory accessible"
+    echo "  âœ“ Announcements directory accessible"
 else
-    echo "  ✗ WARNING: Announcements directory not accessible"
+    echo "  âœ— WARNING: Announcements directory not accessible"
 fi
 echo ""
 

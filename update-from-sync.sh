@@ -117,9 +117,9 @@ echo ""
 # Verify symlink
 echo "Verifying storage symlink..."
 if [ -L "public/storage" ]; then
-    echo "  ✓ Symlink exists: $(readlink public/storage)"
+    echo "  âœ“ Symlink exists: $(readlink public/storage)"
 else
-    echo "  ✗ WARNING: Symlink missing, creating manually..."
+    echo "  âœ— WARNING: Symlink missing, creating manually..."
     ln -sf "$NAVI_DIR/storage/app/public" "$NAVI_DIR/public/storage"
 fi
 

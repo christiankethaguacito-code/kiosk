@@ -1,9 +1,7 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Campus Map'); ?>
+<?php $__env->startSection('body-class', 'bg-gray-900'); ?>
 
-@section('title', 'Campus Map')
-@section('body-class', 'bg-gray-900')
-
-@section('head')
+<?php $__env->startSection('head'); ?>
 <!-- Google Fonts - Modern Typography -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1681,9 +1679,9 @@
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Enhanced Screensaver Overlay -->
 <div id="kioskIdleOverlay" onclick="resetIdleTimer()">
     <!-- Floating particles -->
@@ -1694,7 +1692,7 @@
     <div class="screensaver-particle" style="top: 30%; left: 70%; animation-delay: 8s;"></div>
     
     <div class="screensaver-content">
-        <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="idle-logo">
+        <img src="<?php echo e(asset('images/sksu.png')); ?>" alt="SKSU Logo" class="idle-logo">
         <div class="idle-text">Campus Navigation Kiosk</div>
         <div class="idle-subtext">Sultan Kudarat State University</div>
         <div class="idle-hint">
@@ -1778,8 +1776,8 @@
         <div style="position: absolute; bottom: -50%; left: 10%; width: 200px; height: 150%; background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%); pointer-events: none;"></div>
         
         <div class="flex items-center gap-5 relative z-10">
-            <a href="{{ route('kiosk.idle') }}" class="touch-target touch-feedback flex items-center p-2.5 rounded-2xl bg-white bg-opacity-15 hover:bg-opacity-25 transition-all duration-300" style="box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);">
-                <img src="{{ asset('images/sksu.png') }}" alt="SKSU Logo" class="h-14 w-14 object-contain drop-shadow-lg">
+            <a href="<?php echo e(route('kiosk.idle')); ?>" class="touch-target touch-feedback flex items-center p-2.5 rounded-2xl bg-white bg-opacity-15 hover:bg-opacity-25 transition-all duration-300" style="box-shadow: 0 4px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.1);">
+                <img src="<?php echo e(asset('images/sksu.png')); ?>" alt="SKSU Logo" class="h-14 w-14 object-contain drop-shadow-lg">
             </a>
             <div>
                 <h1 class="text-3xl font-display font-extrabold tracking-tight" style="text-shadow: 0 2px 12px rgba(0,0,0,0.25); letter-spacing: -0.02em;">Acces Map</h1>
@@ -1859,8 +1857,8 @@
                      class="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden"
                      style="display: none; z-index: 9999;">
                     
-                    @auth
-                        <a href="{{ route('admin.dashboard') }}" 
+                    <?php if(auth()->guard()->check()): ?>
+                        <a href="<?php echo e(route('admin.dashboard')); ?>" 
                            class="touch-target touch-feedback flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100">
                             <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -1876,7 +1874,7 @@
                             </svg>
                             <span class="text-sm font-medium text-gray-600">Admin Inline Edit</span>
                         </button>
-                    @else
+                    <?php else: ?>
                         <button onclick="showAdminLogin()" 
                                 class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
                             <svg class="w-5 h-5" style="color: #22c55e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1884,7 +1882,7 @@
                             </svg>
                             <span class="text-sm font-medium text-gray-600">Admin Login</span>
                         </button>
-                    @endauth
+                    <?php endif; ?>
                     
                     <button onclick="toggleAccessibilityPanel()" 
                             class="touch-target touch-feedback w-full flex items-center gap-3 px-5 py-4 hover:bg-green-50 transition border-b border-gray-100 text-left">
@@ -2791,8 +2789,8 @@
             <button onclick="closeAdminLogin()" class="text-2xl text-gray-400 hover:text-gray-600 transition">×</button>
         </div>
         
-        <form action="{{ route('login') }}" method="POST" id="adminLoginForm">
-            @csrf
+        <form action="<?php echo e(route('login')); ?>" method="POST" id="adminLoginForm">
+            <?php echo csrf_field(); ?>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-600 mb-1.5">Username</label>
                 <input type="text" 
@@ -2958,7 +2956,7 @@
                     <p class="text-sm font-semibold text-gray-700 mb-3">Researchers</p>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
-                            <img src="{{ asset('images/researcher1.jpg') }}" alt="Hannah Mae V. Magallosa" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
+                            <img src="<?php echo e(asset('images/researcher1.jpg')); ?>" alt="Hannah Mae V. Magallosa" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
                             <div>
                                 <p class="font-semibold text-gray-800 text-sm">Hannah Mae V. Magallosa</p>
                                 <p class="text-xs text-gray-600">Researcher</p>
@@ -2966,7 +2964,7 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-4 bg-gradient-to-r from-gray-50 to-white p-4 rounded-lg border">
-                            <img src="{{ asset('images/researcher2.jpg') }}" alt="Sam Jones L. Cedana" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
+                            <img src="<?php echo e(asset('images/researcher2.jpg')); ?>" alt="Sam Jones L. Cedana" class="w-20 h-20 rounded-full object-cover border-2" style="border-color: #248823;" loading="lazy" decoding="async">
                             <div>
                                 <p class="font-semibold text-gray-800 text-sm">Sam Jones L. Cedana</p>
                                 <p class="text-xs text-gray-600">Researcher</p>
@@ -2980,7 +2978,7 @@
                 <div>
                     <p class="text-sm font-semibold text-gray-700 mb-3">Research Adviser</p>
                     <div class="flex items-center gap-4 bg-gradient-to-r from-green-50 to-white p-4 rounded-lg border-2" style="border-color: #248823;">
-                        <img src="{{ asset('images/adviser.jpg') }}" alt="Charity L. Oria, DEng" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" loading="lazy" decoding="async">
+                        <img src="<?php echo e(asset('images/adviser.jpg')); ?>" alt="Charity L. Oria, DEng" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" loading="lazy" decoding="async">
                         <div>
                             <p class="font-bold text-gray-800">Charity L. Oria, DEng</p>
                             <p class="text-sm text-gray-600">Research Adviser</p>
@@ -3022,17 +3020,17 @@
     </div>
 </div>
 
-@if($errors->any() && session('show_login_errors'))
+<?php if($errors->any() && session('show_login_errors')): ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         showAdminLogin();
         const errorDiv = document.getElementById('loginError');
         const errorText = document.getElementById('loginErrorText');
         errorDiv.classList.remove('hidden');
-        errorText.textContent = "{{ $errors->first() }}";
+        errorText.textContent = "<?php echo e($errors->first()); ?>";
     });
 </script>
-@endif
+<?php endif; ?>
 
 <script>
     // Handle admin login form submission with CSRF refresh
@@ -3081,9 +3079,9 @@
 <!-- Building Hover Tooltip -->
 <div id="buildingTooltip" class="building-tooltip"></div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
     // ============================================
     // PERFORMANCE UTILITIES
@@ -3177,7 +3175,7 @@
         closeBuildingDetailsModal();
         
         // Redirect to announcement/idle page after 2 minutes of inactivity
-        window.location.href = '{{ route("kiosk.idle") }}';
+        window.location.href = '<?php echo e(route("kiosk.idle")); ?>';
     }
     
     // Start idle timer and listen for user activity
@@ -3196,9 +3194,9 @@
         loadSavedLocation();
     });
 
-    const buildings = @json($buildings);
-    const isAdmin = @json($isAdmin);
-    const dbEndpoints = @json($navigationEndpoints ?? []);
+    const buildings = <?php echo json_encode($buildings, 15, 512) ?>;
+    const isAdmin = <?php echo json_encode($isAdmin, 15, 512) ?>;
+    const dbEndpoints = <?php echo json_encode($navigationEndpoints ?? [], 15, 512) ?>;
     
     // Image preloading cache
     let imagesPreloaded = false;
@@ -6593,6 +6591,8 @@
         }
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
 
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\USER\OneDrive\Desktop\PatisoyFinal\Navi\resources\views/kiosk/map.blade.php ENDPATH**/ ?>

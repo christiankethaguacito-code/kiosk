@@ -35,6 +35,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
+            $request->session()->forget('show_login_errors');
             
             return redirect()->intended(route('admin.dashboard'))
                 ->with('success', 'Login successful! Welcome back.');
@@ -42,7 +43,7 @@ class LoginController extends Controller
 
         return back()->withErrors([
             $fieldType => 'The provided credentials do not match our records.',
-        ])->withInput($request->only($fieldType));
+        ])->withInput($request->only($fieldType))->with('show_login_errors', true);
     }
 
     public function logout(Request $request)

@@ -1,9 +1,7 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'SKSU Access - Campus Kiosk'); ?>
+<?php $__env->startSection('body-class', 'overflow-hidden font-sans'); ?>
 
-@section('title', 'SKSU Access - Campus Kiosk')
-@section('body-class', 'overflow-hidden font-sans')
-
-@section('head')
+<?php $__env->startSection('head'); ?>
 <style>
     /* Full Screen Campus Background with Dark Overlay */
     .campus-bg {
@@ -71,9 +69,9 @@
         display: none !important;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="campus-bg flex items-center justify-center" x-data="kioskScreen()">
     
     <!-- Time & Date Widget - Top Right (15% Header) -->
@@ -91,34 +89,36 @@
         <!-- Announcement Card Container (75%) -->
         <div class="h-[75vh] flex items-center justify-center px-8">
             <!-- Announcement Card -->
-            @if($announcements->count() > 0)
+            <?php if($announcements->count() > 0): ?>
             <div class="announcement-card" 
-                 x-data="{ currentSlide: 0, slides: {{ $announcements->count() }} }"
+                 x-data="{ currentSlide: 0, slides: <?php echo e($announcements->count()); ?> }"
                  x-init="setInterval(() => { currentSlide = (currentSlide + 1) % slides }, 5000)"
                  :style="'background-image: url(' + [
-                    @foreach($announcements as $index => $announcement)
-                    '{{ $announcement->image_path ? Storage::url($announcement->image_path) : "/images/background.jpg" }}'{{ !$loop->last ? ',' : '' }}
-                    @endforeach
+                    <?php $__currentLoopData = $announcements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $announcement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    '<?php echo e($announcement->image_path ? Storage::url($announcement->image_path) : "/images/background.jpg"); ?>'<?php echo e(!$loop->last ? ',' : ''); ?>
+
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                  ][currentSlide] + ')'">
                  
                  <!-- Announcement Title Overlay -->
                  <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8">
                      <h3 class="text-white text-4xl font-bold drop-shadow-lg" x-text="[
-                        @foreach($announcements as $index => $announcement)
-                        '{{ $announcement->title }}'{{ !$loop->last ? ',' : '' }}
-                        @endforeach
+                        <?php $__currentLoopData = $announcements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $announcement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        '<?php echo e($announcement->title); ?>'<?php echo e(!$loop->last ? ',' : ''); ?>
+
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                      ][currentSlide]"></h3>
                  </div>
                  
                  <!-- Slide Indicators -->
                  <div class="absolute bottom-4 right-8 flex gap-2">
-                     @foreach($announcements as $index => $announcement)
+                     <?php $__currentLoopData = $announcements; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $announcement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                      <div class="w-3 h-3 rounded-full transition-all duration-300"
-                          :class="currentSlide === {{ $index }} ? 'bg-white scale-125' : 'bg-white/50'"></div>
-                     @endforeach
+                          :class="currentSlide === <?php echo e($index); ?> ? 'bg-white scale-125' : 'bg-white/50'"></div>
+                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                  </div>
             </div>
-            @else
+            <?php else: ?>
             <!-- No Announcements Fallback -->
             <div class="announcement-card flex items-center justify-center" style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);">
                 <div class="text-center text-white">
@@ -126,11 +126,11 @@
                     <p class="text-2xl opacity-80">Interactive Campus Directory</p>
                 </div>
             </div>
-            @endif
+            <?php endif; ?>
         </div>
         
         <!-- Footer Space (10%) - Touch to Continue -->
-        <a href="{{ route('kiosk.map') }}" class="h-[10vh] flex items-center justify-center cursor-pointer group">
+        <a href="<?php echo e(route('kiosk.map')); ?>" class="h-[10vh] flex items-center justify-center cursor-pointer group">
             <p class="text-white text-2xl font-bold animate-pulse" style="text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">
                 Touch the Screen to Continue
             </p>
@@ -141,7 +141,7 @@
 </div>
 
 <script>
-const buildings = @json($buildings);
+const buildings = <?php echo json_encode($buildings, 15, 512) ?>;
 
 // Start preloading all building images immediately when page loads
 (function preloadAllBuildingImages() {
@@ -275,4 +275,6 @@ function kioskScreen() {
     }
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\USER\OneDrive\Desktop\PatisoyFinal\Navi\resources\views/kiosk/welcome.blade.php ENDPATH**/ ?>

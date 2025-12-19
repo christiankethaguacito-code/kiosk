@@ -36,11 +36,11 @@
             @endforeach
             
             <div class="absolute top-8 left-8 right-8 flex items-center justify-between z-20">
-                <div class="bg-white/20 backdrop-blur-md px-8 py-4 rounded-2xl">
-                    <h2 class="text-white text-3xl font-bold">SKSU Access Campus</h2>
+                <div class="bg-black/40 backdrop-blur-lg px-10 py-5 rounded-2xl border-2 border-white/30 shadow-2xl">
+                    <h2 class="text-white text-4xl font-bold drop-shadow-lg">SKSU Access Campus</h2>
                 </div>
-                <div class="bg-white/20 backdrop-blur-md px-6 py-3 rounded-xl">
-                    <p class="text-white text-xl" id="currentTime"></p>
+                <div class="bg-black/50 backdrop-blur-lg px-10 py-6 rounded-2xl border-2 border-white/30 shadow-2xl">
+                    <p class="text-white text-5xl font-bold drop-shadow-lg" id="currentTime"></p>
                 </div>
             </div>
         </div>
@@ -182,7 +182,7 @@
         });
         const timeElement = document.getElementById('currentTime');
         if (timeElement) {
-            timeElement.innerHTML = `${timeString}<br><span class="text-sm opacity-80">${dateString}</span>`;
+            timeElement.innerHTML = `<span class="text-5xl font-black">${timeString}</span><br><span class="text-xl opacity-90 font-medium">${dateString}</span>`;
         }
     }
     

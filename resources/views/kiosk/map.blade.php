@@ -3113,15 +3113,9 @@
     // KIOSK IDLE TIMEOUT SYSTEM
     // ============================================
     let idleTimer = null;
-    const IDLE_TIMEOUT = 120000; // 2 minutes of inactivity (adjust as needed)
+    const IDLE_TIMEOUT = 120000; // 2 minutes of inactivity - redirects to announcement page
     
     function resetIdleTimer() {
-        // Hide idle overlay if visible
-        const idleOverlay = document.getElementById('kioskIdleOverlay');
-        if (idleOverlay) {
-            idleOverlay.classList.remove('show');
-        }
-        
         // Clear existing timer
         if (idleTimer) {
             clearTimeout(idleTimer);
@@ -3141,15 +3135,12 @@
     }
     
     function showIdleScreen() {
-        const idleOverlay = document.getElementById('kioskIdleOverlay');
-        if (idleOverlay) {
-            // Close any open modals first
-            closeBuildingPreview();
-            closeBuildingDetailsModal();
-            
-            // Show idle screen
-            idleOverlay.classList.add('show');
-        }
+        // Close any open modals first
+        closeBuildingPreview();
+        closeBuildingDetailsModal();
+        
+        // Redirect to announcement/idle page after 2 minutes of inactivity
+        window.location.href = '{{ route("kiosk.idle") }}';
     }
     
     // Start idle timer and listen for user activity

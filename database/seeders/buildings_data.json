@@ -1,6 +1,7 @@
 [
   {
     "building_name": "ADMINISTRATION BUILDING",
+    "building_code": "Administration",
     "image": "administration.jpg",
     "offices": [
       {
@@ -235,6 +236,7 @@
   },
   {
     "building_name": "QMS CENTER BUILDING",
+    "building_code": "QMS",
     "image": "qms.jpg",
     "offices": [
       {
@@ -285,6 +287,7 @@
   },
   {
     "building_name": "LABORATORY HIGH SCHOOL",
+    "building_code": "LHS",
     "image": "lhs.jpg",
     "offices": [
       {
@@ -292,7 +295,10 @@
         "floor": "",
         "head_name": "Roselyn M. Calixtro",
         "head_title": "Principal",
-        "services": []
+        "services": [
+          "Senior High School Grade 11",
+          "Senior High School Grade 12"
+        ]
       },
       {
         "name": "Student Body Organization ",
@@ -305,6 +311,7 @@
   },
   {
     "building_name": "COLLEGE OF TEACHER EDUCATION",
+    "building_code": "CTE",
     "image": "cte.jpg",
     "offices": [
       {
@@ -341,7 +348,17 @@
         "head_name": "Annessa P. Magindra, PhD",
         "head_title": "Dean & Head CTE",
         "services": [
-          "Request for Supplies"
+          "Request for Supplies",
+          "Student Advising and Consultation",
+          "Practicum and Field Study Coordination",
+          "Bachelor of Physical Education (BPEd)",
+          "Bachelor of Elementary Education (BEEd)",
+          "Bachelor of Secondary Education - Major in Mathematics",
+          "Bachelor of Secondary Education - Major in English",
+          "Bachelor of Secondary Education - Major in Social Studies",
+          "Bachelor of Secondary Education - Major in Science",
+          "Bachelor of Secondary Education - Major in Filipino",
+          "Diploma in Teaching"
         ]
       },
       {
@@ -369,6 +386,7 @@
   },
   {
     "building_name": "COLLEGE OF HEALTH AND SCIENCES",
+    "building_code": "CHS",
     "image": "chs.jpg",
     "offices": [
       {
@@ -377,13 +395,20 @@
         "head_name": "Cesar J. Nallos 11, RN,MAN",
         "head_title": "Dean's of Faculty Office",
         "services": [
-          "Request for Documents Required for Licensure Examination"
+          "Request for Documents Required for Licensure Examination",
+          "Student Advising and Consultation",
+          "Clinical Practicum Coordination",
+          "Related Learning Experience (RLE) Processing",
+          "Bachelor of Science in Nursing (BSN)",
+          "Bachelor of Science in Medical Technology (BSMT)",
+          "Bachelor of Science in Midwifery (BSM)"
         ]
       }
     ]
   },
   {
     "building_name": "COLLEGES OF HEALTH AND SCIENCES EXTENSION",
+    "building_code": "CHS_Labs",
     "image": "chs_labs.jpg",
     "offices": [
       {
@@ -399,6 +424,7 @@
   },
   {
     "building_name": "GRADUATE SCHOOL",
+    "building_code": "GS",
     "image": "gs.jpg",
     "offices": [
       {
@@ -436,6 +462,7 @@
   },
   {
     "building_name": "ALUMNI RELATIONSHIP OFFICE",
+    "building_code": "Alumni_Office",
     "image": "alumni_office.jpg",
     "offices": [
       {
@@ -451,6 +478,7 @@
   },
   {
     "building_name": "GS-SBO",
+    "building_code": "GS-SBO",
     "image": "gs-sbo.jpg",
     "offices": [
       {
@@ -466,6 +494,7 @@
   },
   {
     "building_name": "UNIVERSITY ACCESS CLINIC",
+    "building_code": "UC",
     "image": "uc.jpg",
     "offices": [
       {
@@ -483,6 +512,7 @@
   },
   {
     "building_name": "OFFICE OF STUDENT AFFAIRS AND SERVICES BLDG.",
+    "building_code": "OSAS",
     "image": "osas.jpg",
     "offices": [
       {
@@ -534,6 +564,7 @@
   },
   {
     "building_name": "CLIMATE",
+    "building_code": "Climate",
     "image": "climate.jpg",
     "offices": [
       {
@@ -549,6 +580,7 @@
   },
   {
     "building_name": "TECHNOLOGY AND INNOVATION BUILDING (TIP)",
+    "building_code": "TIP_center",
     "image": "tip_center.jpg",
     "offices": [
       {
@@ -569,6 +601,7 @@
   },
   {
     "building_name": "UNIVERSITY LEARNING RESOURCE CENTER (LIBRARY)",
+    "building_code": "ULRC",
     "image": "ulrc.jpg",
     "offices": [
       {
@@ -695,6 +728,45 @@
           "Additional classrooms for CCJE",
           "Faculty offices",
           "Student consultation services"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "COLLEGE OF CRIMINAL JUSTICE EDUCATION",
+    "building_code": "CCJE",
+    "image": "ccje.jpg",
+    "offices": [
+      {
+        "name": "Dean's Office",
+        "floor": "",
+        "head_name": "Rogelio C. Palanog Jr., PhD",
+        "head_title": "CCJE Head",
+        "services": [
+          "Student Advising and Consultation",
+          "Internship and Field Training Coordination",
+          "Request for Academic Documents",
+          "Bachelor of Science in Criminology (BSCrim)",
+          "Bachelor of Laws / College of Law"
+        ]
+      }
+    ]
+  },
+  {
+    "building_name": "COLLEGE OF MEDICINE",
+    "building_code": "CoM",
+    "image": "com.jpg",
+    "offices": [
+      {
+        "name": "Dean's Office",
+        "floor": "",
+        "head_name": "Dr. Apolinario M. Degracia, Jr.",
+        "head_title": "Dean, College of Medicine",
+        "services": [
+          "Student Advising and Consultation",
+          "Clinical Rotation Coordination",
+          "Request for Academic Documents",
+          "Doctor of Medicine (MD)"
         ]
       }
     ]

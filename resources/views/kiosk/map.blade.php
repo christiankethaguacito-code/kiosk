@@ -3231,7 +3231,7 @@
             if (building.image_path) {
                 totalImages++;
                 const dbImg = new Image();
-                const dbSrc = `/storage/${building.image_path}`;
+                const dbSrc = building.image_path.startsWith('/') ? building.image_path : `/storage/${building.image_path}`;
                 dbImg.onload = () => {
                     imageCache.set(dbSrc, dbImg);
                     loadedCount++;
@@ -3255,7 +3255,7 @@
                 building.image_gallery.forEach(imgPath => {
                     totalImages++;
                     const galleryImg = new Image();
-                    const gallerySrc = `/storage/${imgPath}`;
+                    const gallerySrc = imgPath.startsWith('/') ? imgPath : `/storage/${imgPath}`;
                     galleryImg.onload = () => {
                         imageCache.set(gallerySrc, galleryImg);
                         loadedCount++;
@@ -3843,13 +3843,14 @@
             const previewImage = document.getElementById('previewBuildingImage');
             const placeholder = document.getElementById('previewImagePlaceholder');
             
-            // Check cached images
+            // Check cached images - image_path now stores full path like /images/buildings/xxx.jpg
             const jpgCached = imageCache.has(publicImageJpg);
             const pngCached = imageCache.has(publicImagePng);
-            const dbImageCached = building.image_path && imageCache.has(`/storage/${building.image_path}`);
+            const dbImagePath = building.image_path && (building.image_path.startsWith('/') ? building.image_path : `/storage/${building.image_path}`);
+            const dbImageCached = building.image_path && imageCache.has(dbImagePath);
             
             if (jpgCached || pngCached || dbImageCached) {
-                let imgSrc = jpgCached ? publicImageJpg : (pngCached ? publicImagePng : `/storage/${building.image_path}`);
+                let imgSrc = jpgCached ? publicImageJpg : (pngCached ? publicImagePng : dbImagePath);
                 previewImage.src = imgSrc;
                 previewImage.style.display = 'block';
                 placeholder.style.display = 'none';
@@ -3924,7 +3925,7 @@
             // Calculate counts
             const offices = building.offices || [];
             let allServices = [];
-            let allHeads = [];
+            let headsMap = {}; // Group offices by head name
             
             offices.forEach(office => {
                 if (office.services) {
@@ -3933,14 +3934,24 @@
                     });
                 }
                 if (office.head_name) {
-                    allHeads.push({
-                        name: office.head_name,
-                        title: office.head_title,
-                        officeName: office.name,
+                    // Group by head name
+                    if (!headsMap[office.head_name]) {
+                        headsMap[office.head_name] = {
+                            name: office.head_name,
+                            title: office.head_title,
+                            image: office.head_image,
+                            offices: []
+                        };
+                    }
+                    headsMap[office.head_name].offices.push({
+                        name: office.name,
                         floor: office.floor_number
                     });
                 }
             });
+            
+            // Convert headsMap to array
+            let allHeads = Object.values(headsMap);
             
             // Update badge counts
             document.getElementById('officeCountBadge').textContent = offices.length;
@@ -3984,11 +3995,12 @@
         // Building Image
         const publicImageJpg = `/images/buildings/${building.code}.jpg`;
         const publicImagePng = `/images/buildings/${building.code}.png`;
+        const dbImagePath = building.image_path && (building.image_path.startsWith('/') ? building.image_path : `/storage/${building.image_path}`);
         const hasImage = imageCache.has(publicImageJpg) || imageCache.has(publicImagePng) || building.image_path;
         
         if (hasImage) {
             let imgSrc = imageCache.has(publicImageJpg) ? publicImageJpg : 
-                        (imageCache.has(publicImagePng) ? publicImagePng : `/storage/${building.image_path}`);
+                        (imageCache.has(publicImagePng) ? publicImagePng : dbImagePath);
             html += `
                 <div class="mb-6 rounded-xl overflow-hidden shadow-lg" style="height: 250px;">
                     <img src="${imgSrc}" alt="${building.name}" class="w-full h-full object-cover" 
@@ -4235,36 +4247,42 @@
             html = `
                 <div class="mb-4 p-4 bg-purple-50 rounded-xl">
                     <p class="text-purple-700 text-sm">
-                        <strong>${heads.length}</strong> office heads in this building
+                        <strong>${heads.length}</strong> office head${heads.length > 1 ? 's' : ''} in this building
                     </p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             `;
             
             heads.forEach(head => {
+                // Build offices list
+                const officesHtml = head.offices.map(office => `
+                    <div class="flex items-center gap-2 text-gray-600 text-sm mt-1">
+                        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
+                        </svg>
+                        <span>${office.name}</span>
+                        ${office.floor ? `<span class="text-gray-400 text-xs">(Floor ${office.floor})</span>` : ''}
+                    </div>
+                `).join('');
+                
+                // Head image or initial
+                const headImage = head.image 
+                    ? `<img src="${head.image}" alt="${head.name}" class="w-16 h-16 rounded-full object-cover shadow-lg border-2 border-green-200" onerror="this.outerHTML='<div class=\\'w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xl font-bold shadow-lg\\'>${head.name.charAt(0).toUpperCase()}</div>'">`
+                    : `<div class="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">${head.name.charAt(0).toUpperCase()}</div>`;
+                
                 html += `
                     <div class="head-card rounded-xl p-5">
                         <div class="flex items-start gap-4">
-                            <div class="flex-shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xl font-bold shadow-lg">
-                                ${head.name.charAt(0).toUpperCase()}
+                            <div class="flex-shrink-0">
+                                ${headImage}
                             </div>
                             <div class="flex-1">
                                 <h4 class="font-bold text-gray-800 text-lg">${head.name}</h4>
                                 ${head.title ? `<p class="text-green-600 text-sm font-medium">${head.title}</p>` : ''}
-                                <div class="mt-2 flex items-center gap-2 text-gray-500 text-sm">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"></path>
-                                    </svg>
-                                    ${head.officeName}
+                                <div class="mt-3 space-y-1">
+                                    <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Managing ${head.offices.length > 1 ? head.offices.length + ' Offices' : '1 Office'}</p>
+                                    ${officesHtml}
                                 </div>
-                                ${head.floor ? `
-                                    <div class="flex items-center gap-2 text-gray-400 text-xs mt-1">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                        </svg>
-                                        Floor ${head.floor}
-                                    </div>
-                                ` : ''}
                             </div>
                         </div>
                     </div>
@@ -4399,28 +4417,42 @@
         hideWalkingTime();
     }
     function showBuildingNotAvailable(buildingName) {
-        // Hide legend, show details view
-        document.getElementById('legendView').style.display = 'none';
-        document.getElementById('buildingDetailsView').style.display = 'flex';
+        // Show a toast notification instead of trying to use elements that may not exist
+        const legendView = document.getElementById('legendView');
+        const buildingDetailsView = document.getElementById('buildingDetailsView');
         
-        document.getElementById('buildingDetailTitle').textContent = buildingName;
-        document.getElementById('buildingDetailContent').innerHTML = `
-            <div class="text-center py-12">
-                <div class="mb-6">
-                    <svg class="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                    </svg>
-                </div>
-                <h3 class="text-xl font-bold mb-2" style="color: #248823;">${buildingName}</h3>
-                <p class="text-gray-600 mb-4">Information for this building is not yet available</p>
-                <div class="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
-                    <p class="text-sm text-gray-700">
-                        <span class="font-semibold" style="color: #248823;">📝 Coming Soon</span><br>
-                        Building details and office information will be added to the system shortly.
-                    </p>
-                </div>
-            </div>
-        `;
+        if (legendView && buildingDetailsView) {
+            // Hide legend, show details view
+            legendView.style.display = 'none';
+            buildingDetailsView.style.display = 'flex';
+            
+            const detailTitle = document.getElementById('buildingDetailTitle');
+            const detailContent = document.getElementById('buildingDetailContent');
+            
+            if (detailTitle) detailTitle.textContent = buildingName;
+            if (detailContent) {
+                detailContent.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="mb-6">
+                            <svg class="w-24 h-24 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2" style="color: #248823;">${buildingName}</h3>
+                        <p class="text-gray-600 mb-4">Information for this building is not yet available</p>
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4 max-w-md mx-auto">
+                            <p class="text-sm text-gray-700">
+                                <span class="font-semibold" style="color: #248823;">📝 Coming Soon</span><br>
+                                Building details and office information will be added to the system shortly.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        } else {
+            // Fallback: show toast notification
+            console.log('Building not available:', buildingName);
+        }
     }
     
     function closeModal() {

@@ -35,6 +35,7 @@ Route::get('/buildings/{id}', function($id) {
                 'floor_number' => $office->floor_number,
                 'head_name' => $office->head_name,
                 'head_title' => $office->head_title,
+                'head_image' => $office->head_image,
                 'services' => $office->services
             ];
         })

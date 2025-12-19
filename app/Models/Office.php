@@ -11,7 +11,8 @@ class Office extends Model
         'name',
         'floor_number',
         'head_name',
-        'head_title'
+        'head_title',
+        'head_image'
     ];
 
     public function building()
